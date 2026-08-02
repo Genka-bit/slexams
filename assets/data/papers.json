@@ -1,1 +1,17 @@
+[
+ {
+  "grade":"5",
+  "subject":"கணிதம்",
+  "term":"3",
+  "paper":"Grade 5 Mathematics Term 3 Paper 1",
+  "pdf":"pdf/grade5/maths/term3/paper1.pdf"
+ },
 
+ {
+  "grade":"10",
+  "subject":"விஞ்ஞானம்",
+  "term":"1",
+  "paper":"Grade 10 Science Term 1 Paper 1",
+  "pdf":"pdf/grade10/science/term1/paper1.pdf"
+ }
+]
