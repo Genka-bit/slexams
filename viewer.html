@@ -210,9 +210,28 @@ let pdf =
 */
 
 
-let pdf =
-"https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+let params =
+new URLSearchParams(window.location.search);
 
+
+let pdf =
+params.get("pdf");
+
+
+let name =
+params.get("name");
+
+
+
+document.getElementById("paperTitle").innerHTML =
+"📄 " + name;
+
+
+
+document.getElementById("pdfViewer").src = pdf;
+
+
+document.getElementById("downloadBtn").href = pdf;
 
 
 document.getElementById("pdfViewer").src = pdf;
