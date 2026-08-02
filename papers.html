@@ -30,7 +30,7 @@ font-weight:bold;
 
 .container{
 width:90%;
-max-width:900px;
+max-width:1000px;
 margin:auto;
 padding:30px;
 }
@@ -75,7 +75,6 @@ text-decoration:none;
 font-weight:bold;
 }
 
-
 footer{
 background:#1565c0;
 color:white;
@@ -119,44 +118,7 @@ margin-top:40px;
 </div>
 
 
-<div class="grid">
-
-
-<div class="card">
-
-<h3>📄 Paper 1</h3>
-
-<a href="viewer.html?paper=Paper 1">
-View Paper
-</a>
-
-</div>
-
-
-
-<div class="card">
-
-<h3>📄 Paper 2</h3>
-
-<a href="viewer.html?paper=Paper 2">
-View Paper
-</a>
-
-</div>
-
-
-
-<div class="card">
-
-<h3>📄 Paper 3</h3>
-
-<a href="viewer.html?paper=Paper 3">
-View Paper
-</a>
-
-</div>
-
-
+<div id="paperList" class="grid">
 
 </div>
 
@@ -173,27 +135,109 @@ View Paper
 
 
 
-
 <script>
+
 
 let params =
 new URLSearchParams(window.location.search);
 
 
-let grade=params.get("grade");
+let grade =
+params.get("grade");
 
-let subject=params.get("subject");
+let subject =
+params.get("subject");
 
-let term=params.get("term");
+let term =
+params.get("term");
 
 
-document.getElementById("title").innerHTML=
 
-"Grade "+grade+
-"<br>"+
-subject+
-"<br>"+
-term+"ஆம் தவணை";
+document.getElementById("title").innerHTML =
+
+"Grade " + grade +
+"<br>" +
+subject +
+"<br>" +
+term + "ஆம் தவணை";
+
+
+
+fetch("assets/data/papers.json")
+
+.then(response => response.json())
+
+.then(data => {
+
+
+let list = document.getElementById("paperList");
+
+
+let found = data.filter(function(item){
+
+
+return item.grade == grade &&
+item.subject == subject &&
+item.term == term;
+
+
+});
+
+
+
+if(found.length == 0){
+
+
+list.innerHTML =
+
+`
+<div class="card">
+
+<h3>📄 No Papers Available</h3>
+
+<p>
+Papers will be added soon.
+</p>
+
+</div>
+`;
+
+
+}
+
+
+
+found.forEach(function(paper){
+
+
+
+list.innerHTML +=
+
+
+`
+
+<div class="card">
+
+<h3>📄 ${paper.paper}</h3>
+
+
+<a href="viewer.html?pdf=${paper.pdf}&name=${paper.paper}">
+
+View PDF
+
+</a>
+
+
+</div>
+
+`;
+
+
+
+});
+
+
+});
 
 
 </script>
