@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ta">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SLExam - PDF Viewer</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f4f8ff;
+}
+
+
+header{
+
+background:#1565c0;
+color:white;
+text-align:center;
+padding:25px;
+
+}
+
+
+.logo{
+
+font-size:35px;
+font-weight:bold;
+
+}
+
+
+.container{
+
+width:90%;
+max-width:900px;
+margin:auto;
+padding:30px;
+
+}
+
+
+h2{
+
+text-align:center;
+color:#1565c0;
+
+}
+
+
+.pdf-box{
+
+background:white;
+padding:15px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+
+}
+
+
+iframe{
+
+width:100%;
+height:600px;
+border:none;
+
+}
+
+
+.download{
+
+text-align:center;
+margin-top:25px;
+
+}
+
+
+.download a{
+
+background:#1565c0;
+color:white;
+padding:15px 30px;
+border-radius:30px;
+text-decoration:none;
+font-size:18px;
+
+}
+
+
+.back{
+
+color:#1565c0;
+text-decoration:none;
+font-weight:bold;
+
+}
+
+
+footer{
+
+background:#1565c0;
+color:white;
+text-align:center;
+padding:20px;
+margin-top:40px;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<div class="logo">
+🔵 SLExam
+</div>
+
+<p>PDF Viewer</p>
+
+</header>
+
+
+
+<div class="container">
+
+
+<a class="back" href="javascript:history.back()">
+⬅ Back
+</a>
+
+
+
+<h2 id="paperTitle">
+Paper
+</h2>
+
+
+
+<div class="pdf-box">
+
+
+<iframe id="pdfViewer">
+
+</iframe>
+
+
+</div>
+
+
+
+<div class="download">
+
+<a id="downloadBtn" download>
+⬇ Download PDF
+</a>
+
+</div>
+
+
+
+</div>
+
+
+
+<footer>
+
+© 2026 SLExam
+
+</footer>
+
+
+
+
+<script>
+
+
+let params =
+new URLSearchParams(window.location.search);
+
+
+let paper =
+params.get("paper");
+
+
+
+document.getElementById("paperTitle").innerHTML =
+"📄 " + paper;
+
+
+
+/*
+இங்கு பின்னர் உண்மையான PDF Link சேர்க்கப்படும்
+
+உதாரணம்:
+
+let pdf =
+"pdf/grade10/math/paper1.pdf";
+
+*/
+
+
+let pdf =
+"https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+
+
+
+document.getElementById("pdfViewer").src = pdf;
+
+
+document.getElementById("downloadBtn").href = pdf;
+
+
+
+</script>
+
+
+
+</body>
+
+</html>
