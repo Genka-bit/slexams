@@ -239,33 +239,135 @@ subjects=[
 
 // Grade 12-13
 
+// Grade 12-13
+
 else if(grade>=12 && grade<=13){
+
+let stream=params.get("stream");
+
+if(!stream){
 
 subjects=[
 
 "🔬 Science",
 "💼 Commerce",
 "🎨 Arts",
-"⚙️ Technology"
+"⚙️ Technology",
+"🌐 Common Subjects"
 
+];
+
+subjects.forEach(function(sub){
+
+let value="";
+
+if(sub.includes("Science")) value="science";
+else if(sub.includes("Commerce")) value="commerce";
+else if(sub.includes("Arts")) value="arts";
+else if(sub.includes("Technology")) value="technology";
+else value="common";
+
+content.innerHTML += `
+
+<div class="card">
+<a href="grade.html?grade=${grade}&stream=${value}">
+${sub}
+</a>
+</div>
+
+`;
+
+});
+
+return;
+
+}
+
+if(stream=="science"){
+
+subjects=[
+"Combined Mathematics",
+"Physics",
+"Chemistry",
+"Biology",
+"ICT",
+"Agricultural Science"
 ];
 
 }
 
+else if(stream=="commerce"){
 
+subjects=[
+"Accounting",
+"Business Studies",
+"Economics"
+];
 
-let content=document.getElementById("content");
+}
+
+else if(stream=="arts"){
+
+subjects=[
+"Tamil",
+"History",
+"Geography",
+"Political Science",
+"Hinduism",
+"Christianity",
+"Catholic",
+"Hindu Civilization",
+"Christian Civilization",
+"Logic",
+"Art",
+"Dance",
+"Music",
+"Drama"
+];
+
+}
+
+else if(stream=="technology"){
+
+subjects=[
+"Science for Technology",
+"Engineering Technology",
+"Bio Systems Technology",
+"ICT",
+"Agricultural Science"
+];
+
+}
+
+else if(stream=="common"){
+
+subjects=[
+"General English",
+"General Information Technology (GIT)"
+];
+
+}
+
+}
 
 
 subjects.forEach(function(sub){
 
-content.innerHTML +=
+let stream=params.get("stream");
 
-`
+let link="term.html?grade="+grade+"&subject="+encodeURIComponent(sub);
+
+if(stream){
+
+link+="&stream="+stream;
+
+}
+
+content.innerHTML += `
 
 <div class="card">
 
-<a href="term.html?grade=${grade}&subject=${sub}">
+<a href="${link}">
 
 ${sub}
 
