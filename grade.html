@@ -1,402 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SLExam Pro | Subjects</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLExam Pro - Subjects</title>
 
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="assets/css/style.css">
 </head>
+
 <body>
 
 <header class="header">
 
-    <div class="logo">
-        <h1>SLExam <span>Pro</span></h1>
-    </div>
+<div class="logo">
+<h1>SLExam <span>Pro</span></h1>
+</div>
 
-    <nav class="navbar">
-        <a href="index.html">Home</a>
-    </nav>
+<nav class="navbar">
+<a href="index.html">Home</a>
+</nav>
 
 </header>
 
 <section class="hero">
 
-    <h2 id="gradeTitle">Loading...</h2>
+<h2 id="gradeTitle">Grade</h2>
 
-    <p>Select a Subject</p>
+<p>Select Your Subject</p>
 
 </section>
 
 <section class="grades">
 
-    <div id="subjectContainer" class="grade-grid">
+<div id="subjectContainer" class="grade-grid">
 
-        <!-- Subjects will appear here -->
-
-    </div>
+</div>
 
 </section>
 
 <footer>
 
-    <p>© 2026 SLExam Pro</p>
+<p>© 2026 SLExam Pro</p>
 
 </footer>
 
-<script src="app.js"></script>
+<script src="assets/js/app.js"></script>
 
 </body>
-</html>margin:auto;
-padding:30px;
-}
-
-
-h2{
-text-align:center;
-color:#1565c0;
-}
-
-
-.grid{
-
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
-
-}
-
-
-.card{
-
-background:white;
-padding:20px;
-border-radius:15px;
-text-align:center;
-box-shadow:0 5px 15px rgba(0,0,0,.1);
-
-}
-
-
-.card a{
-
-display:block;
-background:#1565c0;
-color:white;
-text-decoration:none;
-padding:15px;
-border-radius:25px;
-font-size:17px;
-
-}
-
-
-.back{
-
-text-decoration:none;
-color:#1565c0;
-font-weight:bold;
-
-}
-
-
-footer{
-
-background:#1565c0;
-color:white;
-text-align:center;
-padding:20px;
-
-}
-
-</style>
-
-</head>
-
-
-<body>
-
-
-<header>
-
-<div class="logo">
-🔵 SLExam
-</div>
-
-<p id="gradeTitle">
-Subjects
-</p>
-
-</header>
-
-
-<div class="container">
-
-
-<a class="back" href="exam-papers.html">
-⬅ Back
-</a>
-
-
-<h2 id="title">
-Select Subject
-</h2>
-
-
-<div id="content" class="grid"></div>
-
-
-</div>
-
-
-<footer>
-
-© 2026 SLExam
-
-</footer>
-
-
-
-<script>
-
-
-let params = new URLSearchParams(window.location.search);
-
-let grade = Number(params.get("grade"));
-
-
-document.getElementById("gradeTitle").innerHTML =
-"Grade " + grade;
-
-
-
-let subjects = [];
-
-
-// Grade 1-5
-
-if(grade>=1 && grade<=5){
-
-subjects=[
-
-"தமிழ்",
-"கணிதம்",
-"சுற்றாடல்",
-"ஆங்கிலம்",
-"இரண்டாம் மொழி"
-
-];
-
-}
-
-
-// Grade 6-9
-
-else if(grade>=6 && grade<=9){
-
-subjects=[
-
-"தமிழ்",
-"கணிதம்",
-"விஞ்ஞானம்",
-"வரலாறு",
-"புவியியல்",
-"குடியியல்",
-"ஆங்கிலம்",
-"சுகாதாரம்",
-"சைவசமயம்",
-"கத்தோலிக்கம்",
-"கிறிஸ்தவம்",
-"இஸ்லாம்",
-"அழகியல்",
-"சிங்களம்",
-"ICT",
-"PTS"
-
-];
-
-}
-
-
-// Grade 10-11
-
-else if(grade>=10 && grade<=11){
-
-subjects=[
-
-"தமிழ்",
-"கணிதம்",
-"விஞ்ஞானம்",
-"வரலாறு",
-"ஆங்கிலம்",
-"சைவசமயம்",
-"கத்தோலிக்கம்",
-"கிறிஸ்தவம்",
-"இஸ்லாம்",
-"புவியியல்",
-"குடியியல்",
-"வணிகக்கல்வி",
-"சிங்களம்",
-"அழகியல்",
-"தமிழ் இலக்கிய நயம்",
-"சுகாதாரம்",
-"விவசாயம்",
-"ICT",
-"TECHNOLOGY",
-"தொகுதி III பாடங்கள்"
-
-];
-
-}
-
-
-// Grade 12-13
-
-// Grade 12-13
-
-else if(grade>=12 && grade<=13){
-
-let stream=params.get("stream");
-
-if(!stream){
-
-subjects=[
-
-"🔬 Science",
-"💼 Commerce",
-"🎨 Arts",
-"⚙️ Technology",
-"🌐 Common Subjects"
-
-];
-
-subjects.forEach(function(sub){
-
-let value="";
-
-if(sub.includes("Science")) value="science";
-else if(sub.includes("Commerce")) value="commerce";
-else if(sub.includes("Arts")) value="arts";
-else if(sub.includes("Technology")) value="technology";
-else value="common";
-
-content.innerHTML += `
-
-<div class="card">
-<a href="grade.html?grade=${grade}&stream=${value}">
-${sub}
-</a>
-</div>
-
-`;
-
-});
-
-return;
-
-}
-
-if(stream=="science"){
-
-subjects=[
-"Combined Mathematics",
-"Physics",
-"Chemistry",
-"Biology",
-"ICT",
-"Agricultural Science"
-];
-
-}
-
-else if(stream=="commerce"){
-
-subjects=[
-"Accounting",
-"Business Studies",
-"Economics"
-];
-
-}
-
-else if(stream=="arts"){
-
-subjects=[
-"Tamil",
-"History",
-"Geography",
-"Political Science",
-"Hinduism",
-"Christianity",
-"Catholic",
-"Hindu Civilization",
-"Christian Civilization",
-"Logic",
-"Art",
-"Dance",
-"Music",
-"Drama"
-];
-
-}
-
-else if(stream=="technology"){
-
-subjects=[
-"Science for Technology",
-"Engineering Technology",
-"Bio Systems Technology",
-"ICT",
-"Agricultural Science"
-];
-
-}
-
-else if(stream=="common"){
-
-subjects=[
-"General English",
-"General Information Technology (GIT)"
-];
-
-}
-
-}
-
-
-subjects.forEach(function(sub){
-
-let stream=params.get("stream");
-
-let link="term.html?grade="+grade+"&subject="+encodeURIComponent(sub);
-
-if(stream){
-
-link+="&stream="+stream;
-
-}
-
-content.innerHTML += `
-
-<div class="card">
-
-<a href="${link}">
-
-${sub}
-
-</a>
-
-</div>
-
-`;
-
-});
-
-
-</script>
-
-
-</body>
-
 </html>
