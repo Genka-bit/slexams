@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLExam Pro - Streams</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="header">
+
+    <div class="logo">
+        <h1>SLExam <span>Pro</span></h1>
+    </div>
+
+    <nav class="navbar">
+        <a href="index.html">Home</a>
+        <a href="javascript:history.back()">Back</a>
+    </nav>
+
+</header>
+
+<section class="hero">
+
+    <h2 id="streamGradeTitle">Select Stream</h2>
+
+    <p>Choose Your A/L Stream</p>
+
+</section>
+
+<section class="grades">
+
+    <div id="streamContainer" class="grade-grid">
+
+        <!-- Streams loaded by app.js -->
+
+    </div>
+
+</section>
+
+<footer>
+
+<p>© 2026 SLExam Pro</p>
+
+</footer>
+
+<script src="assets/js/app.js"></script>
+
+</body>
+</html>
