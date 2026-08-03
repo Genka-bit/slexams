@@ -119,9 +119,27 @@ async function loadGradePage() {
 
 }
 
-// Run Grade Page
+// Run Pages Correctly
 
-loadGradePage();
+if(document.getElementById("subjectContainer")){
+    loadGradePage();
+}
+
+if(document.getElementById("streamContainer")){
+    loadStreamPage();
+}
+
+if(document.getElementById("subjectTitle")){
+    loadSubjectPage();
+}
+
+if(document.getElementById("paperContainer")){
+    loadTermPage();
+}
+
+if(document.getElementById("pdfFrame")){
+    loadPaperPage();
+}
 
 // ======================================
 // app.js - Part 2
