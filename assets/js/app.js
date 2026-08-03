@@ -1,106 +1,60 @@
-// ===============================
-// SLExam Pro - app.js
-// ===============================
+// =========================
+// SLExam Pro
+// Dynamic Loader
+// =========================
 
-// URL Parameters
-const params = new URLSearchParams(window.location.search);
+const params = new URLSearchParams(location.search);
 
 const grade = params.get("grade");
-const subject = params.get("subject");
-const term = params.get("term");
-const paper = params.get("paper");
 
-// ---------- grade.html ----------
-if (document.getElementById("gradeTitle")) {
+async function loadSubjects(){
 
-    document.getElementById("gradeTitle").textContent =
+    const response = await fetch("assets/data/papers.json");
+
+    const data = await response.json();
+
+    const gradeData = data.grades[grade];
+
+    document.getElementById("gradeTitle").innerText =
         "Grade " + grade;
 
-    const container = document.getElementById("subjectContainer");
+    const container =
+        document.getElementById("subjectContainer");
 
-    const demoSubjects = [
-        "Tamil",
-        "Mathematics",
-        "English",
-        "Science",
-        "History",
-        "Geography",
-        "ICT"
-    ];
+    container.innerHTML = "";
 
-    demoSubjects.forEach(sub => {
+    // Grade 12 & 13
+    if(gradeData.streams){
 
-        const a = document.createElement("a");
+        gradeData.streams.forEach(stream=>{
 
-        a.className = "grade-card";
+            container.innerHTML += `
+            <a class="grade-card"
+            href="stream.html?grade=${grade}&stream=${stream}">
+            ${stream}
+            </a>`;
 
-        a.href =
-        `subject.html?grade=${grade}&subject=${encodeURIComponent(sub)}`;
+        });
 
-        a.textContent = sub;
+        return;
 
-        container.appendChild(a);
+    }
 
-    });
+    // Grade 1-11
+    gradeData.subjects.forEach(subject=>{
 
-}
-
-// ---------- subject.html ----------
-if (document.getElementById("subjectTitle")) {
-
-    document.getElementById("subjectTitle").textContent = subject;
-
-    document.getElementById("term1").href =
-    `term.html?grade=${grade}&subject=${subject}&term=1`;
-
-    document.getElementById("term2").href =
-    `term.html?grade=${grade}&subject=${subject}&term=2`;
-
-    document.getElementById("term3").href =
-    `term.html?grade=${grade}&subject=${subject}&term=3`;
-
-}
-
-// ---------- term.html ----------
-if (document.getElementById("paperContainer")) {
-
-    document.getElementById("termTitle").textContent =
-    `${subject} - Term ${term}`;
-
-    const papers = [
-        "Paper 1",
-        "Paper 2",
-        "Paper 3",
-        "Paper 4",
-        "Paper 5"
-    ];
-
-    const container = document.getElementById("paperContainer");
-
-    papers.forEach((p, i) => {
-
-        const a = document.createElement("a");
-
-        a.className = "grade-card";
-
-        a.href =
-        `paper.html?paper=assets/pdf/sample.pdf`;
-
-        a.textContent = p;
-
-        container.appendChild(a);
+        container.innerHTML += `
+        <a class="grade-card"
+        href="subject.html?grade=${grade}&subject=${encodeURIComponent(subject)}">
+        ${subject}
+        </a>`;
 
     });
 
 }
 
-// ---------- paper.html ----------
-if (document.getElementById("pdfFrame")) {
+if(document.getElementById("subjectContainer")){
 
-    const pdf = params.get("paper");
-
-    document.getElementById("pdfFrame").src = pdf;
-
-    document.getElementById("downloadBtn").href = pdf;
+    loadSubjects();
 
 }
