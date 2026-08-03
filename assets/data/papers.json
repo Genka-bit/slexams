@@ -135,21 +135,75 @@
     },
 
     "12": {
-      "streams": [
-        "Science",
-        "Commerce",
-        "Arts",
-        "Technology"
-      ]
-    },
+  "streams": [
+    "Science",
+    "Commerce",
+    "Arts",
+    "Technology"
+  ],
+  "streamSubjects": {
+    "Science": [
+      "Combined Mathematics",
+      "Physics",
+      "Chemistry",
+      "Biology",
+      "ICT",
+      "Agricultural Science"
+    ],
+    "Commerce": [
+      "Accounting",
+      "Business Studies",
+      "Economics"
+    ],
+    "Arts": [
+      "Tamil",
+      "History",
+      "Geography",
+      "Political Science"
+    ],
+    "Technology": [
+      "Science for Technology",
+      "Engineering Technology",
+      "Bio Systems Technology",
+      "ICT"
+    ]
+  }
+},
 
     "13": {
-      "streams": [
-        "Science",
-        "Commerce",
-        "Arts",
-        "Technology"
-      ]
-    }
+  "streams": [
+    "Science",
+    "Commerce",
+    "Arts",
+    "Technology"
+  ],
+  "streamSubjects": {
+    "Science": [
+      "Combined Mathematics",
+      "Physics",
+      "Chemistry",
+      "Biology",
+      "ICT",
+      "Agricultural Science"
+    ],
+    "Commerce": [
+      "Accounting",
+      "Business Studies",
+      "Economics"
+    ],
+    "Arts": [
+      "Tamil",
+      "History",
+      "Geography",
+      "Political Science"
+    ],
+    "Technology": [
+      "Science for Technology",
+      "Engineering Technology",
+      "Bio Systems Technology",
+      "ICT"
+    ]
+  }
+}
   }
 }
