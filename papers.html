@@ -1,248 +1,99 @@
 <!DOCTYPE html>
-<html lang="ta">
-
+<html lang="en">
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SLExam - Papers</title>
+<title>SLExam Pro - PDF Viewer</title>
+
+<link rel="stylesheet" href="assets/css/style.css">
 
 <style>
 
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#f4f8ff;
-}
-
-header{
-background:#1565c0;
-color:white;
-text-align:center;
-padding:25px;
-}
-
-.logo{
-font-size:35px;
-font-weight:bold;
-}
-
-.container{
+.pdf-viewer{
 width:90%;
 max-width:1000px;
-margin:auto;
-padding:30px;
+margin:30px auto;
 }
 
-h2{
+.pdf-viewer iframe{
+width:100%;
+height:700px;
+border:none;
+border-radius:12px;
+box-shadow:0 5px 20px rgba(0,0,0,.2);
+}
+
+.download{
 text-align:center;
-color:#1565c0;
+margin:25px;
 }
 
-.info{
-text-align:center;
-font-size:18px;
-margin:20px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:20px;
-}
-
-.card{
-background:white;
-padding:25px;
-border-radius:15px;
-box-shadow:0 5px 15px rgba(0,0,0,.1);
-text-align:center;
-}
-
-.card a{
-display:block;
-background:#1565c0;
+.download a{
+display:inline-block;
+padding:15px 30px;
+background:#1565C0;
 color:white;
-padding:15px;
-border-radius:25px;
 text-decoration:none;
-}
-
-.back{
-color:#1565c0;
-text-decoration:none;
+border-radius:30px;
 font-weight:bold;
 }
 
-footer{
-background:#1565c0;
-color:white;
-text-align:center;
-padding:20px;
-margin-top:40px;
+.download a:hover{
+background:#0D47A1;
 }
 
 </style>
 
 </head>
 
-
 <body>
 
-
-<header>
+<header class="header">
 
 <div class="logo">
-🔵 SLExam
+
+<h1>SLExam <span>Pro</span></h1>
+
 </div>
 
-<p>Exam Papers</p>
+<nav class="navbar">
+
+<a href="index.html">Home</a>
+
+<a href="javascript:history.back()">Back</a>
+
+</nav>
 
 </header>
 
+<section class="hero">
 
+<h2>PDF Preview</h2>
 
-<div class="container">
+<p>View & Download</p>
 
+</section>
 
-<a class="back" href="javascript:history.back()">
-⬅ Back
-</a>
+<div class="pdf-viewer">
 
-
-<div class="info">
-
-<h2 id="title"></h2>
+<iframe id="pdfFrame"></iframe>
 
 </div>
 
+<div class="download">
 
-<div id="paperList" class="grid">
+<a id="downloadBtn" download>
 
-</div>
-
-
-</div>
-
-
-
-<footer>
-
-© 2026 SLExam
-
-</footer>
-
-
-
-<script>
-
-
-let params =
-new URLSearchParams(window.location.search);
-
-
-let grade =
-params.get("grade");
-
-let subject =
-params.get("subject");
-
-let term =
-params.get("term");
-
-
-
-document.getElementById("title").innerHTML =
-
-"Grade " + grade +
-"<br>" +
-subject +
-"<br>" +
-term + "ஆம் தவணை";
-
-
-
-fetch("assets/data/papers.json")
-
-.then(response => response.json())
-
-.then(data => {
-
-
-let list = document.getElementById("paperList");
-
-
-let found = data.filter(function(item){
-
-
-return item.grade == grade &&
-item.subject == subject &&
-item.term == term;
-
-
-});
-
-
-
-if(found.length == 0){
-
-
-list.innerHTML =
-
-`
-<div class="card">
-
-<h3>📄 No Papers Available</h3>
-
-<p>
-Papers will be added soon.
-</p>
-
-</div>
-`;
-
-
-}
-
-
-
-found.forEach(function(paper){
-
-
-
-list.innerHTML +=
-
-
-`
-
-<div class="card">
-
-<h3>📄 ${paper.paper}</h3>
-
-
-<a href="viewer.html?pdf=${paper.pdf}&name=${paper.paper}">
-
-View PDF
+⬇ Download PDF
 
 </a>
 
-
 </div>
 
-`;
-
-
-
-});
-
-
-});
-
-
-</script>
-
+<script src="assets/js/app.js"></script>
 
 </body>
-
 </html>
