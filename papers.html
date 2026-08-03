@@ -3,49 +3,11 @@
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>SLExam Pro - PDF Viewer</title>
 
 <link rel="stylesheet" href="assets/css/style.css">
-
-<style>
-
-.pdf-viewer{
-width:90%;
-max-width:1000px;
-margin:30px auto;
-}
-
-.pdf-viewer iframe{
-width:100%;
-height:700px;
-border:none;
-border-radius:12px;
-box-shadow:0 5px 20px rgba(0,0,0,.2);
-}
-
-.download{
-text-align:center;
-margin:25px;
-}
-
-.download a{
-display:inline-block;
-padding:15px 30px;
-background:#1565C0;
-color:white;
-text-decoration:none;
-border-radius:30px;
-font-weight:bold;
-}
-
-.download a:hover{
-background:#0D47A1;
-}
-
-</style>
 
 </head>
 
@@ -53,45 +15,70 @@ background:#0D47A1;
 
 <header class="header">
 
-<div class="logo">
+    <div class="logo">
+        <h1>SLExam <span>Pro</span></h1>
+    </div>
 
-<h1>SLExam <span>Pro</span></h1>
-
-</div>
-
-<nav class="navbar">
-
-<a href="index.html">Home</a>
-
-<a href="javascript:history.back()">Back</a>
-
-</nav>
+    <nav class="navbar">
+        <a href="index.html">Home</a>
+        <a href="javascript:history.back()">Back</a>
+    </nav>
 
 </header>
 
 <section class="hero">
 
-<h2>PDF Preview</h2>
+    <h2 id="paperTitle">
+        Exam Paper
+    </h2>
 
-<p>View & Download</p>
+    <p>
+        PDF Preview & Download
+    </p>
 
 </section>
 
-<div class="pdf-viewer">
+<section style="width:95%;max-width:1200px;margin:auto;">
 
-<iframe id="pdfFrame"></iframe>
+    <iframe
+        id="pdfFrame"
+        style="
+            width:100%;
+            height:80vh;
+            border:none;
+            border-radius:10px;
+            box-shadow:0 5px 20px rgba(0,0,0,.15);
+            background:#fff;
+        ">
+    </iframe>
 
-</div>
+    <br><br>
 
-<div class="download">
+    <a
+        id="downloadBtn"
+        class="grade-card"
+        download
+        style="
+            max-width:300px;
+            margin:auto;
+            display:flex;
+        ">
+        📥 Download PDF
+    </a>
 
-<a id="downloadBtn" download>
+    <br><br>
 
-⬇ Download PDF
+</section>
 
-</a>
+<footer>
 
-</div>
+<p>
+
+© 2026 SLExam Pro
+
+</p>
+
+</footer>
 
 <script src="assets/js/app.js"></script>
 
