@@ -248,6 +248,7 @@ function loadSubjectPage() {
 // -----------------------------
 // Term Page
 // -----------------------------
+
 async function loadTermPage() {
 
     const title = document.getElementById("termTitle");
@@ -260,61 +261,89 @@ async function loadTermPage() {
     container.innerHTML = "";
 
     const data = await loadData();
-
     const g = data.grades[grade];
 
     if (!g) {
-
         showEmpty(container, "Grade Not Found");
-
         return;
-
     }
 
-    // தற்போது Demo Paper List
-    // பின்னர் papers.json-ல் PDF சேர்க்கும்போது இதை Dynamic ஆக்கலாம்
+    let papers = [];
 
-    for (let i = 1; i <= 5; i++) {
+    // Grade 1-11
+    if (g.subjects) {
+        papers = g.subjects?.[subject]?.[term] || [];
+    }
+
+    // Grade 12-13
+    if (g.streamSubjects) {
+        papers = g.streamSubjects?.[stream]?.[subject]?.[term] || [];
+    }
+
+    if (papers.length === 0) {
+        showEmpty(container, "No Papers Available");
+        return;
+    }
+
+    papers.forEach((p, index) => {
 
         container.appendChild(
 
             createCard(
 
-                `Paper ${i}`,
+                p.title,
 
-                `paper.html?grade=${grade}&stream=${url(stream || "")}&subject=${url(subject)}&term=${term}&paper=${i}`
+                `paper.html?grade=${grade}&stream=${url(stream || "")}&subject=${url(subject)}&term=${term}&paper=${index}`
 
             )
 
         );
 
-    }
+    });
 
 }
-
 
 // -----------------------------
 // Paper Page
 // -----------------------------
-function loadPaperPage() {
+async function loadPaperPage() {
 
     const frame = document.getElementById("pdfFrame");
     const download = document.getElementById("downloadBtn");
     const title = document.getElementById("paperTitle");
 
-    if (!frame || !download) return;
+    if (!frame || !download || !title) return;
 
-    title.textContent =
-        `${subject} - Paper ${paper}`;
+    const data = await loadData();
+    const g = data.grades[grade];
 
-    // Demo PDF
-    // பின்னர் papers.json-லிருந்து PDF path எடுப்போம்
+    let papers = [];
 
-    const pdfPath = "assets/pdf/sample.pdf";
+    // Grade 1 - 11
+    if (g.subjects) {
+        papers = g.subjects?.[subject]?.[term] || [];
+    }
 
-    frame.src = pdfPath;
+    // Grade 12 - 13
+    if (g.streamSubjects) {
+        papers = g.streamSubjects?.[stream]?.[subject]?.[term] || [];
+    }
 
-    download.href = pdfPath;
+    const paperIndex = parseInt(paper);
+
+    if (!papers[paperIndex]) {
+
+        title.textContent = "Paper Not Found";
+
+        return;
+
+    }
+
+    title.textContent = papers[paperIndex].title;
+
+    frame.src = papers[paperIndex].pdf;
+
+    download.href = papers[paperIndex].pdf;
 
 }
 // ======================================
