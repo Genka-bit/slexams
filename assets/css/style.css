@@ -1,4 +1,6 @@
-/* ===== SLExam Pro Professional ===== */
+/* =========================================
+   SLExam Pro v4.0 Professional Style
+========================================= */
 
 *{
     margin:0;
@@ -7,22 +9,25 @@
 }
 
 body{
-    font-family:Arial,sans-serif;
-    background:#f4f8ff;
-    color:#333;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f7fc;
+    color:#222;
+    line-height:1.6;
 }
 
+/* Header */
+
 .header{
-    background:#1565C0;
-    color:#fff;
-    padding:15px 8%;
     display:flex;
     justify-content:space-between;
     align-items:center;
+    padding:15px 8%;
+    background:#0d6efd;
+    color:#fff;
     position:sticky;
     top:0;
     z-index:1000;
-    box-shadow:0 3px 10px rgba(0,0,0,.2);
+    box-shadow:0 3px 12px rgba(0,0,0,.15);
 }
 
 .logo h1{
@@ -30,140 +35,208 @@ body{
 }
 
 .logo span{
-    color:#FFD54F;
+    color:#ffd43b;
 }
 
 .navbar{
     display:flex;
-    gap:15px;
+    gap:20px;
+    flex-wrap:wrap;
 }
 
 .navbar a{
     color:#fff;
     text-decoration:none;
     font-weight:bold;
-}
-
-.navbar a:hover{
-    color:#FFD54F;
-}
-
-.hero{
-    background:linear-gradient(135deg,#1976D2,#42A5F5);
-    color:white;
-    text-align:center;
-    padding:60px 20px;
-}
-
-.hero h2{
-    font-size:40px;
-}
-
-.hero p{
-    margin-top:15px;
-    font-size:18px;
-}
-
-.grades{
-    width:90%;
-    max-width:1200px;
-    margin:40px auto;
-}
-
-.grades h2{
-    text-align:center;
-    margin-bottom:25px;
-    color:#1565C0;
-}
-
-.grade-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
-    gap:20px;
-}
-
-.grade-card{
-    background:white;
-    text-decoration:none;
-    color:#1565C0;
-    text-align:center;
-    padding:25px;
-    border-radius:15px;
-    font-size:20px;
-    font-weight:bold;
-    box-shadow:0 5px 15px rgba(0,0,0,.1);
     transition:.3s;
 }
 
-.grade-card:hover{
-    background:#1565C0;
-    color:white;
-    transform:translateY(-5px);
+.navbar a:hover{
+    color:#ffd43b;
 }
 
-.features{
-    width:90%;
-    max-width:1200px;
-    margin:50px auto;
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
-}
+/* Hero */
 
-.feature-box{
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 5px 15px rgba(0,0,0,.1);
+.hero{
+    background:linear-gradient(135deg,#0d6efd,#4da3ff);
+    color:#fff;
     text-align:center;
+    padding:70px 20px;
 }
 
-.feature-box h3{
-    color:#1565C0;
-    margin-bottom:10px;
-}
-
-.latest{
-    width:90%;
-    max-width:1200px;
-    margin:40px auto;
-}
-
-.latest h2{
-    color:#1565C0;
+.hero h1{
+    font-size:42px;
     margin-bottom:15px;
 }
 
-.latest ul{
-    list-style:none;
+.hero h2{
+    font-size:34px;
+    margin-bottom:15px;
 }
 
-.latest li{
-    background:white;
-    margin:10px 0;
-    padding:15px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.1);
+.hero p{
+    font-size:18px;
+    margin-bottom:30px;
 }
+
+/* Search */
+
+.search-box{
+    max-width:500px;
+    margin:auto;
+}
+
+.search-box input{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:30px;
+    font-size:17px;
+    outline:none;
+    box-shadow:0 5px 15px rgba(0,0,0,.2);
+}
+
+/* Sections */
+
+.section-title{
+    text-align:center;
+    margin:40px 0 25px;
+    font-size:30px;
+    color:#0d6efd;
+}
+
+.grades,
+.features{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+    padding-bottom:40px;
+}
+
+/* Grade Grid */
+
+.grade-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:20px;
+}
+
+/* Grade Card */
+
+.grade-card{
+    background:#fff;
+    color:#0d6efd;
+    text-decoration:none;
+    font-weight:bold;
+    padding:18px;
+    text-align:center;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+    transition:.3s;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:70px;
+}
+
+.grade-card:hover{
+    background:#0d6efd;
+    color:#fff;
+    transform:translateY(-5px);
+}
+
+/* Feature Grid */
+
+.feature-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:25px;
+}
+
+.feature-card{
+    background:#fff;
+    border-radius:18px;
+    padding:30px 20px;
+    text-align:center;
+    box-shadow:0 5px 18px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.feature-card:hover{
+    transform:translateY(-6px);
+}
+
+.feature-card h3{
+    margin:15px 0;
+    color:#0d6efd;
+    font-size:22px;
+}
+
+.feature-card p{
+    color:#555;
+}
+
+/* Buttons */
+
+button{
+    background:#0d6efd;
+    color:#fff;
+    border:none;
+    padding:12px 25px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    transition:.3s;
+}
+
+button:hover{
+    background:#0b5ed7;
+}
+
+/* PDF Viewer */
+
+iframe{
+    width:100%;
+    height:80vh;
+    border:none;
+    border-radius:12px;
+    background:#fff;
+    box-shadow:0 5px 18px rgba(0,0,0,.12);
+}
+
+/* Footer */
 
 footer{
-    background:#1565C0;
-    color:white;
+    background:#0d6efd;
+    color:#fff;
     text-align:center;
-    padding:20px;
-    margin-top:40px;
+    padding:25px;
+    margin-top:50px;
 }
+
+footer p{
+    margin:6px 0;
+}
+
+/* Mobile */
 
 @media(max-width:768px){
 
 .header{
     flex-direction:column;
+    gap:15px;
 }
 
 .navbar{
-    margin-top:15px;
-    flex-wrap:wrap;
     justify-content:center;
+}
+
+.hero{
+    padding:50px 15px;
+}
+
+.hero h1{
+    font-size:32px;
 }
 
 .hero h2{
@@ -174,60 +247,17 @@ footer{
     font-size:16px;
 }
 
-}
-/* ===========================
-   SLExam Pro Dynamic Cards
-=========================== */
-
-.hero{
-    text-align:center;
-    padding:40px 20px;
-    background:#e3f2fd;
+.section-title{
+    font-size:26px;
 }
 
-.hero h2{
-    color:#1565c0;
-    font-size:32px;
+.grade-grid,
+.feature-grid{
+    grid-template-columns:1fr;
 }
-
-.hero p{
-    margin-top:10px;
-    color:#555;
-}
-
-
-.grade-grid{
-    width:90%;
-    max-width:1200px;
-    margin:30px auto;
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
-}
-
 
 .grade-card{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    background:#1565c0;
-    color:white;
-
-    padding:20px;
-    border-radius:15px;
-
-    text-decoration:none;
-    font-size:18px;
-    font-weight:bold;
-
-    box-shadow:0 4px 12px rgba(0,0,0,.15);
-
-    transition:.3s;
+    min-height:65px;
 }
 
-
-.grade-card:hover{
-    background:#0d47a1;
-    transform:translateY(-5px);
 }
