@@ -330,7 +330,9 @@ async function loadPaperPage() {
     }
 
     const paperIndex = parseInt(paper);
-
+console.log("Grade:", grade);
+console.log("Subject:", subject);
+console.log("Papers:", papers);
     if (!papers[paperIndex]) {
 
         title.textContent = "Paper Not Found";
