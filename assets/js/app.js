@@ -402,3 +402,42 @@ window.addEventListener("error", (event) => {
     );
 
 });
+// ===========================
+// Search
+// ===========================
+
+function initializeSearch(){
+
+    const input = document.getElementById("searchInput");
+    const button = document.getElementById("searchBtn");
+
+    if(!input || !button) return;
+
+    button.addEventListener("click",()=>{
+
+        const value = input.value.trim().toLowerCase();
+
+        if(value==="") return;
+
+        const match = value.match(/\d+/);
+
+        if(match){
+
+            const grade = parseInt(match[0]);
+
+            if(grade>=1 && grade<=13){
+
+                window.location.href =
+                `grade.html?grade=${grade}`;
+
+                return;
+
+            }
+
+        }
+
+        alert("Please enter a valid grade (Example: Grade 6)");
+
+    });
+
+}
