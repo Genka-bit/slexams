@@ -1,6 +1,6 @@
 // ======================================
-// SLExam Pro v3.0
-// app.js - Part 1
+// SLExam Pro v4.0
+// Part 1 - Common Functions
 // ======================================
 
 // URL Parameters
@@ -12,12 +12,10 @@ const subject = params.get("subject");
 const term = params.get("term");
 const paper = params.get("paper");
 
-// Database
+// Database Cache
 let paperData = null;
 
-// -----------------------------
-// Load Database
-// -----------------------------
+// Load papers.json
 async function loadData() {
 
     if (paperData) return paperData;
@@ -25,68 +23,49 @@ async function loadData() {
     const response = await fetch("assets/data/papers.json");
 
     if (!response.ok) {
-
         throw new Error("Cannot load papers.json");
-
     }
 
     paperData = await response.json();
 
     return paperData;
-
 }
 
-// -----------------------------
 // Create Card
-// -----------------------------
 function createCard(title, link) {
 
     const a = document.createElement("a");
 
     a.className = "grade-card";
-
     a.href = link;
-
     a.textContent = title;
 
     return a;
-
 }
 
-// -----------------------------
-// Create Empty Message
-// -----------------------------
-function showEmpty(container, message){
+// Empty Message
+function showEmpty(container, message) {
 
     container.innerHTML = `
         <div style="
-        width:100%;
-        text-align:center;
-        padding:40px;
-        color:#666;
-        font-size:18px;">
-        ${message}
+            width:100%;
+            text-align:center;
+            padding:40px;
+            font-size:18px;
+            color:#666;">
+            ${message}
         </div>
     `;
-
 }
 
-// -----------------------------
-// Safe Encode
-// -----------------------------
-function url(value){
-
-    return encodeURIComponent(value);
-
+// URL Encode
+function url(value) {
+    return encodeURIComponent(value || "");
 }
 // ======================================
-// app.js - Part 2
-// Grade + Stream + Subject
+// Part 2 - Grade Page
 // ======================================
 
-// -----------------------------
-// Grade Page
-// -----------------------------
 async function loadGradePage() {
 
     const title = document.getElementById("gradeTitle");
@@ -110,8 +89,7 @@ async function loadGradePage() {
 
     container.innerHTML = "";
 
-    // Grade 12 / 13
-
+    // Grade 12 & 13
     if (g.streams) {
 
         g.streams.forEach(streamName => {
@@ -135,7 +113,6 @@ async function loadGradePage() {
     }
 
     // Grade 1 - 11
-
     Object.keys(g.subjects).forEach(subjectName => {
 
         container.appendChild(
@@ -153,7 +130,9 @@ async function loadGradePage() {
     });
 
 }
-
+// ======================================
+// Part 3 - Stream Page + Subject Page
+// ======================================
 
 // -----------------------------
 // Stream Page
@@ -177,15 +156,11 @@ async function loadStreamPage() {
 
     }
 
-    title.textContent =
-
-        `Grade ${grade} - ${stream}`;
+    title.textContent = `Grade ${grade} - ${stream}`;
 
     container.innerHTML = "";
 
-    const subjects =
-
-        g.streamSubjects[stream];
+    const subjects = g.streamSubjects[stream];
 
     if (!subjects) {
 
@@ -213,41 +188,30 @@ async function loadStreamPage() {
 
 }
 
-
 // -----------------------------
 // Subject Page
 // -----------------------------
 function loadSubjectPage() {
 
-    const title =
-
-        document.getElementById("subjectTitle");
+    const title = document.getElementById("subjectTitle");
 
     if (!title) return;
 
     title.textContent = subject;
 
     document.getElementById("term1").href =
-
-        `term.html?grade=${grade}&stream=${url(stream || "")}&subject=${url(subject)}&term=1`;
+        `term.html?grade=${grade}&stream=${url(stream)}&subject=${url(subject)}&term=1`;
 
     document.getElementById("term2").href =
-
-        `term.html?grade=${grade}&stream=${url(stream || "")}&subject=${url(subject)}&term=2`;
+        `term.html?grade=${grade}&stream=${url(stream)}&subject=${url(subject)}&term=2`;
 
     document.getElementById("term3").href =
-
-        `term.html?grade=${grade}&stream=${url(stream || "")}&subject=${url(subject)}&term=3`;
+        `term.html?grade=${grade}&stream=${url(stream)}&subject=${url(subject)}&term=3`;
 
 }
 // ======================================
-// app.js - Part 3
-// Term Page + Paper List
+// Part 4 - Term Page
 // ======================================
-
-// -----------------------------
-// Term Page
-// -----------------------------
 
 async function loadTermPage() {
 
@@ -261,39 +225,51 @@ async function loadTermPage() {
     container.innerHTML = "";
 
     const data = await loadData();
+
     const g = data.grades[grade];
 
     if (!g) {
+
         showEmpty(container, "Grade Not Found");
+
         return;
+
     }
 
     let papers = [];
 
-    // Grade 1-11
+    // Grade 1 - 11
     if (g.subjects) {
+
         papers = g.subjects?.[subject]?.[term] || [];
+
     }
 
-    // Grade 12-13
+    // Grade 12 - 13
     if (g.streamSubjects) {
-        papers = g.streamSubjects?.[stream]?.[subject]?.[term] || [];
+
+        papers =
+            g.streamSubjects?.[stream]?.[subject]?.[term] || [];
+
     }
 
     if (papers.length === 0) {
+
         showEmpty(container, "No Papers Available");
+
         return;
+
     }
 
-    papers.forEach((p, index) => {
+    papers.forEach((item, index) => {
 
         container.appendChild(
 
             createCard(
 
-                p.title,
+                item.title,
 
-                `paper.html?grade=${grade}&stream=${url(stream || "")}&subject=${url(subject)}&term=${term}&paper=${index}`
+                `paper.html?grade=${grade}&stream=${url(stream)}&subject=${url(subject)}&term=${term}&paper=${index}`
 
             )
 
@@ -302,10 +278,10 @@ async function loadTermPage() {
     });
 
 }
+// ======================================
+// Part 5 - Paper Page (PDF Viewer)
+// ======================================
 
-// -----------------------------
-// Paper Page
-// -----------------------------
 async function loadPaperPage() {
 
     const frame = document.getElementById("pdfFrame");
@@ -315,25 +291,39 @@ async function loadPaperPage() {
     if (!frame || !download || !title) return;
 
     const data = await loadData();
+
     const g = data.grades[grade];
+
+    if (!g) {
+
+        title.textContent = "Grade Not Found";
+
+        return;
+
+    }
 
     let papers = [];
 
     // Grade 1 - 11
     if (g.subjects) {
+
         papers = g.subjects?.[subject]?.[term] || [];
+
     }
 
     // Grade 12 - 13
     if (g.streamSubjects) {
+
         papers = g.streamSubjects?.[stream]?.[subject]?.[term] || [];
+
     }
 
-    const paperIndex = parseInt(paper);
-console.log("Grade:", grade);
-console.log("Subject:", subject);
-console.log("Papers:", papers);
-    if (!papers[paperIndex]) {
+    const paperIndex = Number(paper);
+
+    if (
+        Number.isNaN(paperIndex) ||
+        !papers[paperIndex]
+    ) {
 
         title.textContent = "Paper Not Found";
 
@@ -341,56 +331,74 @@ console.log("Papers:", papers);
 
     }
 
-    title.textContent = papers[paperIndex].title;
+    const selectedPaper = papers[paperIndex];
 
-    frame.src = papers[paperIndex].pdf;
+    title.textContent = selectedPaper.title;
 
-    download.href = papers[paperIndex].pdf;
+    frame.src = selectedPaper.pdf;
+
+    download.href = selectedPaper.pdf;
+
+    download.setAttribute(
+        "download",
+        selectedPaper.title + ".pdf"
+    );
 
 }
 // ======================================
-// app.js - Part 4
-// Initialize Pages
+// Part 6 - Initialize Pages + Error Handler
 // ======================================
 
-// -----------------------------
-// Safe Run
-// -----------------------------
 window.addEventListener("DOMContentLoaded", () => {
 
     // Grade Page
     if (document.getElementById("subjectContainer")) {
+
         loadGradePage();
+
     }
+
 
     // Stream Page
     if (document.getElementById("streamContainer")) {
+
         loadStreamPage();
+
     }
+
 
     // Subject Page
     if (document.getElementById("subjectTitle")) {
+
         loadSubjectPage();
+
     }
+
 
     // Term Page
     if (document.getElementById("paperContainer")) {
+
         loadTermPage();
+
     }
 
-    // Paper Page
+
+    // Paper PDF Page
     if (document.getElementById("pdfFrame")) {
+
         loadPaperPage();
+
     }
 
 });
 
 
-// -----------------------------
 // Global Error Handler
-// -----------------------------
-window.addEventListener("error", (e) => {
+window.addEventListener("error", (event) => {
 
-    console.error("SLExam Pro Error :", e.error);
+    console.error(
+        "SLExam Pro Error:",
+        event.error
+    );
 
 });
