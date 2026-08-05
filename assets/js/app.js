@@ -389,6 +389,8 @@ window.addEventListener("DOMContentLoaded", () => {
         loadPaperPage();
 
     }
+// Search
+initializeSearch();
 
 });
 
