@@ -261,3 +261,20 @@ footer p{
 }
 
 }
+.search-box{
+    max-width:500px;
+    margin:auto;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.search-box button{
+    background:#ffd43b;
+    color:#000;
+    font-weight:bold;
+}
+
+.search-box button:hover{
+    background:#ffc107;
+}
