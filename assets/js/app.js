@@ -910,3 +910,62 @@ function initializeSlider(){
     },4000);
 
 }
+// =======================
+// Dark Mode
+// =======================
+
+function initializeDarkMode(){
+
+const btn=document.getElementById("darkModeBtn");
+
+if(!btn) return;
+
+if(localStorage.getItem("theme")==="dark"){
+
+document.body.classList.add("dark-mode");
+
+btn.textContent="☀️";
+
+}
+
+btn.addEventListener("click",()=>{
+
+document.body.classList.toggle("dark-mode");
+
+if(document.body.classList.contains("dark-mode")){
+
+localStorage.setItem("theme","dark");
+
+btn.textContent="☀️";
+
+}else{
+
+localStorage.setItem("theme","light");
+
+btn.textContent="🌙";
+
+}
+
+});
+
+}
+
+// =======================
+// Mobile Menu
+// =======================
+
+function initializeMenu(){
+
+const menu=document.getElementById("menuBtn");
+
+const nav=document.querySelector(".navbar");
+
+if(!menu || !nav) return;
+
+menu.addEventListener("click",()=>{
+
+nav.classList.toggle("active");
+
+});
+
+}
