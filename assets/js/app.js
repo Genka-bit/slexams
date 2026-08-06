@@ -392,6 +392,8 @@ window.addEventListener("DOMContentLoaded", () => {
 // Search
 initializeSearch();
 initializeSlider();
+initializeDarkMode();
+initializeMenu();   
 });
 
 
