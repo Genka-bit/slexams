@@ -390,7 +390,75 @@ window.addEventListener("DOMContentLoaded", () => {
 
     }
 // Search
-initializeSearch();
+
+    function initializeSearch(){
+
+    const input = document.getElementById("searchInput");
+    const button = document.getElementById("searchBtn");
+
+    if(!input || !button) return;
+
+    input.addEventListener("keypress",(e)=>{
+        if(e.key==="Enter"){
+            button.click();
+        }
+    });
+
+    button.addEventListener("click",()=>{
+
+        const value=input.value.trim().toLowerCase();
+
+        if(value==="") return;
+
+        // Grade Search
+        const match=value.match(/\d+/);
+
+        if(match){
+
+            const g=parseInt(match[0]);
+
+            if(g>=1 && g<=13){
+
+                window.location.href=`grade.html?grade=${g}`;
+                return;
+
+            }
+
+        }
+
+        // Subject Search
+        const subjects={
+
+            "தமிழ்":"1",
+            "கணிதம்":"1",
+            "சுற்றாடல்":"1",
+            "ஆங்கிலம்":"1",
+            "ict":"6",
+            "விஞ்ஞானம்":"6",
+            "science":"6",
+            "history":"6",
+            "வரலாறு":"6",
+            "physics":"12",
+            "chemistry":"12",
+            "biology":"12",
+            "combined mathematics":"12"
+
+        };
+
+        if(subjects[value]){
+
+            window.location.href=
+            `grade.html?grade=${subjects[value]}`;
+
+            return;
+
+        }
+
+        alert("No matching Grade or Subject found.");
+
+    });
+
+    };
 initializeSlider();
 initializeDarkMode();
 initializeMenu();   
