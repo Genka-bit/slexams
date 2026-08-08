@@ -1,9 +1,12 @@
 // ======================================
-// SLExam Pro v5.0
-// Part 1 - Common Functions
+// SLExam Pro v5.1
+// Final App.js
 // ======================================
 
-// URL Parameters
+// ======================================
+// Part 1 - URL Parameters + Database
+// ======================================
+
 const params = new URLSearchParams(window.location.search);
 
 const grade = params.get("grade");
@@ -12,87 +15,150 @@ const subject = params.get("subject");
 const term = params.get("term");
 const paper = params.get("paper");
 
-// Database Cache
 let paperData = null;
 
-// -----------------------------
-// Load Grade Database
-// -----------------------------
+
+// ======================================
+// Load Grade JSON
+// ======================================
+
 async function loadData() {
 
     if (!grade) return null;
 
     if (paperData) return paperData;
 
-    const response = await fetch(`assets/data/grade${grade}.json`);
+    try {
 
-    if (!response.ok) {
-        throw new Error(`Cannot load grade${grade}.json`);
+        const response =
+            await fetch(`assets/data/grade${grade}.json`);
+
+        if (!response.ok) {
+            throw new Error(
+                `Cannot load grade${grade}.json`
+            );
+        }
+
+        paperData = await response.json();
+
+        return paperData;
+
+    } catch (error) {
+
+        console.error("Database Error:", error);
+
+        return null;
+
     }
 
-    paperData = await response.json();
-
-    return paperData;
 }
 
-// -----------------------------
+
+// ======================================
 // Create Card
-// -----------------------------
+// ======================================
+
 function createCard(title, link) {
 
     const a = document.createElement("a");
 
     a.className = "grade-card";
+
     a.href = link;
+
     a.textContent = title;
 
     return a;
+
 }
 
-// -----------------------------
+
+// ======================================
 // Empty Message
-// -----------------------------
+// ======================================
+
 function showEmpty(container, message) {
 
+    if (!container) return;
+
     container.innerHTML = `
-        <div style="
-            width:100%;
-            text-align:center;
-            padding:40px;
-            color:#666;
-            font-size:18px;">
+        <div class="empty-message">
             ${message}
         </div>
     `;
+
 }
 
-// -----------------------------
+
+// ======================================
 // URL Encode
-// -----------------------------
+// ======================================
+
 function url(value) {
 
     return encodeURIComponent(value || "");
 
 }
+
+
 // ======================================
-// Part 2 - Grade Page + Stream Page
+// Get Papers
 // ======================================
 
-// -----------------------------
-// Grade Page
-// -----------------------------
+function getPapers(data) {
+
+    if (!data) return [];
+
+    // Grade 1–11
+    if (data.subjects && subject) {
+
+        return data.subjects?.[subject]?.[term] || [];
+
+    }
+
+    // Grade 12–13
+    if (
+        data.streamSubjects &&
+        stream &&
+        subject
+    ) {
+
+        return (
+            data.streamSubjects
+                ?. [stream]
+                ?. [subject]
+                ?. [term] || []
+        );
+
+    }
+
+    return [];
+
+}
+
+
+// ======================================
+// Part 2 - Grade Page
+// ======================================
+
 async function loadGradePage() {
 
-    const title = document.getElementById("gradeTitle");
-    const container = document.getElementById("subjectContainer");
+    const title =
+        document.getElementById("gradeTitle");
+
+    const container =
+        document.getElementById("subjectContainer");
 
     if (!title || !container) return;
 
-    const g = await loadData();
+    const data = await loadData();
 
-    if (!g) {
+    if (!data) {
 
-        showEmpty(container, "Grade Not Found");
+        showEmpty(
+            container,
+            "Unable to load Grade data."
+        );
 
         return;
 
@@ -102,10 +168,14 @@ async function loadGradePage() {
 
     container.innerHTML = "";
 
-    // Grade 12 & 13
-    if (g.streams) {
 
-        g.streams.forEach(streamName => {
+    // ==============================
+    // Grade 12–13
+    // ==============================
+
+    if (data.streams) {
+
+        data.streams.forEach(streamName => {
 
             container.appendChild(
 
@@ -125,10 +195,100 @@ async function loadGradePage() {
 
     }
 
-    // Grade 1 - 11
-    if (g.subjects) {
 
-        Object.keys(g.subjects).forEach(subjectName => {
+    // ==============================
+    // Grade 1–11
+    // ==============================
+
+    if (data.subjects) {
+
+        Object.keys(data.subjects)
+            .forEach(subjectName => {
+
+                container.appendChild(
+
+                    createCard(
+
+                        subjectName,
+
+                        `subject.html?grade=${grade}&subject=${url(subjectName)}`
+
+                    )
+
+                );
+
+            });
+
+        return;
+
+    }
+
+    showEmpty(
+        container,
+        "No Subjects Available"
+    );
+
+}
+
+
+// ======================================
+// Part 3 - Stream Page
+// ======================================
+
+async function loadStreamPage() {
+
+    const title =
+        document.getElementById("streamGradeTitle");
+
+    const container =
+        document.getElementById("streamContainer");
+
+    if (!title || !container) return;
+
+    const data = await loadData();
+
+    if (
+        !data ||
+        !data.streamSubjects
+    ) {
+
+        showEmpty(
+            container,
+            "No Streams Found"
+        );
+
+        return;
+
+    }
+
+    title.textContent =
+        `Grade ${grade} - ${stream}`;
+
+    container.innerHTML = "";
+
+
+    const subjects =
+        data.streamSubjects?.[stream];
+
+
+    if (!subjects) {
+
+        showEmpty(
+            container,
+            "No Subjects Found"
+        );
+
+        return;
+
+    }
+
+
+    // IMPORTANT:
+    // subjects is an Object,
+    // therefore Object.keys() is required.
+
+    Object.keys(subjects)
+        .forEach(subjectName => {
 
             container.appendChild(
 
@@ -136,7 +296,7 @@ async function loadGradePage() {
 
                     subjectName,
 
-                    `subject.html?grade=${grade}&subject=${url(subjectName)}`
+                    `subject.html?grade=${grade}&stream=${url(stream)}&subject=${url(subjectName)}`
 
                 )
 
@@ -144,136 +304,117 @@ async function loadGradePage() {
 
         });
 
-    }
-
 }
 
-// -----------------------------
-// Stream Page
-// -----------------------------
-async function loadStreamPage() {
 
-    const title = document.getElementById("streamGradeTitle");
-    const container = document.getElementById("streamContainer");
-
-    if (!title || !container) return;
-
-    const g = await loadData();
-
-    if (!g || !g.streamSubjects) {
-
-        showEmpty(container, "No Streams Found");
-
-        return;
-
-    }
-
-    title.textContent = `Grade ${grade} - ${stream}`;
-
-    container.innerHTML = "";
-
-    const subjects = g.streamSubjects[stream];
-
-    if (!subjects) {
-
-        showEmpty(container, "No Subjects Found");
-
-        return;
-
-    }
-
-    subjects.forEach(subjectName => {
-
-    container.appendChild(
-
-        createCard(
-
-            subjectName,
-
-            `subject.html?grade=${grade}&stream=${url(stream)}&subject=${url(subjectName)}`
-
-        )
-
-    );
-
-});
-}
 // ======================================
-// Part 3 - Subject Page + Term Page
+// Part 4 - Subject Page
 // ======================================
 
-// -----------------------------
-// Subject Page
-// -----------------------------
 function loadSubjectPage() {
 
-    const title = document.getElementById("subjectTitle");
+    const title =
+        document.getElementById("subjectTitle");
 
     if (!title) return;
 
     title.textContent = subject;
 
-    document.getElementById("term1").href =
-        `term.html?grade=${grade}&stream=${url(stream)}&subject=${url(subject)}&term=1`;
 
-    document.getElementById("term2").href =
-        `term.html?grade=${grade}&stream=${url(stream)}&subject=${url(subject)}&term=2`;
+    const term1 =
+        document.getElementById("term1");
 
-    document.getElementById("term3").href =
-        `term.html?grade=${grade}&stream=${url(stream)}&subject=${url(subject)}&term=3`;
+    const term2 =
+        document.getElementById("term2");
+
+    const term3 =
+        document.getElementById("term3");
+
+
+    if (term1) {
+
+        term1.href =
+            `term.html?grade=${grade}&stream=${url(stream)}&subject=${url(subject)}&term=1`;
+
+    }
+
+
+    if (term2) {
+
+        term2.href =
+            `term.html?grade=${grade}&stream=${url(stream)}&subject=${url(subject)}&term=2`;
+
+    }
+
+
+    if (term3) {
+
+        term3.href =
+            `term.html?grade=${grade}&stream=${url(stream)}&subject=${url(subject)}&term=3`;
+
+    }
 
 }
 
-// -----------------------------
-// Term Page
-// -----------------------------
+
+// ======================================
+// Part 5 - Term Page
+// ======================================
+
 async function loadTermPage() {
 
-    const title = document.getElementById("termTitle");
-    const container = document.getElementById("paperContainer");
+    const title =
+        document.getElementById("termTitle");
+
+    const container =
+        document.getElementById("paperContainer");
 
     if (!title || !container) return;
 
-    title.textContent = `${subject} - Term ${term}`;
+    title.textContent =
+        `${subject} - Term ${term}`;
 
     container.innerHTML = "";
 
-    const g = await loadData();
 
-    if (!g) {
+    const data = await loadData();
 
-        showEmpty(container, "Grade Not Found");
+
+    if (!data) {
+
+        showEmpty(
+            container,
+            "Unable to load Grade data."
+        );
+
+        return;
+
+    }
+
+
+    const papers =
+        getPapers(data);
+
+
+    if (
+        !Array.isArray(papers) ||
+        papers.length === 0
+    ) {
+
+        showEmpty(
+            container,
+            "No Papers Available"
+        );
 
         return;
 
     }
 
-    let papers = [];
-
-    // Grade 1–11
-    if (g.subjects) {
-
-        papers = g.subjects?.[subject]?.[term] || [];
-
-    }
-
-    // Grade 12–13
-    if (g.streamSubjects) {
-
-        papers =
-            g.streamSubjects?.[stream]?.[subject]?.[term] || [];
-
-    }
-
-    if (papers.length === 0) {
-
-        showEmpty(container, "No Papers Available");
-
-        return;
-
-    }
 
     papers.forEach((item, index) => {
+
+        if (!item || !item.title) return;
+
 
         container.appendChild(
 
@@ -290,45 +431,51 @@ async function loadTermPage() {
     });
 
 }
+
+
 // ======================================
-// Part 4 - Paper Page (PDF Viewer)
+// Part 6 - Paper Page
 // ======================================
 
 async function loadPaperPage() {
 
-    const frame = document.getElementById("pdfFrame");
-    const download = document.getElementById("downloadBtn");
-    const title = document.getElementById("paperTitle");
+    const frame =
+        document.getElementById("pdfFrame");
 
-    if (!frame || !download || !title) return;
+    const download =
+        document.getElementById("downloadBtn");
 
-    const g = await loadData();
+    const title =
+        document.getElementById("paperTitle");
 
-    if (!g) {
+    if (
+        !frame ||
+        !download ||
+        !title
+    ) return;
 
-        title.textContent = "Grade Not Found";
+
+    const data =
+        await loadData();
+
+
+    if (!data) {
+
+        title.textContent =
+            "Grade Not Found";
 
         return;
 
     }
 
-    let papers = [];
 
-    // Grade 1 - 11
-    if (g.subjects) {
+    const papers =
+        getPapers(data);
 
-        papers = g.subjects?.[subject]?.[term] || [];
 
-    }
+    const paperIndex =
+        Number.parseInt(paper, 10);
 
-    // Grade 12 - 13
-    if (g.streamSubjects) {
-
-        papers = g.streamSubjects?.[stream]?.[subject]?.[term] || [];
-
-    }
-
-    const paperIndex = parseInt(paper, 10);
 
     if (
         Number.isNaN(paperIndex) ||
@@ -336,229 +483,448 @@ async function loadPaperPage() {
         paperIndex >= papers.length
     ) {
 
-        title.textContent = "Paper Not Found";
+        title.textContent =
+            "Paper Not Found";
 
         frame.style.display = "none";
+
         download.style.display = "none";
 
         return;
 
     }
 
-    const selectedPaper = papers[paperIndex];
 
-    title.textContent = selectedPaper.title;
+    const selectedPaper =
+        papers[paperIndex];
 
-    frame.src = selectedPaper.pdf;
 
-    download.href = selectedPaper.pdf;
+    if (
+        !selectedPaper ||
+        !selectedPaper.pdf
+    ) {
 
+        title.textContent =
+            "PDF Not Available";
+
+        frame.style.display = "none";
+
+        download.style.display = "none";
+
+        return;
+
+    }
+
+
+    // Original paper title
+    title.textContent =
+        selectedPaper.title;
+
+
+    // PDF Viewer
+    frame.src =
+        selectedPaper.pdf;
+
+
+    // Download
+    download.href =
+        selectedPaper.pdf;
+
+
+    // Use original title
     download.download =
-        selectedPaper.title + ".pdf";
+        `${selectedPaper.title}.pdf`;
 
 }
+
+
 // ======================================
-// Part 5 - Search + Slider + Dark Mode + Mobile Menu
+// Part 7 - Search
 // ======================================
 
-// -----------------------------
-// Search
-// -----------------------------
 function initializeSearch() {
 
-    const input = document.getElementById("searchInput");
-    const button = document.getElementById("searchBtn");
+    const input =
+        document.getElementById("searchInput");
+
+    const button =
+        document.getElementById("searchBtn");
+
 
     if (!input || !button) return;
 
-    input.addEventListener("keypress", (e) => {
 
-        if (e.key === "Enter") {
-            button.click();
-        }
+    input.addEventListener(
+        "keypress",
+        event => {
 
-    });
+            if (event.key === "Enter") {
 
-    button.addEventListener("click", () => {
-
-        const value = input.value.trim().toLowerCase();
-
-        if (value === "") return;
-
-        // Grade Search
-        const match = value.match(/\d+/);
-
-        if (match) {
-
-            const g = parseInt(match[0]);
-
-            if (g >= 1 && g <= 13) {
-
-                window.location.href = `grade.html?grade=${g}`;
-                return;
+                button.click();
 
             }
 
         }
+    );
 
-        // Subject Search
-        const subjects = {
 
-            "தமிழ்": 1,
-            "கணிதம்": 1,
-            "சுற்றாடல்": 1,
-            "ஆங்கிலம்": 1,
+    button.addEventListener(
+        "click",
+        () => {
 
-            "விஞ்ஞானம்": 6,
-            "science": 6,
-            "ict": 6,
-            "history": 6,
-            "வரலாறு": 6,
+            const value =
+                input.value
+                    .trim()
+                    .toLowerCase();
 
-            "physics": 12,
-            "chemistry": 12,
-            "biology": 12,
-            "combined mathematics": 12
 
-        };
+            if (!value) return;
 
-        if (subjects[value]) {
 
-            window.location.href =
-                `grade.html?grade=${subjects[value]}`;
+            // ==============================
+            // Grade Search
+            // ==============================
 
-            return;
+            const match =
+                value.match(/\d+/);
+
+
+            if (match) {
+
+                const searchedGrade =
+                    Number.parseInt(
+                        match[0],
+                        10
+                    );
+
+
+                if (
+                    searchedGrade >= 1 &&
+                    searchedGrade <= 13
+                ) {
+
+                    window.location.href =
+                        `grade.html?grade=${searchedGrade}`;
+
+                    return;
+
+                }
+
+            }
+
+
+            // ==============================
+            // Subject Search
+            // ==============================
+
+            const subjects = {
+
+                "தமிழ்": 1,
+                "கணிதம்": 1,
+                "சுற்றாடல்": 1,
+                "ஆங்கிலம்": 1,
+                "இரண்டாம் மொழி": 1,
+
+                "விஞ்ஞானம்": 6,
+                "science": 6,
+                "வரலாறு": 6,
+                "history": 6,
+                "புவியியல்": 6,
+                "குடியியல்": 6,
+                "சுகாதாரம்": 6,
+                "சைவசமயம்": 6,
+                "கத்தோலிக்கம்": 6,
+                "கிறிஸ்தவம்": 6,
+                "இஸ்லாம்": 6,
+                "அழகியல்": 6,
+                "சிங்களம்": 6,
+                "ict": 6,
+                "pts": 6,
+
+                "வணிகக்கல்வி": 10,
+                "விவசாயம்": 10,
+                "technology": 10,
+
+                "physics": 12,
+                "chemistry": 12,
+                "biology": 12,
+                "combined mathematics": 12,
+                "accounting": 12,
+                "economics": 12,
+                "business studies": 12
+
+            };
+
+
+            if (subjects[value]) {
+
+                window.location.href =
+                    `grade.html?grade=${subjects[value]}`;
+
+                return;
+
+            }
+
+
+            alert(
+                "No matching Grade or Subject found."
+            );
 
         }
-
-        alert("No matching Grade or Subject found.");
-
-    });
+    );
 
 }
 
-// -----------------------------
-// Auto Slider
-// -----------------------------
+
+// ======================================
+// Part 8 - Auto Slider
+// ======================================
+
 function initializeSlider() {
 
-    const slides = document.querySelectorAll(".slide");
+    const slides =
+        document.querySelectorAll(".slide");
+
 
     if (slides.length === 0) return;
 
+
     let current = 0;
+
+
+    slides[current]
+        .classList
+        .add("active");
+
 
     setInterval(() => {
 
-        slides[current].classList.remove("active");
+        slides[current]
+            .classList
+            .remove("active");
 
-        current = (current + 1) % slides.length;
 
-        slides[current].classList.add("active");
+        current =
+            (current + 1) % slides.length;
+
+
+        slides[current]
+            .classList
+            .add("active");
 
     }, 4000);
 
 }
 
-// -----------------------------
-// Dark Mode
-// -----------------------------
+
+// ======================================
+// Part 9 - Dark Mode
+// ======================================
+
 function initializeDarkMode() {
 
-    const btn = document.getElementById("darkModeBtn");
+    const btn =
+        document.getElementById(
+            "darkModeBtn"
+        );
+
 
     if (!btn) return;
 
-    if (localStorage.getItem("theme") === "dark") {
 
-        document.body.classList.add("dark-mode");
+    if (
+        localStorage.getItem("theme")
+        === "dark"
+    ) {
+
+        document.body
+            .classList
+            .add("dark-mode");
 
         btn.textContent = "☀️";
 
+    } else {
+
+        btn.textContent = "🌙";
+
     }
 
-    btn.addEventListener("click", () => {
 
-        document.body.classList.toggle("dark-mode");
+    btn.addEventListener(
+        "click",
+        () => {
 
-        if (document.body.classList.contains("dark-mode")) {
+            document.body
+                .classList
+                .toggle("dark-mode");
 
-            localStorage.setItem("theme", "dark");
-            btn.textContent = "☀️";
 
-        } else {
+            const dark =
+                document.body
+                    .classList
+                    .contains("dark-mode");
 
-            localStorage.setItem("theme", "light");
-            btn.textContent = "🌙";
+
+            if (dark) {
+
+                localStorage.setItem(
+                    "theme",
+                    "dark"
+                );
+
+                btn.textContent = "☀️";
+
+            } else {
+
+                localStorage.setItem(
+                    "theme",
+                    "light"
+                );
+
+                btn.textContent = "🌙";
+
+            }
 
         }
-
-    });
+    );
 
 }
 
-// -----------------------------
-// Mobile Menu
-// -----------------------------
+
+// ======================================
+// Part 10 - Mobile Menu
+// ======================================
+
 function initializeMenu() {
 
-    const menu = document.getElementById("menuBtn");
-    const nav = document.querySelector(".navbar");
+    const menu =
+        document.getElementById(
+            "menuBtn"
+        );
+
+    const nav =
+        document.querySelector(
+            ".navbar"
+        );
+
 
     if (!menu || !nav) return;
 
-    menu.addEventListener("click", () => {
 
-        nav.classList.toggle("active");
+    menu.addEventListener(
+        "click",
+        () => {
 
-    });
+            nav.classList.toggle(
+                "active"
+            );
+
+        }
+    );
 
 }
+
+
 // ======================================
-// Part 6 - Initialize + Error Handler
+// Part 11 - Initialize
 // ======================================
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    // Grade Page
-    if (document.getElementById("subjectContainer")) {
-        loadGradePage();
+
+        // Grade Page
+
+        if (
+            document.getElementById(
+                "subjectContainer"
+            )
+        ) {
+
+            loadGradePage();
+
+        }
+
+
+        // Stream Page
+
+        if (
+            document.getElementById(
+                "streamContainer"
+            )
+        ) {
+
+            loadStreamPage();
+
+        }
+
+
+        // Subject Page
+
+        if (
+            document.getElementById(
+                "subjectTitle"
+            )
+        ) {
+
+            loadSubjectPage();
+
+        }
+
+
+        // Term Page
+
+        if (
+            document.getElementById(
+                "paperContainer"
+            )
+        ) {
+
+            loadTermPage();
+
+        }
+
+
+        // Paper Page
+
+        if (
+            document.getElementById(
+                "pdfFrame"
+            )
+        ) {
+
+            loadPaperPage();
+
+        }
+
+
+        // Common Features
+
+        initializeSearch();
+
+        initializeSlider();
+
+        initializeDarkMode();
+
+        initializeMenu();
+
     }
+);
 
-    // Stream Page
-    if (document.getElementById("streamContainer")) {
-        loadStreamPage();
-    }
-
-    // Subject Page
-    if (document.getElementById("subjectTitle")) {
-        loadSubjectPage();
-    }
-
-    // Term Page
-    if (document.getElementById("paperContainer")) {
-        loadTermPage();
-    }
-
-    // Paper Page
-    if (document.getElementById("pdfFrame")) {
-        loadPaperPage();
-    }
-
-    // Common Features
-    initializeSearch();
-    initializeSlider();
-    initializeDarkMode();
-    initializeMenu();
-
-});
 
 // ======================================
 // Global Error Handler
 // ======================================
 
-window.addEventListener("error", (event) => {
+window.addEventListener(
+    "error",
+    event => {
 
-    console.error("SLExam Pro Error:", event.error);
+        console.error(
+            "SLExam Pro Error:",
+            event.error
+        );
 
-});
+    }
+);
