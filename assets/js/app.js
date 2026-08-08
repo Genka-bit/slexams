@@ -182,22 +182,21 @@ async function loadStreamPage() {
 
     }
 
-    Object.keys(subjects).forEach(subjectName => {
+    subjects.forEach(subjectName => {
 
-        container.appendChild(
+    container.appendChild(
 
-            createCard(
+        createCard(
 
-                subjectName,
+            subjectName,
 
-                `subject.html?grade=${grade}&stream=${url(stream)}&subject=${url(subjectName)}`
+            `subject.html?grade=${grade}&stream=${url(stream)}&subject=${url(subjectName)}`
 
-            )
+        )
 
-        );
+    );
 
-    });
-
+});
 }
 // ======================================
 // Part 3 - Subject Page + Term Page
