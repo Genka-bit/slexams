@@ -223,7 +223,103 @@ const streamSelect =
 
 const subjectSelect =
     document.getElementById("subjectSelect");
+// ==========================
+// Grade 12-13 Stream Subjects
+// ==========================
 
+const streamSubjects = {
+
+    "Science": [
+        "Combined Mathematics",
+        "Physics",
+        "Chemistry",
+        "Biology",
+        "ICT",
+        "Agricultural Science"
+    ],
+
+    "Commerce": [
+        "Accounting",
+        "Business Studies",
+        "Economics"
+    ],
+
+    "Arts": [
+        "தமிழ்",
+        "வரலாறு",
+        "புவியியல்",
+        "அரசியல் விஞ்ஞானம்",
+        "இந்து சமயம்",
+        "கிறிஸ்தவம்",
+        "கத்தோலிக்கம்",
+        "இந்து நாகரிகம்",
+        "கிறிஸ்தவ நாகரிகம்",
+        "தர்க்கவியல்",
+        "சித்திரம்",
+        "நடனம்",
+        "இசை",
+        "நாடகம்"
+    ],
+
+    "Technology": [
+        "Science for Technology",
+        "Engineering Technology",
+        "Bio Systems Technology",
+        "ICT",
+        "Agricultural Science"
+    ]
+
+};
+
+
+// ==========================
+// Stream Change
+// ==========================
+
+streamSelect.addEventListener("change", () => {
+
+    const selectedGrade =
+        parseInt(gradeSelect.value, 10);
+
+    const selectedStream =
+        streamSelect.value;
+
+    subjectSelect.innerHTML = `
+        <option value="">
+            Select Subject
+        </option>
+    `;
+
+
+    // Only Grade 12 & 13
+    if (
+        selectedGrade !== 12 &&
+        selectedGrade !== 13
+    ) {
+
+        return;
+
+    }
+
+
+    const subjects =
+        streamSubjects[selectedStream] || [];
+
+
+    subjects.forEach(subject => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = subject;
+
+        option.textContent = subject;
+
+        subjectSelect.appendChild(option);
+
+    });
+
+});
 const termSelect =
     document.getElementById("termSelect");
 
