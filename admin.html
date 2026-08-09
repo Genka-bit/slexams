@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ta">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>SLExam Paper Manager</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css">
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="logo">
+        SLExam Pro
+    </div>
+
+    <h1>
+        Paper Manager
+    </h1>
+
+</header>
+
+
+
+<main class="admin-container">
+
+
+    <div class="admin-card">
+
+        <h2>
+            Add New Paper
+        </h2>
+
+
+        <!-- Grade -->
+
+        <label>
+            Grade
+        </label>
+
+        <select id="gradeSelect">
+
+            <option value="">
+                Select Grade
+            </option>
+
+            <option value="1">Grade 1</option>
+            <option value="2">Grade 2</option>
+            <option value="3">Grade 3</option>
+            <option value="4">Grade 4</option>
+            <option value="5">Grade 5</option>
+            <option value="6">Grade 6</option>
+            <option value="7">Grade 7</option>
+            <option value="8">Grade 8</option>
+            <option value="9">Grade 9</option>
+            <option value="10">Grade 10</option>
+            <option value="11">Grade 11</option>
+            <option value="12">Grade 12</option>
+            <option value="13">Grade 13</option>
+
+        </select>
+
+
+
+        <!-- Stream -->
+
+        <label>
+            Stream
+        </label>
+
+        <select id="streamSelect">
+
+            <option value="">
+                Select Stream
+            </option>
+
+            <option value="Science">
+                Science
+            </option>
+
+            <option value="Commerce">
+                Commerce
+            </option>
+
+            <option value="Arts">
+                Arts
+            </option>
+
+            <option value="Technology">
+                Technology
+            </option>
+
+        </select>
+
+
+
+        <!-- Subject -->
+
+        <label>
+            Subject
+        </label>
+
+        <input
+            type="text"
+            id="subjectInput"
+            placeholder="Example: கணிதம்">
+
+
+
+        <!-- Term -->
+
+        <label>
+            Term
+        </label>
+
+        <select id="termSelect">
+
+            <option value="">
+                Select Term
+            </option>
+
+            <option value="1">
+                1st Term
+            </option>
+
+            <option value="2">
+                2nd Term
+            </option>
+
+            <option value="3">
+                3rd Term
+            </option>
+
+        </select>
+
+
+
+        <!-- PDF Filename -->
+
+        <label>
+            PDF File Name
+        </label>
+
+        <input
+            type="text"
+            id="pdfInput"
+            placeholder="Example: Vidyananda College Maths Grade 11 3rd Term.pdf">
+
+
+
+        <button
+            id="generateBtn">
+
+            Generate Paper JSON
+
+        </button>
+
+
+
+    </div>
+
+
+
+    <!-- Result -->
+
+    <div
+        class="admin-card"
+        id="resultCard"
+        style="display:none;">
+
+        <h2>
+            Generated JSON
+        </h2>
+
+
+        <textarea
+            id="jsonOutput"
+            rows="10"
+            readonly>
+        </textarea>
+
+
+        <button
+            id="copyBtn">
+
+            Copy JSON
+
+        </button>
+
+
+        <p id="status"></p>
+
+    </div>
+
+
+</main>
+
+
+
+<script>
+
+const gradeSelect =
+    document.getElementById("gradeSelect");
+
+const streamSelect =
+    document.getElementById("streamSelect");
+
+const subjectInput =
+    document.getElementById("subjectInput");
+
+const termSelect =
+    document.getElementById("termSelect");
+
+const pdfInput =
+    document.getElementById("pdfInput");
+
+const generateBtn =
+    document.getElementById("generateBtn");
+
+const resultCard =
+    document.getElementById("resultCard");
+
+const jsonOutput =
+    document.getElementById("jsonOutput");
+
+const copyBtn =
+    document.getElementById("copyBtn");
+
+const status =
+    document.getElementById("status");
+
+
+
+/* ==========================
+   Generate JSON
+========================== */
+
+generateBtn.addEventListener(
+    "click",
+    () => {
+
+
+        const grade =
+            gradeSelect.value;
+
+        const stream =
+            streamSelect.value;
+
+        const subject =
+            subjectInput.value.trim();
+
+        const term =
+            termSelect.value;
+
+        const pdfName =
+            pdfInput.value.trim();
+
+
+
+        if (!grade) {
+
+            alert("Please select Grade.");
+
+            return;
+
+        }
+
+
+        if (!subject) {
+
+            alert("Please enter Subject.");
+
+            return;
+
+        }
+
+
+        if (!term) {
+
+            alert("Please select Term.");
+
+            return;
+
+        }
+
+
+        if (!pdfName) {
+
+            alert("Please enter PDF filename.");
+
+            return;
+
+        }
+
+
+
+        /*
+         * Remove .pdf temporarily
+         * for the paper title
+         */
+
+        let title =
+            pdfName
+                .replace(/\.pdf$/i, "")
+                .trim();
+
+
+
+        /*
+         * Create PDF path
+         */
+
+        let folder =
+            `assets/pdf/grade${grade}/`;
+
+
+
+        if (stream) {
+
+            folder +=
+                `${stream}/`;
+
+        }
+
+
+        folder +=
+            `${subject}/term${term}/`;
+
+
+
+        const pdfPath =
+            folder + pdfName;
+
+
+
+        /*
+         * Paper Object
+         */
+
+        const paper = {
+
+            "title": title,
+
+            "pdf": pdfPath
+
+        };
+
+
+
+        /*
+         * Format JSON
+         */
+
+        const json =
+            JSON.stringify(
+                paper,
+                null,
+                2
+            );
+
+
+
+        jsonOutput.value =
+            json;
+
+
+        resultCard.style.display =
+            "block";
+
+
+        status.textContent =
+            "JSON generated successfully.";
+
+    }
+);
+
+
+
+/* ==========================
+   Copy JSON
+========================== */
+
+copyBtn.addEventListener(
+    "click",
+    async () => {
+
+        try {
+
+            await navigator.clipboard.writeText(
+                jsonOutput.value
+            );
+
+            status.textContent =
+                "JSON copied successfully!";
+
+        } catch (error) {
+
+            jsonOutput.select();
+
+            document.execCommand("copy");
+
+            status.textContent =
+                "JSON copied.";
+
+        }
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
