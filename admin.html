@@ -223,103 +223,7 @@ const streamSelect =
 
 const subjectSelect =
     document.getElementById("subjectSelect");
-// ==========================
-// Grade 12-13 Stream Subjects
-// ==========================
 
-const streamSubjects = {
-
-    "Science": [
-        "Combined Mathematics",
-        "Physics",
-        "Chemistry",
-        "Biology",
-        "ICT",
-        "Agricultural Science"
-    ],
-
-    "Commerce": [
-        "Accounting",
-        "Business Studies",
-        "Economics"
-    ],
-
-    "Arts": [
-        "தமிழ்",
-        "வரலாறு",
-        "புவியியல்",
-        "அரசியல் விஞ்ஞானம்",
-        "இந்து சமயம்",
-        "கிறிஸ்தவம்",
-        "கத்தோலிக்கம்",
-        "இந்து நாகரிகம்",
-        "கிறிஸ்தவ நாகரிகம்",
-        "தர்க்கவியல்",
-        "சித்திரம்",
-        "நடனம்",
-        "இசை",
-        "நாடகம்"
-    ],
-
-    "Technology": [
-        "Science for Technology",
-        "Engineering Technology",
-        "Bio Systems Technology",
-        "ICT",
-        "Agricultural Science"
-    ]
-
-};
-
-
-// ==========================
-// Stream Change
-// ==========================
-
-streamSelect.addEventListener("change", () => {
-
-    const selectedGrade =
-        parseInt(gradeSelect.value, 10);
-
-    const selectedStream =
-        streamSelect.value;
-
-    subjectSelect.innerHTML = `
-        <option value="">
-            Select Subject
-        </option>
-    `;
-
-
-    // Only Grade 12 & 13
-    if (
-        selectedGrade !== 12 &&
-        selectedGrade !== 13
-    ) {
-
-        return;
-
-    }
-
-
-    const subjects =
-        streamSubjects[selectedStream] || [];
-
-
-    subjects.forEach(subject => {
-
-        const option =
-            document.createElement("option");
-
-        option.value = subject;
-
-        option.textContent = subject;
-
-        subjectSelect.appendChild(option);
-
-    });
-
-});
 const termSelect =
     document.getElementById("termSelect");
 
@@ -340,9 +244,11 @@ const copyBtn =
 
 const status =
     document.getElementById("status");
-    // ==========================
-// Subject Dropdown
-// ==========================
+
+
+// ======================================
+// Subject Lists - Grade 1 to 11
+// ======================================
 
 const subjectLists = {
 
@@ -511,10 +417,62 @@ const subjectLists = {
 };
 
 
-// Grade change
+// ======================================
+// Grade 12 - 13 Stream Subjects
+// ======================================
+
+const streamSubjects = {
+
+    "Science": [
+        "Combined Mathematics",
+        "Physics",
+        "Chemistry",
+        "Biology",
+        "ICT",
+        "Agricultural Science"
+    ],
+
+    "Commerce": [
+        "Accounting",
+        "Business Studies",
+        "Economics"
+    ],
+
+    "Arts": [
+        "தமிழ்",
+        "வரலாறு",
+        "புவியியல்",
+        "அரசியல் விஞ்ஞானம்",
+        "இந்து சமயம்",
+        "கிறிஸ்தவம்",
+        "கத்தோலிக்கம்",
+        "இந்து நாகரிகம்",
+        "கிறிஸ்தவ நாகரிகம்",
+        "தர்க்கவியல்",
+        "சித்திரம்",
+        "நடனம்",
+        "இசை",
+        "நாடகம்"
+    ],
+
+    "Technology": [
+        "Science for Technology",
+        "Engineering Technology",
+        "Bio Systems Technology",
+        "ICT",
+        "Agricultural Science"
+    ]
+
+};
+
+
+// ======================================
+// Grade Change
+// ======================================
+
 gradeSelect.addEventListener("change", () => {
 
-    const selectedGrade =
+    const grade =
         parseInt(gradeSelect.value, 10);
 
     subjectSelect.innerHTML = `
@@ -523,14 +481,16 @@ gradeSelect.addEventListener("change", () => {
         </option>
     `;
 
-    // Grade 1-11
-    if (
-        selectedGrade >= 1 &&
-        selectedGrade <= 11
-    ) {
+    streamSelect.value = "";
+    streamSelect.disabled = true;
+
+
+    // Grade 1 - 11
+
+    if (grade >= 1 && grade <= 11) {
 
         const subjects =
-            subjectLists[selectedGrade] || [];
+            subjectLists[grade] || [];
 
         subjects.forEach(subject => {
 
@@ -544,16 +504,13 @@ gradeSelect.addEventListener("change", () => {
 
         });
 
-        streamSelect.value = "";
-        streamSelect.disabled = true;
-
+        return;
     }
 
-    // Grade 12-13
-    else if (
-        selectedGrade === 12 ||
-        selectedGrade === 13
-    ) {
+
+    // Grade 12 - 13
+
+    if (grade === 12 || grade === 13) {
 
         streamSelect.disabled = false;
 
@@ -562,158 +519,354 @@ gradeSelect.addEventListener("change", () => {
 });
 
 
+// ======================================
+// Stream Change
+// ======================================
 
-/* ==========================
-   Generate JSON
-========================== */
+streamSelect.addEventListener("change", () => {
 
-generateBtn.addEventListener(
-    "click",
-    () => {
+    const grade =
+        parseInt(gradeSelect.value, 10);
 
+    const stream =
+        streamSelect.value;
 
-        const grade =
-            gradeSelect.value;
-
-        const stream =
-            streamSelect.value;
-
-        const subject =
-    subjectSelect.value;
-
-const term =
-    termSelect.value;
-
-const pdfName =
-    pdfFile.files.length > 0
-        ? pdfFile.files[0].name
-        : "";
+    subjectSelect.innerHTML = `
+        <option value="">
+            Select Subject
+        </option>
+    `;
 
 
-
-        if (!grade) {
-
-            alert("Please select Grade.");
-
-            return;
-
-        }
+    if (grade !== 12 && grade !== 13) {
+        return;
+    }
 
 
-        if (!subject) {
-
-    alert("Please select Subject.");
-
-    return;
-
-        }
+    const subjects =
+        streamSubjects[stream] || [];
 
 
+    subjects.forEach(subject => {
 
-        if (!term) {
+        const option =
+            document.createElement("option");
 
-            alert("Please select Term.");
+        option.value = subject;
+        option.textContent = subject;
 
-            return;
+        subjectSelect.appendChild(option);
 
-        }
+    });
+
+});
 
 
-        if (!pdfName) {
+// ======================================
+// Papers Collection
+// ======================================
 
-    alert("Please select a PDF file.");
+let papers = [];
 
-    return;
+
+// ======================================
+// Add Paper Button
+// ======================================
+
+const addPaperBtn =
+    document.createElement("button");
+
+addPaperBtn.type = "button";
+
+addPaperBtn.textContent =
+    "Add Paper";
+
+addPaperBtn.style.marginTop =
+    "10px";
+
+pdfFile.parentNode.appendChild(
+    addPaperBtn
+);
+
+
+// ======================================
+// Paper List
+// ======================================
+
+const paperList =
+    document.createElement("div");
+
+paperList.style.marginTop =
+    "20px";
+
+resultCard.parentNode.insertBefore(
+    paperList,
+    resultCard
+);
+
+
+// ======================================
+// Add Paper
+// ======================================
+
+addPaperBtn.addEventListener("click", () => {
+
+    const grade =
+        gradeSelect.value;
+
+    const stream =
+        streamSelect.value;
+
+    const subject =
+        subjectSelect.value;
+
+    const term =
+        termSelect.value;
+
+
+    if (!grade) {
+
+        alert("Please select Grade.");
+
+        return;
+
+    }
+
+
+    if ((grade === "12" || grade === "13") && !stream) {
+
+        alert("Please select Stream.");
+
+        return;
+
+    }
+
+
+    if (!subject) {
+
+        alert("Please select Subject.");
+
+        return;
+
+    }
+
+
+    if (!term) {
+
+        alert("Please select Term.");
+
+        return;
+
+    }
+
+
+    if (!pdfFile.files.length) {
+
+        alert("Please select a PDF file.");
+
+        return;
+
+    }
+
+
+    const file =
+        pdfFile.files[0];
+
+    const pdfName =
+        file.name;
+
+
+    // Remove .pdf from title
+
+    const title =
+        pdfName
+            .replace(/\.pdf$/i, "")
+            .trim();
+
+
+    // Create folder path
+
+    let folder =
+        `assets/pdf/grade${grade}/`;
+
+
+    if (stream) {
+
+        folder +=
+            `${stream}/`;
+
+    }
+
+
+    folder +=
+        `${subject}/term${term}/`;
+
+
+    const pdfPath =
+        folder + pdfName;
+
+
+    // Paper object
+
+    const paper = {
+
+        title: title,
+
+        pdf: pdfPath
+
+    };
+
+
+    papers.push(paper);
+
+
+    // Clear PDF selection
+
+    pdfFile.value = "";
+
+
+    renderPaperList();
+
+
+    status.textContent =
+        "Paper added successfully.";
+
+});
+
+
+// ======================================
+// Render Paper List
+// ======================================
+
+function renderPaperList() {
+
+    paperList.innerHTML = "";
+
+    if (papers.length === 0) {
+
+        return;
+
+    }
+
+
+    const heading =
+        document.createElement("h3");
+
+    heading.textContent =
+        `Added Papers (${papers.length})`;
+
+    paperList.appendChild(
+        heading
+    );
+
+
+    papers.forEach((paper, index) => {
+
+        const item =
+            document.createElement("div");
+
+        item.style.padding =
+            "10px";
+
+        item.style.marginBottom =
+            "8px";
+
+        item.style.border =
+            "1px solid #ddd";
+
+        item.style.borderRadius =
+            "8px";
+
+
+        item.innerHTML = `
+            <strong>${index + 1}. ${paper.title}</strong>
+            <br>
+            <small>${paper.pdf}</small>
+        `;
+
+
+        const removeBtn =
+            document.createElement("button");
+
+        removeBtn.type =
+            "button";
+
+        removeBtn.textContent =
+            "Remove";
+
+
+        removeBtn.style.marginTop =
+            "5px";
+
+
+        removeBtn.addEventListener(
+            "click",
+            () => {
+
+                papers.splice(index, 1);
+
+                renderPaperList();
+
+            }
+        );
+
+
+        item.appendChild(
+            removeBtn
+        );
+
+
+        paperList.appendChild(
+            item
+        );
+
+    });
 
 }
 
 
+// ======================================
+// Generate JSON
+// ======================================
 
-        /*
-         * Remove .pdf temporarily
-         * for the paper title
-         */
+generateBtn.addEventListener("click", () => {
 
-        let title =
-            pdfName
-                .replace(/\.pdf$/i, "")
-                .trim();
+    if (papers.length === 0) {
 
+        alert(
+            "Please add at least one paper."
+        );
 
-
-        /*
-         * Create PDF path
-         */
-
-        let folder =
-            `assets/pdf/grade${grade}/`;
-
-
-
-        if (stream) {
-
-            folder +=
-                `${stream}/`;
-
-        }
-
-
-        folder +=
-            `${subject}/term${term}/`;
-
-
-
-        const pdfPath =
-            folder + pdfName;
-
-
-
-        /*
-         * Paper Object
-         */
-
-        const paper = {
-
-            "title": title,
-
-            "pdf": pdfPath
-
-        };
-
-
-
-        /*
-         * Format JSON
-         */
-
-        const json =
-            JSON.stringify(
-                paper,
-                null,
-                2
-            );
-
-
-
-        jsonOutput.value =
-            json;
-
-
-        resultCard.style.display =
-            "block";
-
-
-        status.textContent =
-            "JSON generated successfully.";
+        return;
 
     }
-);
 
 
+    const json =
+        JSON.stringify(
+            papers,
+            null,
+            2
+        );
 
-/* ==========================
-   Copy JSON
-========================== */
+
+    jsonOutput.value =
+        json;
+
+
+    resultCard.style.display =
+        "block";
+
+
+    status.textContent =
+        "JSON generated successfully.";
+
+});
+
+
+// ======================================
+// Copy JSON
+// ======================================
 
 copyBtn.addEventListener(
     "click",
