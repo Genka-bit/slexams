@@ -154,13 +154,13 @@
         <!-- PDF Filename -->
 
         <label>
-            PDF File Name
-        </label>
+    PDF File
+</label>
 
-        <input
-            type="text"
-            id="pdfInput"
-            placeholder="Example: Vidyananda College Maths Grade 11 3rd Term.pdf">
+<input
+    type="file"
+    id="pdfFile"
+    accept=".pdf">
 
 
 
@@ -323,8 +323,8 @@ streamSelect.addEventListener("change", () => {
 const termSelect =
     document.getElementById("termSelect");
 
-const pdfInput =
-    document.getElementById("pdfInput");
+const pdfFile =
+    document.getElementById("pdfFile");
 
 const generateBtn =
     document.getElementById("generateBtn");
@@ -579,13 +579,15 @@ generateBtn.addEventListener(
             streamSelect.value;
 
         const subject =
-            subjectInput.value.trim();
+    subjectSelect.value;
 
-        const term =
-            termSelect.value;
+const term =
+    termSelect.value;
 
-        const pdfName =
-            pdfInput.value.trim();
+const pdfName =
+    pdfFile.files.length > 0
+        ? pdfFile.files[0].name
+        : "";
 
 
 
@@ -600,11 +602,12 @@ generateBtn.addEventListener(
 
         if (!subject) {
 
-            alert("Please enter Subject.");
+    alert("Please select Subject.");
 
-            return;
+    return;
 
         }
+
 
 
         if (!term) {
@@ -618,11 +621,11 @@ generateBtn.addEventListener(
 
         if (!pdfName) {
 
-            alert("Please enter PDF filename.");
+    alert("Please select a PDF file.");
 
-            return;
+    return;
 
-        }
+}
 
 
 
