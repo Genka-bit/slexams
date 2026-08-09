@@ -110,13 +110,16 @@
         <!-- Subject -->
 
         <label>
-            Subject
-        </label>
+    Subject
+</label>
 
-        <input
-            type="text"
-            id="subjectInput"
-            placeholder="Example: கணிதம்">
+<select id="subjectSelect">
+
+    <option value="">
+        Select Subject
+    </option>
+
+</select>
 
 
 
@@ -218,8 +221,8 @@ const gradeSelect =
 const streamSelect =
     document.getElementById("streamSelect");
 
-const subjectInput =
-    document.getElementById("subjectInput");
+const subjectSelect =
+    document.getElementById("subjectSelect");
 
 const termSelect =
     document.getElementById("termSelect");
@@ -241,6 +244,226 @@ const copyBtn =
 
 const status =
     document.getElementById("status");
+    // ==========================
+// Subject Dropdown
+// ==========================
+
+const subjectLists = {
+
+    1: [
+        "தமிழ்",
+        "கணிதம்",
+        "சுற்றாடல்",
+        "ஆங்கிலம்",
+        "இரண்டாம் மொழி"
+    ],
+
+    2: [
+        "தமிழ்",
+        "கணிதம்",
+        "சுற்றாடல்",
+        "ஆங்கிலம்",
+        "இரண்டாம் மொழி"
+    ],
+
+    3: [
+        "தமிழ்",
+        "கணிதம்",
+        "சுற்றாடல்",
+        "ஆங்கிலம்",
+        "இரண்டாம் மொழி"
+    ],
+
+    4: [
+        "தமிழ்",
+        "கணிதம்",
+        "சுற்றாடல்",
+        "ஆங்கிலம்",
+        "இரண்டாம் மொழி"
+    ],
+
+    5: [
+        "தமிழ்",
+        "கணிதம்",
+        "சுற்றாடல்",
+        "ஆங்கிலம்",
+        "இரண்டாம் மொழி"
+    ],
+
+    6: [
+        "தமிழ்",
+        "கணிதம்",
+        "விஞ்ஞானம்",
+        "வரலாறு",
+        "புவியியல்",
+        "குடியியல்",
+        "ஆங்கிலம்",
+        "சுகாதாரம்",
+        "சைவசமயம்",
+        "கத்தோலிக்கம்",
+        "கிறிஸ்தவம்",
+        "இஸ்லாம்",
+        "அழகியல்",
+        "சிங்களம்",
+        "ICT",
+        "PTS"
+    ],
+
+    7: [
+        "தமிழ்",
+        "கணிதம்",
+        "விஞ்ஞானம்",
+        "வரலாறு",
+        "புவியியல்",
+        "குடியியல்",
+        "ஆங்கிலம்",
+        "சுகாதாரம்",
+        "சைவசமயம்",
+        "கத்தோலிக்கம்",
+        "கிறிஸ்தவம்",
+        "இஸ்லாம்",
+        "அழகியல்",
+        "சிங்களம்",
+        "ICT",
+        "PTS"
+    ],
+
+    8: [
+        "தமிழ்",
+        "கணிதம்",
+        "விஞ்ஞானம்",
+        "வரலாறு",
+        "புவியியல்",
+        "குடியியல்",
+        "ஆங்கிலம்",
+        "சுகாதாரம்",
+        "சைவசமயம்",
+        "கத்தோலிக்கம்",
+        "கிறிஸ்தவம்",
+        "இஸ்லாம்",
+        "அழகியல்",
+        "சிங்களம்",
+        "ICT",
+        "PTS"
+    ],
+
+    9: [
+        "தமிழ்",
+        "கணிதம்",
+        "விஞ்ஞானம்",
+        "வரலாறு",
+        "புவியியல்",
+        "குடியியல்",
+        "ஆங்கிலம்",
+        "சுகாதாரம்",
+        "சைவசமயம்",
+        "கத்தோலிக்கம்",
+        "கிறிஸ்தவம்",
+        "இஸ்லாம்",
+        "அழகியல்",
+        "சிங்களம்",
+        "ICT",
+        "PTS"
+    ],
+
+    10: [
+        "தமிழ்",
+        "கணிதம்",
+        "விஞ்ஞானம்",
+        "வரலாறு",
+        "ஆங்கிலம்",
+        "சைவசமயம்",
+        "கத்தோலிக்கம்",
+        "கிறிஸ்தவம்",
+        "இஸ்லாம்",
+        "புவியியல்",
+        "குடியியல்",
+        "வணிகக்கல்வி",
+        "சிங்களம்",
+        "அழகியல்",
+        "தமிழ் இலக்கிய நயம்",
+        "சுகாதாரம்",
+        "விவசாயம்",
+        "ICT",
+        "TECHNOLOGY",
+        "வேறு தொகுதி III பாடங்கள்"
+    ],
+
+    11: [
+        "தமிழ்",
+        "கணிதம்",
+        "விஞ்ஞானம்",
+        "வரலாறு",
+        "ஆங்கிலம்",
+        "சைவசமயம்",
+        "கத்தோலிக்கம்",
+        "கிறிஸ்தவம்",
+        "இஸ்லாம்",
+        "புவியியல்",
+        "குடியியல்",
+        "வணிகக்கல்வி",
+        "சிங்களம்",
+        "அழகியல்",
+        "தமிழ் இலக்கிய நயம்",
+        "சுகாதாரம்",
+        "விவசாயம்",
+        "ICT",
+        "TECHNOLOGY",
+        "வேறு தொகுதி III பாடங்கள்"
+    ]
+
+};
+
+
+// Grade change
+gradeSelect.addEventListener("change", () => {
+
+    const selectedGrade =
+        parseInt(gradeSelect.value, 10);
+
+    subjectSelect.innerHTML = `
+        <option value="">
+            Select Subject
+        </option>
+    `;
+
+    // Grade 1-11
+    if (
+        selectedGrade >= 1 &&
+        selectedGrade <= 11
+    ) {
+
+        const subjects =
+            subjectLists[selectedGrade] || [];
+
+        subjects.forEach(subject => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = subject;
+            option.textContent = subject;
+
+            subjectSelect.appendChild(option);
+
+        });
+
+        streamSelect.value = "";
+        streamSelect.disabled = true;
+
+    }
+
+    // Grade 12-13
+    else if (
+        selectedGrade === 12 ||
+        selectedGrade === 13
+    ) {
+
+        streamSelect.disabled = false;
+
+    }
+
+});
 
 
 
