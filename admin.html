@@ -246,6 +246,12 @@ const pdfFile =
 const generateBtn =
     document.getElementById("generateBtn");
 
+const uploadBtn =
+    document.getElementById("uploadBtn");
+
+const adminKeyInput =
+    document.getElementById("adminKey");
+
 const resultCard =
     document.getElementById("resultCard");
 
@@ -257,6 +263,14 @@ const copyBtn =
 
 const status =
     document.getElementById("status");
+
+
+// ======================================
+// Cloudflare Worker
+// ======================================
+
+const WORKER_URL =
+    "https://slexams-upload.genkaweb.workers.dev";
 
 
 // ======================================
@@ -498,8 +512,6 @@ gradeSelect.addEventListener("change", () => {
     streamSelect.disabled = true;
 
 
-    // Grade 1 - 11
-
     if (grade >= 1 && grade <= 11) {
 
         const subjects =
@@ -520,8 +532,6 @@ gradeSelect.addEventListener("change", () => {
         return;
     }
 
-
-    // Grade 12 - 13
 
     if (grade === 12 || grade === 13) {
 
@@ -552,7 +562,9 @@ streamSelect.addEventListener("change", () => {
 
 
     if (grade !== 12 && grade !== 13) {
+
         return;
+
     }
 
 
@@ -589,7 +601,8 @@ let papers = [];
 const addPaperBtn =
     document.createElement("button");
 
-addPaperBtn.type = "button";
+addPaperBtn.type =
+    "button";
 
 addPaperBtn.textContent =
     "Add Paper";
@@ -646,7 +659,10 @@ addPaperBtn.addEventListener("click", () => {
     }
 
 
-    if ((grade === "12" || grade === "13") && !stream) {
+    if (
+        (grade === "12" || grade === "13")
+        && !stream
+    ) {
 
         alert("Please select Stream.");
 
@@ -685,19 +701,29 @@ addPaperBtn.addEventListener("click", () => {
     const file =
         pdfFile.files[0];
 
+
+    if (
+        !file.name
+            .toLowerCase()
+            .endsWith(".pdf")
+    ) {
+
+        alert("Please select a PDF file.");
+
+        return;
+
+    }
+
+
     const pdfName =
         file.name;
 
-
-    // Remove .pdf from title
 
     const title =
         pdfName
             .replace(/\.pdf$/i, "")
             .trim();
 
-
-    // Create folder path
 
     let folder =
         `assets/pdf/grade${grade}/`;
@@ -719,21 +745,28 @@ addPaperBtn.addEventListener("click", () => {
         folder + pdfName;
 
 
-    // Paper object
-
+    // Keep the actual File object
     const paper = {
+
+        grade: grade,
+
+        stream: stream,
+
+        subject: subject,
+
+        term: term,
 
         title: title,
 
-        pdf: pdfPath
+        pdf: pdfPath,
+
+        file: file
 
     };
 
 
     papers.push(paper);
 
-
-    // Clear PDF selection
 
     pdfFile.value = "";
 
@@ -792,9 +825,18 @@ function renderPaperList() {
 
 
         item.innerHTML = `
-            <strong>${index + 1}. ${paper.title}</strong>
+            <strong>
+                ${index + 1}. ${paper.title}
+            </strong>
             <br>
-            <small>${paper.pdf}</small>
+            <small>
+                Grade ${paper.grade}
+                ${paper.stream
+                    ? " - " + paper.stream
+                    : ""}
+                - ${paper.subject}
+                - Term ${paper.term}
+            </small>
         `;
 
 
@@ -806,7 +848,6 @@ function renderPaperList() {
 
         removeBtn.textContent =
             "Remove";
-
 
         removeBtn.style.marginTop =
             "5px";
@@ -842,39 +883,53 @@ function renderPaperList() {
 // Generate JSON
 // ======================================
 
-generateBtn.addEventListener("click", () => {
+generateBtn.addEventListener(
+    "click",
+    () => {
 
-    if (papers.length === 0) {
+        if (papers.length === 0) {
 
-        alert(
-            "Please add at least one paper."
-        );
+            alert(
+                "Please add at least one paper."
+            );
 
-        return;
+            return;
+
+        }
+
+
+        // Remove File object before JSON
+        const jsonPapers =
+            papers.map(paper => ({
+
+                title: paper.title,
+
+                pdf: paper.pdf
+
+            }));
+
+
+        const json =
+            JSON.stringify(
+                jsonPapers,
+                null,
+                2
+            );
+
+
+        jsonOutput.value =
+            json;
+
+
+        resultCard.style.display =
+            "block";
+
+
+        status.textContent =
+            "JSON generated successfully.";
 
     }
-
-
-    const json =
-        JSON.stringify(
-            papers,
-            null,
-            2
-        );
-
-
-    jsonOutput.value =
-        json;
-
-
-    resultCard.style.display =
-        "block";
-
-
-    status.textContent =
-        "JSON generated successfully.";
-
-});
+);
 
 
 // ======================================
@@ -908,8 +963,186 @@ copyBtn.addEventListener(
     }
 );
 
-</script>
 
+// ======================================
+// Upload Papers to GitHub
+// ======================================
+
+uploadBtn.addEventListener(
+    "click",
+    async () => {
+
+        if (papers.length === 0) {
+
+            alert(
+                "Please add at least one paper."
+            );
+
+            return;
+
+        }
+
+
+        const adminKey =
+            adminKeyInput.value.trim();
+
+
+        if (!adminKey) {
+
+            alert(
+                "Please enter Admin Key."
+            );
+
+            return;
+
+        }
+
+
+        uploadBtn.disabled =
+            true;
+
+        addPaperBtn.disabled =
+            true;
+
+
+        try {
+
+            for (
+                let i = 0;
+                i < papers.length;
+                i++
+            ) {
+
+                const paper =
+                    papers[i];
+
+
+                status.textContent =
+                    `Uploading ${i + 1} of ${papers.length}: ${paper.title}`;
+
+
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    "grade",
+                    paper.grade
+                );
+
+
+                formData.append(
+                    "stream",
+                    paper.stream
+                );
+
+
+                formData.append(
+                    "subject",
+                    paper.subject
+                );
+
+
+                formData.append(
+                    "term",
+                    paper.term
+                );
+
+
+                formData.append(
+                    "pdf",
+                    paper.file,
+                    paper.file.name
+                );
+
+
+                const response =
+                    await fetch(
+                        WORKER_URL,
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "X-Admin-Key":
+                                    adminKey
+
+                            },
+
+                            body: formData
+
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (!response.ok || !result.success) {
+
+                    throw new Error(
+                        result.message ||
+                        `Upload failed for ${paper.title}`
+                    );
+
+                }
+
+            }
+
+
+            status.textContent =
+                "All papers uploaded successfully!";
+
+
+            alert(
+                "All papers uploaded successfully to GitHub."
+            );
+
+
+            papers = [];
+
+            renderPaperList();
+
+            jsonOutput.value = "";
+
+            resultCard.style.display =
+                "none";
+
+
+        } catch (error) {
+
+            console.error(
+                "Upload Error:",
+                error
+            );
+
+
+            status.textContent =
+                "Upload failed: " +
+                error.message;
+
+
+            alert(
+                "Upload failed:\n\n" +
+                error.message
+            );
+
+        } finally {
+
+            uploadBtn.disabled =
+                false;
+
+            addPaperBtn.disabled =
+                false;
+
+        }
+
+    }
+);
+
+</script>
 
 </body>
 
