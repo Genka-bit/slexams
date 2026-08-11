@@ -100,7 +100,137 @@ Latest Educational Updates
 </p>
 
 </footer>
+<script>
 
+async function loadNews() {
+
+    const container =
+        document.getElementById("newsContainer");
+
+    try {
+
+        const response =
+            await fetch(
+                "assets/data/news.json?v=" +
+                Date.now()
+            );
+
+        if (!response.ok) {
+            throw new Error("News data not found");
+        }
+
+        const data =
+            await response.json();
+
+        const news =
+            data.news || [];
+
+        if (news.length === 0) {
+
+            container.innerHTML =
+                "<p>No news available.</p>";
+
+            return;
+        }
+
+
+        container.innerHTML = "";
+
+
+        news.forEach(item => {
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "news-card";
+
+
+            let imageHTML = "";
+
+            if (item.image) {
+
+                imageHTML = `
+                    <img
+                        src="${item.image}"
+                        alt="${item.title}"
+                        style="
+                            width:100%;
+                            border-radius:10px;
+                            margin-bottom:15px;
+                        ">
+                `;
+
+            }
+
+
+            let linkHTML = "";
+
+            if (item.link) {
+
+                linkHTML = `
+                    <a
+                        class="grade-card"
+                        href="${item.link}"
+                        target="_blank">
+
+                        Read More
+
+                    </a>
+                `;
+
+            }
+
+
+            card.innerHTML = `
+
+                ${imageHTML}
+
+                <h2>
+                    ${item.title}
+                </h2>
+
+                <p>
+                    ${item.description}
+                </p>
+
+                <small>
+                    ${item.date}
+                </small>
+
+                <br><br>
+
+                ${linkHTML}
+
+            `;
+
+
+            container.appendChild(card);
+
+        });
+
+    }
+    catch (error) {
+
+        console.error(
+            "News loading error:",
+            error
+        );
+
+        container.innerHTML = `
+            <p>
+                Unable to load news.
+            </p>
+        `;
+
+    }
+
+}
+
+
+loadNews();
+
+</script>
 <script src="assets/js/app.js"></script>
 
 </body>
