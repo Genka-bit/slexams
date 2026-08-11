@@ -1239,7 +1239,8 @@ const newsTitle =
 
 const newsDescription =
     document.getElementById("newsDescription");
-
+const newsContent =
+    document.getElementById("newsContent");
 const newsDate =
     document.getElementById("newsDate");
 
@@ -1260,7 +1261,8 @@ publishNewsBtn.addEventListener("click", async () => {
 
     const description =
         newsDescription.value.trim();
-
+const content =
+    newsContent.value.trim();
     const date =
         newsDate.value;
 
@@ -1277,7 +1279,15 @@ publishNewsBtn.addEventListener("click", async () => {
         alert("Please enter News Description.");
         return;
     }
+if (!content) {
 
+    alert(
+        "Please enter Full News Content."
+    );
+
+    return;
+
+}
     if (!date) {
         alert("Please select News Date.");
         return;
@@ -1320,7 +1330,10 @@ publishNewsBtn.addEventListener("click", async () => {
             "description",
             description
         );
-
+formData.append(
+    "content",
+    content
+);
         formData.append(
             "date",
             date
