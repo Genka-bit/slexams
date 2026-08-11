@@ -1219,6 +1219,196 @@ uploadBtn.addEventListener(
     }
 );
 
+// ======================================
+// News Upload
+// ======================================
+
+const publishNewsBtn =
+    document.getElementById("publishNewsBtn");
+
+const newsTitle =
+    document.getElementById("newsTitle");
+
+const newsDescription =
+    document.getElementById("newsDescription");
+
+const newsDate =
+    document.getElementById("newsDate");
+
+const newsImage =
+    document.getElementById("newsImage");
+
+const newsLink =
+    document.getElementById("newsLink");
+
+const newsStatus =
+    document.getElementById("newsStatus");
+
+
+publishNewsBtn.addEventListener("click", async () => {
+
+    const title =
+        newsTitle.value.trim();
+
+    const description =
+        newsDescription.value.trim();
+
+    const date =
+        newsDate.value;
+
+    const link =
+        newsLink.value.trim();
+
+
+    if (!title) {
+        alert("Please enter News Title.");
+        return;
+    }
+
+    if (!description) {
+        alert("Please enter News Description.");
+        return;
+    }
+
+    if (!date) {
+        alert("Please select News Date.");
+        return;
+    }
+
+
+    const adminKey =
+        adminKeyInput.value.trim();
+
+
+    if (!adminKey) {
+        alert("Please enter Admin Key.");
+        return;
+    }
+
+
+    publishNewsBtn.disabled = true;
+
+    newsStatus.textContent =
+        "Publishing News...";
+
+
+    try {
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "type",
+            "news"
+        );
+
+        formData.append(
+            "title",
+            title
+        );
+
+        formData.append(
+            "description",
+            description
+        );
+
+        formData.append(
+            "date",
+            date
+        );
+
+        formData.append(
+            "link",
+            link
+        );
+
+
+        if (newsImage.files.length) {
+
+            formData.append(
+                "image",
+                newsImage.files[0],
+                newsImage.files[0].name
+            );
+
+        }
+
+
+        const response =
+            await fetch(
+                WORKER_URL,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "X-Admin-Key":
+                            adminKey
+                    },
+
+                    body: formData
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok ||
+            !result.success) {
+
+            throw new Error(
+                result.message ||
+                "News upload failed."
+            );
+
+        }
+
+
+        newsStatus.textContent =
+            "News published successfully!";
+
+        alert(
+            "News published successfully!"
+        );
+
+
+        newsTitle.value = "";
+        newsDescription.value = "";
+        newsDate.value = "";
+        newsImage.value = "";
+        newsLink.value = "";
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "News Upload Error:",
+            error
+        );
+
+
+        newsStatus.textContent =
+            "News upload failed: " +
+            error.message;
+
+
+        alert(
+            "News upload failed:\n\n" +
+            error.message
+        );
+
+    }
+    finally {
+
+        publishNewsBtn.disabled =
+            false;
+
+    }
+
+});
 </script>
 
 </body>
