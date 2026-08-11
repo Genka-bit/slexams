@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ta">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>News | SLExam Pro</title>
+
+<link
+    rel="stylesheet"
+    href="assets/css/style.css">
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <button
+        id="menuBtn"
+        class="menu-btn">
+
+        ☰
+
+    </button>
+
+
+    <div class="logo">
+
+        <h1>
+            SLExam <span>Pro</span>
+        </h1>
+
+    </div>
+
+
+    <nav class="navbar">
+
+        <a href="index.html">
+            Home
+        </a>
+
+        <a href="news.html">
+            News
+        </a>
+
+        <a href="scheme.html">
+            Schemes
+        </a>
+
+        <a href="apps.html">
+            Apps
+        </a>
+
+    </nav>
+
+
+    <button
+        id="darkModeBtn"
+        class="dark-btn">
+
+        🌙
+
+    </button>
+
+</header>
+
+
+
+<section class="hero">
+
+    <h1>
+        Education News
+    </h1>
+
+    <p>
+        Latest Educational Updates
+    </p>
+
+</section>
+
+
+
+<main
+    class="news-detail-container"
+    id="newsDetail">
+
+    <p>
+        Loading news...
+    </p>
+
+</main>
+
+
+
+<footer class="footer">
+
+    <div class="footer-container">
+
+
+        <div class="footer-box">
+
+            <h3>
+                SLExam Pro
+            </h3>
+
+            <p>
+                Free Sri Lankan Educational Resource Website.
+            </p>
+
+        </div>
+
+
+
+        <div class="footer-box">
+
+            <h3>
+                Quick Links
+            </h3>
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="news.html">
+                News
+            </a>
+
+            <a href="scheme.html">
+                Schemes
+            </a>
+
+            <a href="apps.html">
+                Apps
+            </a>
+
+        </div>
+
+
+
+        <div class="footer-box">
+
+            <h3>
+                Support
+            </h3>
+
+            <a href="about.html">
+                About Us
+            </a>
+
+            <a href="contact.html">
+                Contact
+            </a>
+
+        </div>
+
+
+
+        <div class="footer-box">
+
+            <h3>
+                Follow Us
+            </h3>
+
+            <p>
+                📘 Facebook
+            </p>
+
+            <p>
+                ▶️ YouTube
+            </p>
+
+            <p>
+                📸 Instagram
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <hr>
+
+
+    <p class="copyright">
+
+        © 2026 SLExam Pro | All Rights Reserved
+
+    </p>
+
+</footer>
+
+
+
+<script src="assets/js/app.js"></script>
+
+
+<script>
+
+async function loadNewsDetail() {
+
+    const container =
+        document.getElementById("newsDetail");
+
+
+    try {
+
+        /*
+         * Get News ID from URL
+         *
+         * Example:
+         * news-detail.html?id=0
+         */
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const id =
+            parseInt(
+                params.get("id"),
+                10
+            );
+
+
+        if (Number.isNaN(id)) {
+
+            container.innerHTML = `
+                <div class="news-card">
+
+                    <h2>
+                        News Not Found
+                    </h2>
+
+                    <p>
+                        Invalid news ID.
+                    </p>
+
+                    <a
+                        class="grade-card"
+                        href="news.html">
+
+                        ← Back to News
+
+                    </a>
+
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        /*
+         * Load news.json
+         */
+
+        const response =
+            await fetch(
+                "assets/data/news.json?v=" +
+                Date.now()
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "News data could not be loaded."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const news =
+            data.news || [];
+
+
+        /*
+         * Find selected news
+         */
+
+        const item =
+            news[id];
+
+
+        if (!item) {
+
+            container.innerHTML = `
+                <div class="news-card">
+
+                    <h2>
+                        News Not Found
+                    </h2>
+
+                    <p>
+                        The requested news article does not exist.
+                    </p>
+
+                    <a
+                        class="grade-card"
+                        href="news.html">
+
+                        ← Back to News
+
+                    </a>
+
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        /*
+         * Image
+         */
+
+        let imageHTML = "";
+
+
+        if (item.image) {
+
+            imageHTML = `
+
+                <img
+                    src="${item.image}"
+                    alt="${item.title}"
+                    style="
+                        width:100%;
+                        max-height:500px;
+                        object-fit:cover;
+                        border-radius:12px;
+                        margin-bottom:20px;
+                    ">
+
+            `;
+
+        }
+
+
+        /*
+         * External link
+         */
+
+        let linkHTML = "";
+
+
+        if (item.link) {
+
+            linkHTML = `
+
+                <p style="margin-top:25px;">
+
+                    <a
+                        class="grade-card"
+                        href="${item.link}"
+                        target="_blank"
+                        rel="noopener">
+
+                        Official Source
+
+                    </a>
+
+                </p>
+
+            `;
+
+        }
+
+
+        /*
+         * Display full article
+         */
+
+        container.innerHTML = `
+
+            <article class="news-card">
+
+                ${imageHTML}
+
+
+                <h1>
+                    ${item.title}
+                </h1>
+
+
+                <p
+                    style="
+                        color:#777;
+                        margin-bottom:20px;
+                    ">
+
+                    📅 ${item.date}
+
+                </p>
+
+
+                <div
+                    style="
+                        line-height:1.8;
+                        font-size:17px;
+                    ">
+
+                    ${item.description}
+
+                </div>
+
+
+                ${linkHTML}
+
+
+                <p style="margin-top:30px;">
+
+                    <a
+                        class="grade-card"
+                        href="news.html">
+
+                        ← Back to News
+
+                    </a>
+
+                </p>
+
+            </article>
+
+        `;
+
+
+        document.title =
+            item.title +
+            " | SLExam Pro";
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "News detail error:",
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div class="news-card">
+
+                <h2>
+                    Unable to Load News
+                </h2>
+
+                <p>
+                    Please try again later.
+                </p>
+
+                <a
+                    class="grade-card"
+                    href="news.html">
+
+                    ← Back to News
+
+                </a>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+loadNewsDetail();
+
+</script>
+
+
+</body>
+
+</html>
