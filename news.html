@@ -164,23 +164,24 @@ async function loadNews() {
             }
 
 
-            let linkHTML = "";
+            const newsIndex =
+    news.indexOf(item);
 
-            if (item.link) {
+const linkHTML = `
 
-                linkHTML = `
-                    <a
-                        class="grade-card"
-                        href="${item.link}"
-                        target="_blank">
+    <p style="margin-top:20px;">
 
-                        Read More
+        <a
+            class="grade-card"
+            href="news-detail.html?id=${newsIndex}">
 
-                    </a>
-                `;
+            Read More
 
-            }
+        </a>
 
+    </p>
+
+`;
 
             card.innerHTML = `
 
