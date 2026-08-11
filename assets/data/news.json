@@ -1,6 +1,14 @@
 {
   "news": [
     {
+      "title": "எங்கள் புதிய கல்வி செய்தி",
+      "description": "இது News card-ல் தோன்றும் சுருக்கமான செய்தி.",
+      "content": "",
+      "date": "2026-08-11",
+      "image": "assets/images/news/1000172681.jpg",
+      "link": ""
+    },
+    {
       "title": "Ministry of Education Update",
       "description": "This is a test education news with image.",
       "date": "2026-08-11",
