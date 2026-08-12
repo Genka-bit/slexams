@@ -1330,9 +1330,13 @@ if (!content) {
             "description",
             description
         );
+console.log(
+    "FULL NEWS CONTENT:",
+    newsContent.value
+);
 formData.append(
     "content",
-    content
+    newsContent.value.trim()
 );
         formData.append(
             "date",
