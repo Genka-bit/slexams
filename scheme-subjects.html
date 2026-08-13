@@ -140,18 +140,14 @@ const level =
 const subjectLists = {
 
     primary: [
-
         "தமிழ்",
         "கணிதம்",
         "சுற்றாடல்",
         "ஆங்கிலம்",
         "இரண்டாம் மொழி"
-
     ],
 
-
     secondary: [
-
         "தமிழ்",
         "கணிதம்",
         "விஞ்ஞானம்",
@@ -168,23 +164,18 @@ const subjectLists = {
         "சிங்களம்",
         "ICT",
         "PTS"
-
     ],
 
-
     al: [
-
         "Combined Mathematics",
         "Physics",
         "Chemistry",
         "Biology",
         "Agricultural Science",
         "ICT",
-
         "Accounting",
         "Business Studies",
         "Economics",
-
         "தமிழ்",
         "வரலாறு",
         "புவியியல்",
@@ -199,40 +190,10 @@ const subjectLists = {
         "நடனம்",
         "இசை",
         "நாடகம்",
-
         "Science for Technology",
         "Engineering Technology",
         "Bio Systems Technology"
-
     ]
-
-};
-
-
-const levelTitles = {
-
-    primary:
-        "📘 Grade 1 – 5 Schemes",
-
-    secondary:
-        "📗 Grade 6 – 11 Schemes",
-
-    al:
-        "📙 A/L Schemes"
-
-};
-
-
-const levelDescriptions = {
-
-    primary:
-        "Select a subject for Grade 1 – 5",
-
-    secondary:
-        "Select a subject for Grade 6 – 11",
-
-    al:
-        "Select an Advanced Level subject"
 
 };
 
@@ -256,27 +217,48 @@ const pageDescription =
 
 
 if (
-    !level ||
-    !subjectLists[level]
+    level === "primary"
 ) {
 
     pageTitle.textContent =
-        "📚 Schemes";
+        "📘 Grade 1 – 5 Schemes";
 
     pageDescription.textContent =
-        "Invalid selection.";
+        "Select a subject";
 
-} else {
+}
+
+else if (
+    level === "secondary"
+) {
 
     pageTitle.textContent =
-        levelTitles[level];
+        "📗 Grade 6 – 11 Schemes";
 
     pageDescription.textContent =
-        levelDescriptions[level];
+        "Select a subject";
 
+}
+
+else if (
+    level === "al"
+) {
+
+    pageTitle.textContent =
+        "📙 A/L Schemes";
+
+    pageDescription.textContent =
+        "Select a subject";
+
+}
+
+
+if (
+    subjectLists[level]
+) {
 
     subjectLists[level].forEach(
-        subject => {
+        function(subject) {
 
             const card =
                 document.createElement(
@@ -286,26 +268,17 @@ if (
             card.className =
                 "grade-card";
 
-
             card.href =
                 "scheme-grades.html?level=" +
                 encodeURIComponent(level) +
                 "&subject=" +
                 encodeURIComponent(subject);
 
-
-            card.innerHTML = `
-
-                <h2>
-                    ${subject}
-                </h2>
-
-                <p>
-                    View Schemes
-                </p>
-
-            `;
-
+            card.innerHTML =
+                "<h2>" +
+                subject +
+                "</h2>" +
+                "<p>View Schemes</p>";
 
             subjectGrid.appendChild(
                 card
@@ -317,7 +290,6 @@ if (
 }
 
 </script>
-
 </body>
 
 </html>
