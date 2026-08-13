@@ -13,17 +13,175 @@
 <link rel="stylesheet"
       href="assets/css/style.css">
 
+
+<style>
+
+/* =========================
+   PDF VIEWER
+   ========================= */
+
+.pdf-viewer-box {
+
+    width: 100%;
+
+    margin-top: 20px;
+
+    background: #eeeeee;
+
+    padding: 10px;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+}
+
+
+#pdfContainer {
+
+    width: 100%;
+
+    text-align: center;
+}
+
+
+.pdf-page {
+
+    display: block;
+
+    width: 100%;
+
+    height: auto;
+
+    margin: 0 auto 15px auto;
+
+    background: white;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.15);
+
+    border-radius: 4px;
+}
+
+
+.pdf-loading {
+
+    padding: 40px 10px;
+
+    font-size: 18px;
+
+}
+
+
+.pdf-error {
+
+    padding: 30px 10px;
+
+    color: #c00;
+
+    font-size: 16px;
+
+}
+
+
+/* =========================
+   PDF CONTROLS
+   ========================= */
+
+.pdf-controls {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+
+    margin-top: 15px;
+
+    margin-bottom: 20px;
+}
+
+
+.pdf-controls button {
+
+    border: none;
+
+    padding: 10px 16px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    background: #1976d2;
+
+    color: white;
+
+    font-size: 15px;
+}
+
+
+.pdf-controls button:disabled {
+
+    opacity: 0.5;
+
+    cursor: not-allowed;
+
+}
+
+
+#pageInfo {
+
+    font-size: 15px;
+
+    font-weight: bold;
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .pdf-viewer-box {
+
+        padding: 5px;
+
+    }
+
+    .pdf-controls button {
+
+        padding: 9px 12px;
+
+        font-size: 14px;
+
+    }
+
+}
+
+</style>
+
 </head>
 
 
 <body>
 
 
+<!-- =========================
+     HEADER
+     ========================= -->
+
 <header class="header">
+
 
 <button id="menuBtn"
         class="menu-btn">
+
 ☰
+
 </button>
 
 
@@ -38,41 +196,69 @@ SLExam <span>Pro</span>
 
 <nav class="navbar">
 
-<a href="index.html">Home</a>
+<a href="index.html">
+Home
+</a>
 
-<a href="news.html">News</a>
+<a href="news.html">
+News
+</a>
 
-<a href="scheme.html">Schemes</a>
+<a href="scheme.html">
+Schemes
+</a>
 
-<a href="apps.html">Apps</a>
+<a href="apps.html">
+Apps
+</a>
 
-<a href="about.html">About</a>
+<a href="about.html">
+About
+</a>
 
 </nav>
 
 
 <button id="darkModeBtn"
         class="dark-btn">
+
 🌙
+
 </button>
+
 
 </header>
 
 
 
+<!-- =========================
+     HERO
+     ========================= -->
+
 <section class="hero">
 
+
 <h1 id="schemeTitle">
+
 📚 Scheme
+
 </h1>
 
+
 <p>
+
 Marking Scheme
+
 </p>
+
 
 </section>
 
 
+
+<!-- =========================
+     PDF SECTION
+     ========================= -->
 
 <section class="news-section">
 
@@ -81,35 +267,69 @@ Marking Scheme
 
 
 <h2 id="pdfTitle">
+
 Loading...
+
 </h2>
 
 
-<div
-    style="
-        width:100%;
-        margin-top:20px;
-    "
->
+<!-- PDF controls -->
+
+<div class="pdf-controls">
 
 
-<iframe
-    id="pdfViewer"
-    title="PDF Scheme"
-    width="100%"
-    height="700"
-    style="
-        border:none;
-        border-radius:12px;
-        background:#f5f5f5;
-    "
->
-</iframe>
+<button
+    id="prevBtn"
+    disabled>
+
+← Previous
+
+</button>
+
+
+<span id="pageInfo">
+
+Loading...
+
+</span>
+
+
+<button
+    id="nextBtn"
+    disabled>
+
+Next →
+
+</button>
 
 
 </div>
 
 
+
+<!-- PDF -->
+
+<div class="pdf-viewer-box">
+
+
+<div
+    id="pdfContainer">
+
+<div
+    class="pdf-loading">
+
+📄 Loading PDF...
+
+</div>
+
+</div>
+
+
+</div>
+
+
+
+<!-- Download -->
 
 <div
     style="
@@ -123,8 +343,7 @@ Loading...
     id="downloadBtn"
     class="grade-card"
     href="#"
-    download
->
+    download>
 
 📥 Download PDF
 
@@ -134,6 +353,34 @@ Loading...
 </div>
 
 
+
+<!-- Open -->
+
+<div
+    style="
+        margin-top:15px;
+        text-align:center;
+    "
+>
+
+
+<a
+    id="openBtn"
+    class="grade-card"
+    href="#"
+    target="_blank"
+    rel="noopener">
+
+📄 Open PDF
+
+</a>
+
+
+</div>
+
+
+
+<!-- Back -->
 
 <div
     style="
@@ -145,8 +392,7 @@ Loading...
 
 <a
     class="grade-card"
-    href="javascript:history.back()"
->
+    href="javascript:history.back()">
 
 ← Back
 
@@ -162,6 +408,10 @@ Loading...
 </section>
 
 
+
+<!-- =========================
+     FOOTER
+     ========================= -->
 
 <footer class="footer">
 
@@ -233,11 +483,17 @@ Contact
 Follow Us
 </h3>
 
-<p>📘 Facebook</p>
+<p>
+📘 Facebook
+</p>
 
-<p>▶️ YouTube</p>
+<p>
+▶️ YouTube
+</p>
 
-<p>📸 Instagram</p>
+<p>
+📸 Instagram
+</p>
 
 </div>
 
@@ -259,13 +515,39 @@ Follow Us
 
 
 
+<!-- =========================
+     APP JS
+     ========================= -->
+
 <script src="assets/js/app.js"></script>
 
 
 
-<script>
+<!-- =========================
+     PDF.JS
+     ========================= -->
 
-(function () {
+<script type="module">
+
+import {
+
+    getDocument,
+    GlobalWorkerOptions
+
+}
+from
+"https://cdn.jsdelivr.net/npm/pdfjs-dist@5.4.149/build/pdf.mjs";
+
+
+
+GlobalWorkerOptions.workerSrc =
+"https://cdn.jsdelivr.net/npm/pdfjs-dist@5.4.149/build/pdf.worker.mjs";
+
+
+
+/* =========================
+   URL PARAMETERS
+   ========================= */
 
 
 const params =
@@ -287,6 +569,11 @@ const grade =
 
 
 
+/* =========================
+   ELEMENTS
+   ========================= */
+
+
 const schemeTitle =
     document.getElementById(
         "schemeTitle"
@@ -299,9 +586,9 @@ const pdfTitle =
     );
 
 
-const pdfViewer =
+const pdfContainer =
     document.getElementById(
-        "pdfViewer"
+        "pdfContainer"
     );
 
 
@@ -311,11 +598,34 @@ const downloadBtn =
     );
 
 
-const fallbackLink =
+const openBtn =
     document.getElementById(
-        "fallbackLink"
+        "openBtn"
     );
 
+
+const prevBtn =
+    document.getElementById(
+        "prevBtn"
+    );
+
+
+const nextBtn =
+    document.getElementById(
+        "nextBtn"
+    );
+
+
+const pageInfo =
+    document.getElementById(
+        "pageInfo"
+    );
+
+
+
+/* =========================
+   VALIDATION
+   ========================= */
 
 
 if (
@@ -326,72 +636,105 @@ if (
     schemeTitle.textContent =
         "Scheme Not Found";
 
+
     pdfTitle.textContent =
         "Invalid Scheme";
 
-    return;
+
+    pdfContainer.innerHTML = `
+
+        <div class="pdf-error">
+
+            ❌ Scheme information is missing.
+
+        </div>
+
+    `;
+
+
+    throw new Error(
+        "Missing subject or grade"
+    );
 
 }
 
 
 
-/*
- * Convert subject name
- * to PDF filename
- */
+/* =========================
+   SUBJECT FILE NAMES
+   ========================= */
+
 
 const subjectNames = {
+
 
     "தமிழ்":
         "tamil",
 
+
     "கணிதம்":
         "mathematics",
+
 
     "சுற்றாடல்":
         "environment",
 
+
     "ஆங்கிலம்":
         "english",
+
 
     "இரண்டாம் மொழி":
         "second-language",
 
+
     "விஞ்ஞானம்":
         "science",
+
 
     "வரலாறு":
         "history",
 
+
     "புவியியல்":
         "geography",
+
 
     "குடியியல்":
         "civics",
 
+
     "சுகாதாரம்":
         "health",
+
 
     "சைவசமயம்":
         "saivism",
 
+
     "கத்தோலிக்கம்":
         "catholicism",
+
 
     "கிறிஸ்தவம்":
         "christianity",
 
+
     "இஸ்லாம்":
         "islam",
+
 
     "அழகியல்":
         "aesthetics",
 
+
     "சிங்களம்":
         "sinhala",
 
+
     "ICT":
         "ict",
+
 
     "PTS":
         "pts"
@@ -405,79 +748,404 @@ let subjectFile =
 
 
 
-/*
- * A/L / English subjects
- */
+/* =========================
+   OTHER SUBJECTS
+   ========================= */
+
 
 if (!subjectFile) {
 
     subjectFile =
+
         subject
             .toLowerCase()
+            .trim()
             .replace(/\s+/g, "-");
 
 }
 
 
 
-/*
- * PDF filename
- */
+/* =========================
+   PDF PATH
+   ========================= */
+
 
 const pdfPath =
+
     "pdf/schemes/grade-" +
+
     grade +
+
     "-" +
+
     subjectFile +
+
     ".pdf";
 
 
 
-/*
- * Page title
- */
+/* =========================
+   PAGE TITLE
+   ========================= */
+
 
 schemeTitle.textContent =
+
     "📚 " +
+
     subject +
+
     " – Grade " +
+
     grade +
+
     " Scheme";
 
 
 pdfTitle.textContent =
+
     subject +
+
     " – Grade " +
+
     grade;
 
 
 
-/*
- * PDF viewer
- */
+/* =========================
+   BUTTON LINKS
+   ========================= */
 
-pdfViewer.src = pdfPath;
-
-
-
-/*
- * Fallback link
- */
-
-fallbackLink.href =
-    pdfPath;
-
-
-
-/*
- * Download button
- */
 
 downloadBtn.href =
     pdfPath;
 
 
-})();
+openBtn.href =
+    pdfPath;
+
+
+
+/* =========================
+   PDF VARIABLES
+   ========================= */
+
+
+let pdf = null;
+
+let currentPage = 1;
+
+let totalPages = 0;
+
+
+
+/* =========================
+   LOAD PDF
+   ========================= */
+
+
+try {
+
+
+    pdf =
+        await getDocument(
+            pdfPath
+        ).promise;
+
+
+    totalPages =
+        pdf.numPages;
+
+
+    pageInfo.textContent =
+
+        "Page 1 / " +
+
+        totalPages;
+
+
+    prevBtn.disabled = true;
+
+
+    nextBtn.disabled =
+        totalPages <= 1;
+
+
+    await renderPage(
+        currentPage
+    );
+
+
+}
+
+
+catch (error) {
+
+
+    console.error(
+        "PDF loading error:",
+        error
+    );
+
+
+    pdfContainer.innerHTML = `
+
+        <div class="pdf-error">
+
+            ❌ PDF could not be loaded.
+
+            <br><br>
+
+            <a
+                href="${pdfPath}"
+                target="_blank"
+                rel="noopener">
+
+                📄 Open PDF directly
+
+            </a>
+
+        </div>
+
+    `;
+
+
+    pageInfo.textContent =
+        "PDF Error";
+
+
+}
+
+
+
+/* =========================
+   RENDER PAGE
+   ========================= */
+
+
+async function renderPage(
+    pageNumber
+) {
+
+
+    if (!pdf) {
+        return;
+    }
+
+
+    pdfContainer.innerHTML = `
+
+        <div class="pdf-loading">
+
+            📄 Loading page...
+
+        </div>
+
+    `;
+
+
+    const page =
+        await pdf.getPage(
+            pageNumber
+        );
+
+
+    const containerWidth =
+        pdfContainer.clientWidth;
+
+
+    const unscaledViewport =
+        page.getViewport({
+            scale: 1
+        });
+
+
+    const scale =
+
+        containerWidth /
+        unscaledViewport.width;
+
+
+    const viewport =
+        page.getViewport({
+            scale: scale
+        });
+
+
+    const canvas =
+        document.createElement(
+            "canvas"
+        );
+
+
+    canvas.className =
+        "pdf-page";
+
+
+    const context =
+        canvas.getContext(
+            "2d"
+        );
+
+
+    canvas.width =
+        viewport.width;
+
+
+    canvas.height =
+        viewport.height;
+
+
+    pdfContainer.innerHTML = "";
+
+
+    pdfContainer.appendChild(
+        canvas
+    );
+
+
+    await page.render({
+
+        canvasContext:
+            context,
+
+        viewport:
+            viewport
+
+    }).promise;
+
+
+    pageInfo.textContent =
+
+        "Page " +
+
+        pageNumber +
+
+        " / " +
+
+        totalPages;
+
+
+    prevBtn.disabled =
+        pageNumber <= 1;
+
+
+    nextBtn.disabled =
+        pageNumber >= totalPages;
+
+}
+
+
+
+/* =========================
+   PREVIOUS
+   ========================= */
+
+
+prevBtn.addEventListener(
+    "click",
+    async function () {
+
+
+        if (
+            currentPage <= 1
+        ) {
+
+            return;
+
+        }
+
+
+        currentPage--;
+
+
+        await renderPage(
+            currentPage
+        );
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+);
+
+
+
+/* =========================
+   NEXT
+   ========================= */
+
+
+nextBtn.addEventListener(
+    "click",
+    async function () {
+
+
+        if (
+            currentPage >=
+            totalPages
+        ) {
+
+            return;
+
+        }
+
+
+        currentPage++;
+
+
+        await renderPage(
+            currentPage
+        );
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+);
+
+
+
+/* =========================
+   MOBILE RESIZE
+   ========================= */
+
+
+let resizeTimer;
+
+
+window.addEventListener(
+    "resize",
+    function () {
+
+
+        clearTimeout(
+            resizeTimer
+        );
+
+
+        resizeTimer =
+            setTimeout(
+                function () {
+
+                    renderPage(
+                        currentPage
+                    );
+
+                },
+                300
+            );
+
+    }
+);
+
 
 </script>
 
