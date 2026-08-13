@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ta">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Scheme | SLExam Pro</title>
+
+<link rel="stylesheet" href="assets/css/style.css">
+
+</head>
+
+<body>
+
+
+<header class="header">
+
+<button id="menuBtn" class="menu-btn">
+☰
+</button>
+
+<div class="logo">
+<h1>SLExam <span>Pro</span></h1>
+</div>
+
+<nav class="navbar">
+
+<a href="index.html">Home</a>
+<a href="news.html">News</a>
+<a href="scheme.html">Schemes</a>
+<a href="apps.html">Apps</a>
+<a href="about.html">About</a>
+
+</nav>
+
+<button id="darkModeBtn" class="dark-btn">
+🌙
+</button>
+
+</header>
+
+
+<section class="hero">
+
+<h1 id="subjectTitle">
+📚 Scheme
+</h1>
+
+<p>
+Select a Grade
+</p>
+
+</section>
+
+
+<section class="grades-section">
+
+<div
+    id="gradeGrid"
+    class="grades-grid">
+</div>
+
+</section>
+
+
+<footer class="footer">
+
+<div class="footer-container">
+
+<div class="footer-box">
+
+<h3>SLExam Pro</h3>
+
+<p>
+Free Sri Lankan Educational Resource Website.
+</p>
+
+</div>
+
+
+<div class="footer-box">
+
+<h3>Quick Links</h3>
+
+<a href="index.html">Home</a>
+<a href="news.html">News</a>
+<a href="scheme.html">Schemes</a>
+<a href="apps.html">Apps</a>
+
+</div>
+
+
+<div class="footer-box">
+
+<h3>Support</h3>
+
+<a href="about.html">About Us</a>
+<a href="contact.html">Contact</a>
+
+</div>
+
+
+<div class="footer-box">
+
+<h3>Follow Us</h3>
+
+<p>📘 Facebook</p>
+<p>▶️ YouTube</p>
+<p>📸 Instagram</p>
+
+</div>
+
+</div>
+
+
+<hr>
+
+<p class="copyright">
+© 2026 SLExam Pro | All Rights Reserved
+</p>
+
+</footer>
+
+
+<script src="assets/js/app.js"></script>
+
+
+<script>
+
+(function () {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const level =
+        params.get("level");
+
+
+    const subject =
+        params.get("subject");
+
+
+    const subjectTitle =
+        document.getElementById(
+            "subjectTitle"
+        );
+
+
+    const gradeGrid =
+        document.getElementById(
+            "gradeGrid"
+        );
+
+
+    /*
+     * Subject title
+     */
+
+    if (subject) {
+
+        subjectTitle.textContent =
+            "📚 " + subject + " – Schemes";
+
+    }
+
+
+    /*
+     * Determine grades
+     */
+
+    let grades = [];
+
+
+    if (level === "primary") {
+
+        grades = [
+            1,
+            2,
+            3,
+            4,
+            5
+        ];
+
+    }
+
+
+    else if (level === "secondary") {
+
+        grades = [
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+        ];
+
+    }
+
+
+    else if (level === "al") {
+
+        /*
+         * A/L will be handled
+         * separately.
+         */
+
+        grades = [
+            "A/L"
+        ];
+
+    }
+
+
+    /*
+     * Create Grade cards
+     */
+
+    grades.forEach(
+        function (grade) {
+
+            const card =
+                document.createElement(
+                    "a"
+                );
+
+
+            card.className =
+                "grade-card";
+
+
+            card.href =
+                "scheme-view.html?level=" +
+                encodeURIComponent(level) +
+                "&subject=" +
+                encodeURIComponent(subject) +
+                "&grade=" +
+                encodeURIComponent(grade);
+
+
+            card.innerHTML =
+                "<h2>Grade " +
+                grade +
+                "</h2>";
+
+
+            gradeGrid.appendChild(
+                card
+            );
+
+        }
+    );
+
+
+})();
+
+</script>
+
+
+</body>
+
+</html>
