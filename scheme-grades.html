@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ta">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Schemes | SLExam Pro</title>
+
+<link rel="stylesheet" href="assets/css/style.css">
+
+</head>
+
+<body>
+
+<header class="header">
+
+<button id="menuBtn" class="menu-btn">
+☰
+</button>
+
+<div class="logo">
+<h1>SLExam <span>Pro</span></h1>
+</div>
+
+<nav class="navbar">
+
+<a href="index.html">Home</a>
+<a href="news.html">News</a>
+<a href="scheme.html">Schemes</a>
+<a href="apps.html">Apps</a>
+<a href="about.html">About</a>
+
+</nav>
+
+<button id="darkModeBtn" class="dark-btn">
+🌙
+</button>
+
+</header>
+
+
+<section class="hero">
+
+<h1 id="pageTitle">
+📚 Schemes
+</h1>
+
+<p id="pageDescription">
+Select a subject
+</p>
+
+</section>
+
+
+<section class="grades-section">
+
+<div
+    id="subjectGrid"
+    class="grades-grid">
+</div>
+
+</section>
+
+
+<footer class="footer">
+
+<div class="footer-container">
+
+<div class="footer-box">
+
+<h3>SLExam Pro</h3>
+
+<p>
+Free Sri Lankan Educational Resource Website.
+</p>
+
+</div>
+
+
+<div class="footer-box">
+
+<h3>Quick Links</h3>
+
+<a href="index.html">Home</a>
+<a href="news.html">News</a>
+<a href="scheme.html">Schemes</a>
+<a href="apps.html">Apps</a>
+
+</div>
+
+
+<div class="footer-box">
+
+<h3>Support</h3>
+
+<a href="about.html">About Us</a>
+<a href="contact.html">Contact</a>
+
+</div>
+
+
+<div class="footer-box">
+
+<h3>Follow Us</h3>
+
+<p>📘 Facebook</p>
+<p>▶️ YouTube</p>
+<p>📸 Instagram</p>
+
+</div>
+
+</div>
+
+
+<hr>
+
+<p class="copyright">
+© 2026 SLExam Pro | All Rights Reserved
+</p>
+
+</footer>
+
+
+<script src="assets/js/app.js"></script>
+
+
+<script>
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const level =
+    params.get("level");
+
+
+const subjectLists = {
+
+    primary: [
+
+        "தமிழ்",
+        "கணிதம்",
+        "சுற்றாடல்",
+        "ஆங்கிலம்",
+        "இரண்டாம் மொழி"
+
+    ],
+
+
+    secondary: [
+
+        "தமிழ்",
+        "கணிதம்",
+        "விஞ்ஞானம்",
+        "வரலாறு",
+        "புவியியல்",
+        "குடியியல்",
+        "ஆங்கிலம்",
+        "சுகாதாரம்",
+        "சைவசமயம்",
+        "கத்தோலிக்கம்",
+        "கிறிஸ்தவம்",
+        "இஸ்லாம்",
+        "அழகியல்",
+        "சிங்களம்",
+        "ICT",
+        "PTS"
+
+    ],
+
+
+    al: [
+
+        "Combined Mathematics",
+        "Physics",
+        "Chemistry",
+        "Biology",
+        "Agricultural Science",
+        "ICT",
+
+        "Accounting",
+        "Business Studies",
+        "Economics",
+
+        "தமிழ்",
+        "வரலாறு",
+        "புவியியல்",
+        "அரசியல் விஞ்ஞானம்",
+        "இந்து சமயம்",
+        "கிறிஸ்தவம்",
+        "கத்தோலிக்கம்",
+        "இந்து நாகரிகம்",
+        "கிறிஸ்தவ நாகரிகம்",
+        "தர்க்கவியல்",
+        "சித்திரம்",
+        "நடனம்",
+        "இசை",
+        "நாடகம்",
+
+        "Science for Technology",
+        "Engineering Technology",
+        "Bio Systems Technology"
+
+    ]
+
+};
+
+
+const levelTitles = {
+
+    primary:
+        "📘 Grade 1 – 5 Schemes",
+
+    secondary:
+        "📗 Grade 6 – 11 Schemes",
+
+    al:
+        "📙 A/L Schemes"
+
+};
+
+
+const levelDescriptions = {
+
+    primary:
+        "Select a subject for Grade 1 – 5",
+
+    secondary:
+        "Select a subject for Grade 6 – 11",
+
+    al:
+        "Select an Advanced Level subject"
+
+};
+
+
+const subjectGrid =
+    document.getElementById(
+        "subjectGrid"
+    );
+
+
+const pageTitle =
+    document.getElementById(
+        "pageTitle"
+    );
+
+
+const pageDescription =
+    document.getElementById(
+        "pageDescription"
+    );
+
+
+if (
+    !level ||
+    !subjectLists[level]
+) {
+
+    pageTitle.textContent =
+        "📚 Schemes";
+
+    pageDescription.textContent =
+        "Invalid selection.";
+
+} else {
+
+    pageTitle.textContent =
+        levelTitles[level];
+
+    pageDescription.textContent =
+        levelDescriptions[level];
+
+
+    subjectLists[level].forEach(
+        subject => {
+
+            const card =
+                document.createElement(
+                    "a"
+                );
+
+            card.className =
+                "grade-card";
+
+
+            card.href =
+                "scheme-grades.html?level=" +
+                encodeURIComponent(level) +
+                "&subject=" +
+                encodeURIComponent(subject);
+
+
+            card.innerHTML = `
+
+                <h2>
+                    ${subject}
+                </h2>
+
+                <p>
+                    View Schemes
+                </p>
+
+            `;
+
+
+            subjectGrid.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+</script>
+
+</body>
+
+</html>
