@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ta">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Scheme | SLExam Pro</title>
+
+<link rel="stylesheet"
+      href="assets/css/style.css">
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+<button id="menuBtn"
+        class="menu-btn">
+☰
+</button>
+
+
+<div class="logo">
+
+<h1>
+SLExam <span>Pro</span>
+</h1>
+
+</div>
+
+
+<nav class="navbar">
+
+<a href="index.html">Home</a>
+
+<a href="news.html">News</a>
+
+<a href="scheme.html">Schemes</a>
+
+<a href="apps.html">Apps</a>
+
+<a href="about.html">About</a>
+
+</nav>
+
+
+<button id="darkModeBtn"
+        class="dark-btn">
+🌙
+</button>
+
+</header>
+
+
+
+<section class="hero">
+
+<h1 id="schemeTitle">
+📚 Scheme
+</h1>
+
+<p>
+Marking Scheme
+</p>
+
+</section>
+
+
+
+<section class="news-section">
+
+
+<div class="news-card">
+
+
+<h2 id="pdfTitle">
+Loading...
+</h2>
+
+
+<div
+    style="
+        width:100%;
+        margin-top:20px;
+    "
+>
+
+
+<object
+    id="pdfViewer"
+    type="application/pdf"
+    width="100%"
+    height="700px"
+>
+
+<p>
+
+Your browser cannot display the PDF.
+
+<a
+    id="fallbackLink"
+    href="#"
+>
+
+Open PDF
+
+</a>
+
+</p>
+
+</object>
+
+
+</div>
+
+
+
+<div
+    style="
+        margin-top:25px;
+        text-align:center;
+    "
+>
+
+
+<a
+    id="downloadBtn"
+    class="grade-card"
+    href="#"
+    download
+>
+
+📥 Download PDF
+
+</a>
+
+
+</div>
+
+
+
+<div
+    style="
+        margin-top:30px;
+        text-align:center;
+    "
+>
+
+
+<a
+    class="grade-card"
+    href="javascript:history.back()"
+>
+
+← Back
+
+</a>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+<footer class="footer">
+
+
+<div class="footer-container">
+
+
+<div class="footer-box">
+
+<h3>
+SLExam Pro
+</h3>
+
+<p>
+Free Sri Lankan Educational Resource Website.
+</p>
+
+</div>
+
+
+
+<div class="footer-box">
+
+<h3>
+Quick Links
+</h3>
+
+<a href="index.html">
+Home
+</a>
+
+<a href="news.html">
+News
+</a>
+
+<a href="scheme.html">
+Schemes
+</a>
+
+<a href="apps.html">
+Apps
+</a>
+
+</div>
+
+
+
+<div class="footer-box">
+
+<h3>
+Support
+</h3>
+
+<a href="about.html">
+About Us
+</a>
+
+<a href="contact.html">
+Contact
+</a>
+
+</div>
+
+
+
+<div class="footer-box">
+
+<h3>
+Follow Us
+</h3>
+
+<p>📘 Facebook</p>
+
+<p>▶️ YouTube</p>
+
+<p>📸 Instagram</p>
+
+</div>
+
+
+</div>
+
+
+<hr>
+
+
+<p class="copyright">
+
+© 2026 SLExam Pro | All Rights Reserved
+
+</p>
+
+
+</footer>
+
+
+
+<script src="assets/js/app.js"></script>
+
+
+
+<script>
+
+(function () {
+
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+const level =
+    params.get("level");
+
+
+const subject =
+    params.get("subject");
+
+
+const grade =
+    params.get("grade");
+
+
+
+const schemeTitle =
+    document.getElementById(
+        "schemeTitle"
+    );
+
+
+const pdfTitle =
+    document.getElementById(
+        "pdfTitle"
+    );
+
+
+const pdfViewer =
+    document.getElementById(
+        "pdfViewer"
+    );
+
+
+const downloadBtn =
+    document.getElementById(
+        "downloadBtn"
+    );
+
+
+const fallbackLink =
+    document.getElementById(
+        "fallbackLink"
+    );
+
+
+
+if (
+    !subject ||
+    !grade
+) {
+
+    schemeTitle.textContent =
+        "Scheme Not Found";
+
+    pdfTitle.textContent =
+        "Invalid Scheme";
+
+    return;
+
+}
+
+
+
+/*
+ * Convert subject name
+ * to PDF filename
+ */
+
+const subjectNames = {
+
+    "தமிழ்":
+        "tamil",
+
+    "கணிதம்":
+        "mathematics",
+
+    "சுற்றாடல்":
+        "environment",
+
+    "ஆங்கிலம்":
+        "english",
+
+    "இரண்டாம் மொழி":
+        "second-language",
+
+    "விஞ்ஞானம்":
+        "science",
+
+    "வரலாறு":
+        "history",
+
+    "புவியியல்":
+        "geography",
+
+    "குடியியல்":
+        "civics",
+
+    "சுகாதாரம்":
+        "health",
+
+    "சைவசமயம்":
+        "saivism",
+
+    "கத்தோலிக்கம்":
+        "catholicism",
+
+    "கிறிஸ்தவம்":
+        "christianity",
+
+    "இஸ்லாம்":
+        "islam",
+
+    "அழகியல்":
+        "aesthetics",
+
+    "சிங்களம்":
+        "sinhala",
+
+    "ICT":
+        "ict",
+
+    "PTS":
+        "pts"
+
+};
+
+
+
+let subjectFile =
+    subjectNames[subject];
+
+
+
+/*
+ * A/L / English subjects
+ */
+
+if (!subjectFile) {
+
+    subjectFile =
+        subject
+            .toLowerCase()
+            .replace(/\s+/g, "-");
+
+}
+
+
+
+/*
+ * PDF filename
+ */
+
+const pdfPath =
+    "pdf/schemes/grade-" +
+    grade +
+    "-" +
+    subjectFile +
+    ".pdf";
+
+
+
+/*
+ * Page title
+ */
+
+schemeTitle.textContent =
+    "📚 " +
+    subject +
+    " – Grade " +
+    grade +
+    " Scheme";
+
+
+pdfTitle.textContent =
+    subject +
+    " – Grade " +
+    grade;
+
+
+
+/*
+ * PDF viewer
+ */
+
+pdfViewer.setAttribute(
+    "data",
+    pdfPath
+);
+
+
+
+/*
+ * Fallback link
+ */
+
+fallbackLink.href =
+    pdfPath;
+
+
+
+/*
+ * Download button
+ */
+
+downloadBtn.href =
+    pdfPath;
+
+
+})();
+
+</script>
+
+
+</body>
+
+</html>
