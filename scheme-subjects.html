@@ -125,170 +125,171 @@ Free Sri Lankan Educational Resource Website.
 
 <script src="assets/js/app.js"></script>
 
+  <script>
+
+(function () {
+
+    const schemeParams =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const schemeLevel =
+        schemeParams.get("level");
 
 
-<script>
+    const schemeSubjectLists = {
 
-const params =
-    new URLSearchParams(
-        window.location.search
-    );
+        primary: [
+            "தமிழ்",
+            "கணிதம்",
+            "சுற்றாடல்",
+            "ஆங்கிலம்",
+            "இரண்டாம் மொழி"
+        ],
 
-const level =
-    params.get("level");
+        secondary: [
+            "தமிழ்",
+            "கணிதம்",
+            "விஞ்ஞானம்",
+            "வரலாறு",
+            "புவியியல்",
+            "குடியியல்",
+            "ஆங்கிலம்",
+            "சுகாதாரம்",
+            "சைவசமயம்",
+            "கத்தோலிக்கம்",
+            "கிறிஸ்தவம்",
+            "இஸ்லாம்",
+            "அழகியல்",
+            "சிங்களம்",
+            "ICT",
+            "PTS"
+        ],
 
+        al: [
+            "Combined Mathematics",
+            "Physics",
+            "Chemistry",
+            "Biology",
+            "Agricultural Science",
+            "ICT",
+            "Accounting",
+            "Business Studies",
+            "Economics",
+            "தமிழ்",
+            "வரலாறு",
+            "புவியியல்",
+            "அரசியல் விஞ்ஞானம்",
+            "இந்து சமயம்",
+            "கிறிஸ்தவம்",
+            "கத்தோலிக்கம்",
+            "இந்து நாகரிகம்",
+            "கிறிஸ்தவ நாகரிகம்",
+            "தர்க்கவியல்",
+            "சித்திரம்",
+            "நடனம்",
+            "இசை",
+            "நாடகம்",
+            "Science for Technology",
+            "Engineering Technology",
+            "Bio Systems Technology"
+        ]
 
-const subjectLists = {
-
-    primary: [
-        "தமிழ்",
-        "கணிதம்",
-        "சுற்றாடல்",
-        "ஆங்கிலம்",
-        "இரண்டாம் மொழி"
-    ],
-
-    secondary: [
-        "தமிழ்",
-        "கணிதம்",
-        "விஞ்ஞானம்",
-        "வரலாறு",
-        "புவியியல்",
-        "குடியியல்",
-        "ஆங்கிலம்",
-        "சுகாதாரம்",
-        "சைவசமயம்",
-        "கத்தோலிக்கம்",
-        "கிறிஸ்தவம்",
-        "இஸ்லாம்",
-        "அழகியல்",
-        "சிங்களம்",
-        "ICT",
-        "PTS"
-    ],
-
-    al: [
-        "Combined Mathematics",
-        "Physics",
-        "Chemistry",
-        "Biology",
-        "Agricultural Science",
-        "ICT",
-        "Accounting",
-        "Business Studies",
-        "Economics",
-        "தமிழ்",
-        "வரலாறு",
-        "புவியியல்",
-        "அரசியல் விஞ்ஞானம்",
-        "இந்து சமயம்",
-        "கிறிஸ்தவம்",
-        "கத்தோலிக்கம்",
-        "இந்து நாகரிகம்",
-        "கிறிஸ்தவ நாகரிகம்",
-        "தர்க்கவியல்",
-        "சித்திரம்",
-        "நடனம்",
-        "இசை",
-        "நாடகம்",
-        "Science for Technology",
-        "Engineering Technology",
-        "Bio Systems Technology"
-    ]
-
-};
+    };
 
 
-const subjectGrid =
-    document.getElementById(
-        "subjectGrid"
-    );
+    const schemeSubjectGrid =
+        document.getElementById(
+            "subjectGrid"
+        );
+
+    const schemePageTitle =
+        document.getElementById(
+            "pageTitle"
+        );
+
+    const schemePageDescription =
+        document.getElementById(
+            "pageDescription"
+        );
 
 
-const pageTitle =
-    document.getElementById(
-        "pageTitle"
-    );
+    if (schemeLevel === "primary") {
+
+        schemePageTitle.textContent =
+            "📘 Grade 1 – 5 Schemes";
+
+    }
+
+    else if (schemeLevel === "secondary") {
+
+        schemePageTitle.textContent =
+            "📗 Grade 6 – 11 Schemes";
+
+    }
+
+    else if (schemeLevel === "al") {
+
+        schemePageTitle.textContent =
+            "📙 A/L Schemes";
+
+    }
+
+    else {
+
+        schemePageTitle.textContent =
+            "📚 Schemes";
+
+        schemePageDescription.textContent =
+            "Invalid selection.";
+
+        return;
+
+    }
 
 
-const pageDescription =
-    document.getElementById(
-        "pageDescription"
-    );
-
-
-if (
-    level === "primary"
-) {
-
-    pageTitle.textContent =
-        "📘 Grade 1 – 5 Schemes";
-
-    pageDescription.textContent =
+    schemePageDescription.textContent =
         "Select a subject";
 
-}
 
-else if (
-    level === "secondary"
-) {
-
-    pageTitle.textContent =
-        "📗 Grade 6 – 11 Schemes";
-
-    pageDescription.textContent =
-        "Select a subject";
-
-}
-
-else if (
-    level === "al"
-) {
-
-    pageTitle.textContent =
-        "📙 A/L Schemes";
-
-    pageDescription.textContent =
-        "Select a subject";
-
-}
+    const subjects =
+        schemeSubjectLists[schemeLevel];
 
 
-if (
-    subjectLists[level]
-) {
+    subjects.forEach(function (subject) {
 
-    subjectLists[level].forEach(
-        function(subject) {
+        const card =
+            document.createElement("a");
 
-            const card =
-                document.createElement(
-                    "a"
-                );
+        card.className =
+            "grade-card";
 
-            card.className =
-                "grade-card";
 
-            card.href =
-                "scheme-grades.html?level=" +
-                encodeURIComponent(level) +
-                "&subject=" +
-                encodeURIComponent(subject);
-
-            card.innerHTML =
-                "<h2>" +
-                subject +
-                "</h2>" +
-                "<p>View Schemes</p>";
-
-            subjectGrid.appendChild(
-                card
+        card.href =
+            "scheme-grades.html?level=" +
+            encodeURIComponent(
+                schemeLevel
+            ) +
+            "&subject=" +
+            encodeURIComponent(
+                subject
             );
 
-        }
-    );
 
-}
+        card.innerHTML = `
+            <h2>${subject}</h2>
+            <p>View Schemes</p>
+        `;
+
+
+        schemeSubjectGrid.appendChild(
+            card
+        );
+
+    });
+
+})();
 
 </script>
 </body>
