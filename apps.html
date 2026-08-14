@@ -541,33 +541,158 @@ Follow Us
 
 <script>
 
-const apps = [
+async function loadApps() {
 
-    {
-        id: "ethaksalawa",
-        platform: "android",
-        name: "e-Thaksalawa",
-        image: "assets/images/apps/ethaksalawa.jpg",
-        demo: "Official Sri Lankan online learning platform."
-    },
+    const androidApps =
+        document.getElementById("androidApps");
 
-    {
-        id: "slexams",
-        platform: "android",
-        name: "SLExam App",
-        image: "assets/images/apps/slexams.jpg",
-        demo: "Sri Lankan school exam papers and educational resources."
-    },
+    const windowsApps =
+        document.getElementById("windowsApps");
 
-    {
-        id: "slexams-windows",
-        platform: "windows",
-        name: "SLExam Windows App",
-        image: "assets/images/apps/slexams-windows.jpg",
-        demo: "SLExam educational resources for Windows."
+
+    try {
+
+        const response = await fetch(
+            "assets/data/apps.json?v=" +
+            Date.now()
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Apps data could not be loaded."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const apps =
+            data.apps || [];
+
+
+        /* =========================
+           CREATE APP CARD
+           ========================= */
+
+        function createAppCard(app) {
+
+            const card =
+                document.createElement("a");
+
+
+            card.className =
+                "app-card";
+
+
+            card.href =
+                "app-detail.html?id=" +
+                encodeURIComponent(app.id);
+
+
+            card.innerHTML = `
+
+                <img
+                    class="app-image"
+                    src="${app.image}"
+                    alt="${app.name}"
+                >
+
+
+                <h3 class="app-name">
+
+                    ${app.name}
+
+                </h3>
+
+
+                <p class="app-demo">
+
+                    ${app.demo || ""}
+
+                </p>
+
+            `;
+
+
+            return card;
+
+        }
+
+
+        /* =========================
+           DISPLAY APPS
+           ========================= */
+
+        apps.forEach(function(app) {
+
+            const card =
+                createAppCard(app);
+
+
+            if (
+                app.platform ===
+                "android"
+            ) {
+
+                androidApps.appendChild(
+                    card
+                );
+
+            }
+
+
+            else if (
+                app.platform ===
+                "windows"
+            ) {
+
+                windowsApps.appendChild(
+                    card
+                );
+
+            }
+
+        });
+
+
     }
 
-];
+    catch (error) {
+
+        console.error(
+            "Apps loading error:",
+            error
+        );
+
+
+        androidApps.innerHTML = `
+            <p>
+                Unable to load Android Apps.
+            </p>
+        `;
+
+
+        windowsApps.innerHTML = `
+            <p>
+                Unable to load Windows Apps.
+            </p>
+        `;
+
+    }
+
+}
+
+
+/* =========================
+   START
+   ========================= */
+
+loadApps();
 
 
 
