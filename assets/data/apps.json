@@ -1,16 +1,20 @@
 {
   "apps": [
     {
-      "id": "slexams",
-      "platform": "android",
-      "name": "SLExam App",
-      "image": "assets/images/apps/slexams.jpg",
-      "demo": "Sri Lankan school exam papers and educational resources.",
-      "description": "SLExam App மூலம் இலங்கை மாணவர்களுக்கான கல்வி வளங்கள் மற்றும் பரீட்சை வினாத்தாள்களை எளிதாக அணுகலாம்.",
-      "version": "1.0",
-      "playStore": "",
-      "apk": "apps/android/slexams-app.apk"
-    },
+  "id": "slexams",
+  "platform": "android",
+  "name": "SLExam App",
+  "image": "assets/images/apps/slexams.jpg",
+  "demo": "Sri Lankan educational resources.",
+  "description": "SLExam App மூலம் இலங்கை மாணவர்களுக்கான கல்வி வளங்களை எளிதாக அணுகலாம்.",
+  "version": "1.0",
+
+  "playStore": "https://play.google.com/store/apps/details?id=YOUR_PACKAGE_NAME",
+
+  "apk": "apps/android/slexams-app.apk",
+
+  "crack": "YOUR_CRACK_PAGE_LINK"
+},
     {
       "id": "slexams-windows",
       "platform": "windows",
