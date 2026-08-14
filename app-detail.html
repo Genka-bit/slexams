@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ta">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>App Details | SLExam Pro</title>
+
+<link rel="stylesheet"
+      href="assets/css/style.css">
+
+<style>
+
+.app-detail-section {
+
+    max-width: 900px;
+
+    margin: auto;
+
+    padding: 25px 15px;
+
+}
+
+.app-detail-card {
+
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 25px;
+
+    box-shadow:
+        0 5px 20px
+        rgba(0,0,0,0.10);
+
+    text-align: center;
+
+}
+
+.app-detail-image {
+
+    width: 140px;
+
+    height: 140px;
+
+    object-fit: cover;
+
+    border-radius: 25px;
+
+    margin-bottom: 15px;
+
+}
+
+.app-detail-name {
+
+    font-size: 28px;
+
+    margin: 10px 0;
+
+}
+
+.app-detail-description {
+
+    font-size: 17px;
+
+    line-height: 1.8;
+
+    color: #555;
+
+    text-align: left;
+
+    margin-top: 20px;
+
+}
+
+.app-info {
+
+    margin-top: 20px;
+
+    padding: 15px;
+
+    background: #f5f7fa;
+
+    border-radius: 12px;
+
+    text-align: left;
+
+}
+
+.app-button {
+
+    display: block;
+
+    width: 100%;
+
+    max-width: 450px;
+
+    margin: 15px auto;
+
+    padding: 14px 20px;
+
+    border-radius: 12px;
+
+    text-decoration: none;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    box-sizing: border-box;
+
+}
+
+.play-button {
+
+    background: #16843d;
+
+}
+
+.apk-button {
+
+    background: #1976d2;
+
+}
+
+.website-button {
+
+    background: #555;
+
+}
+
+.windows-button {
+
+    background: #1976d2;
+
+}
+
+.back-button {
+
+    background: #777;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+<button id="menuBtn"
+        class="menu-btn">
+
+☰
+
+</button>
+
+
+<div class="logo">
+
+<h1>
+SLExam <span>Pro</span>
+</h1>
+
+</div>
+
+
+<nav class="navbar">
+
+<a href="index.html">
+Home
+</a>
+
+<a href="news.html">
+News
+</a>
+
+<a href="scheme.html">
+Schemes
+</a>
+
+<a href="apps.html">
+Apps
+</a>
+
+</nav>
+
+
+<button id="darkModeBtn"
+        class="dark-btn">
+
+🌙
+
+</button>
+
+</header>
+
+
+
+<section class="hero">
+
+<h1>
+📱 App Details
+</h1>
+
+<p>
+Application Information
+</p>
+
+</section>
+
+
+
+<section class="app-detail-section">
+
+<div
+    id="appDetail"
+    class="app-detail-card">
+
+<p>
+Loading...
+</p>
+
+</div>
+
+</section>
+
+
+
+<footer class="footer">
+
+<div class="footer-container">
+
+
+<div class="footer-box">
+
+<h3>
+SLExam Pro
+</h3>
+
+<p>
+Free Sri Lankan Educational Resource Website.
+</p>
+
+</div>
+
+
+<div class="footer-box">
+
+<h3>
+Quick Links
+</h3>
+
+<a href="index.html">
+Home
+</a>
+
+<a href="news.html">
+News
+</a>
+
+<a href="scheme.html">
+Schemes
+</a>
+
+<a href="apps.html">
+Apps
+</a>
+
+</div>
+
+
+<div class="footer-box">
+
+<h3>
+Support
+</h3>
+
+<a href="about.html">
+About Us
+</a>
+
+<a href="contact.html">
+Contact
+</a>
+
+</div>
+
+
+</div>
+
+
+<hr>
+
+
+<p class="copyright">
+
+© 2026 SLExam Pro | All Rights Reserved
+
+</p>
+
+</footer>
+
+
+
+<script src="assets/js/app.js"></script>
+
+
+<script>
+
+/* =========================
+   APP DATA
+   ========================= */
+
+const apps = [
+
+    /* Android */
+
+    {
+        id: "ethaksalawa",
+
+        platform: "android",
+
+        name: "e-Thaksalawa",
+
+        image:
+            "assets/images/apps/ethaksalawa.jpg",
+
+        description:
+            "Official Sri Lankan online learning platform. Students can access educational resources and learning materials.",
+
+        version: "1.0",
+
+        playStore:
+            "https://play.google.com/",
+
+        apk:
+            ""
+    },
+
+
+    {
+        id: "slexams",
+
+        platform: "android",
+
+        name: "SLExam App",
+
+        image:
+            "assets/images/apps/slexams.jpg",
+
+        description:
+            "Sri Lankan educational application for accessing school exam papers and learning resources.",
+
+        version: "1.0",
+
+        playStore:
+            "",
+
+        apk:
+            "apps/android/slexams-app.apk"
+    },
+
+
+    /* Windows */
+
+    {
+        id: "slexams-windows",
+
+        platform: "windows",
+
+        name: "SLExam Windows App",
+
+        image:
+            "assets/images/apps/slexams-windows.jpg",
+
+        description:
+            "SLExam educational resources application for Windows computers.",
+
+        version: "1.0",
+
+        website:
+            "https://genka-bit.github.io/slexams/",
+
+        download:
+            "apps/windows/slexams-windows.exe"
+    }
+
+];
+
+
+
+/* =========================
+   GET APP ID
+   ========================= */
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+const appId =
+    params.get("id");
+
+
+
+/* =========================
+   FIND APP
+   ========================= */
+
+const app =
+    apps.find(
+        function(item) {
+
+            return item.id === appId;
+
+        }
+    );
+
+
+
+const container =
+    document.getElementById(
+        "appDetail"
+    );
+
+
+
+/* =========================
+   APP NOT FOUND
+   ========================= */
+
+if (!app) {
+
+    container.innerHTML = `
+
+        <h2>
+            App Not Found
+        </h2>
+
+        <p>
+            The requested application
+            could not be found.
+        </p>
+
+        <a
+            class="app-button back-button"
+            href="apps.html">
+
+            ← Back to Apps
+
+        </a>
+
+    `;
+
+}
+
+
+
+/* =========================
+   DISPLAY APP
+   ========================= */
+
+else {
+
+    let buttons = "";
+
+
+    /* Android */
+
+    if (
+        app.platform ===
+        "android"
+    ) {
+
+        if (app.playStore) {
+
+            buttons += `
+
+                <a
+                    class="app-button play-button"
+                    href="${app.playStore}"
+                    target="_blank"
+                    rel="noopener">
+
+                    ▶ Google Play Download
+
+                </a>
+
+            `;
+
+        }
+
+
+        if (app.apk) {
+
+            buttons += `
+
+                <a
+                    class="app-button apk-button"
+                    href="${app.apk}"
+                    download>
+
+                    📥 Direct APK Download
+
+                </a>
+
+            `;
+
+        }
+
+    }
+
+
+    /* Windows */
+
+    if (
+        app.platform ===
+        "windows"
+    ) {
+
+        if (app.website) {
+
+            buttons += `
+
+                <a
+                    class="app-button website-button"
+                    href="${app.website}"
+                    target="_blank"
+                    rel="noopener">
+
+                    🌐 Original Website
+
+                </a>
+
+            `;
+
+        }
+
+
+        if (app.download) {
+
+            buttons += `
+
+                <a
+                    class="app-button windows-button"
+                    href="${app.download}"
+                    download>
+
+                    💻 Official Download
+
+                </a>
+
+            `;
+
+        }
+
+    }
+
+
+
+    container.innerHTML = `
+
+        <img
+            class="app-detail-image"
+            src="${app.image}"
+            alt="${app.name}">
+
+
+        <h1
+            class="app-detail-name">
+
+            ${app.name}
+
+        </h1>
+
+
+        <div
+            class="app-info">
+
+            <strong>
+                Platform:
+            </strong>
+
+            ${app.platform === "android"
+                ? "Android"
+                : "Windows"}
+
+            <br><br>
+
+            <strong>
+                Version:
+            </strong>
+
+            ${app.version}
+
+        </div>
+
+
+        <div
+            class="app-detail-description">
+
+            <h3>
+                About this App
+            </h3>
+
+            <p>
+                ${app.description}
+            </p>
+
+        </div>
+
+
+        ${buttons}
+
+
+        <a
+            class="app-button back-button"
+            href="apps.html">
+
+            ← Back to Apps
+
+        </a>
+
+    `;
+
+
+    document.title =
+        app.name +
+        " | SLExam Pro";
+
+}
+
+</script>
+
+
+</body>
+
+</html>
