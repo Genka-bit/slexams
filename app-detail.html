@@ -317,43 +317,110 @@ Contact
 
 <script>
 
-/* =========================
-   APP DATA
-   ========================= */
-
 async function loadAppDetail() {
 
     const container =
         document.getElementById("appDetail");
 
-    try {
 
-        const response = await fetch(
-            "assets/data/apps.json?v=" +
-            Date.now()
+    /* =========================
+       GET APP ID FROM URL
+       ========================= */
+
+    const params =
+        new URLSearchParams(
+            window.location.search
         );
 
+    const appId =
+        params.get("id");
+
+
+    /* =========================
+       CHECK APP ID
+       ========================= */
+
+    if (!appId) {
+
+        container.innerHTML = `
+
+            <h2>
+                App Not Found
+            </h2>
+
+            <p>
+                No application was selected.
+            </p>
+
+            <a
+                class="app-button back-button"
+                href="apps.html">
+
+                ← Back to Apps
+
+            </a>
+
+        `;
+
+        return;
+    }
+
+
+    try {
+
+        /* =========================
+           LOAD apps.json
+           ========================= */
+
+        const response =
+            await fetch(
+                "assets/data/apps.json?v=" +
+                Date.now()
+            );
+
+
         if (!response.ok) {
+
             throw new Error(
                 "Apps data could not be loaded."
             );
+
         }
+
 
         const data =
             await response.json();
 
+
         const apps =
             data.apps || [];
 
+
+        /* =========================
+           FIND SELECTED APP
+           ========================= */
+
         const app =
-            apps.find(function(item) {
-                return item.id === appId;
-            });
+            apps.find(
+                function(item) {
+
+                    return item.id === appId;
+
+                }
+            );
+
+
+        /* =========================
+           APP NOT FOUND
+           ========================= */
 
         if (!app) {
 
             container.innerHTML = `
-                <h2>App Not Found</h2>
+
+                <h2>
+                    App Not Found
+                </h2>
 
                 <p>
                     The requested application
@@ -367,14 +434,211 @@ async function loadAppDetail() {
                     ← Back to Apps
 
                 </a>
+
             `;
 
             return;
+
         }
 
-        /* இங்கிருந்து
-           உங்கள் தற்போதைய
-           Display App code வரும் */
+
+        /* =========================
+           BUTTONS
+           ========================= */
+
+        let buttons = "";
+
+
+        /* =========================
+           ANDROID
+           ========================= */
+
+        if (
+            app.platform ===
+            "android"
+        ) {
+
+
+            if (app.playStore) {
+
+                buttons += `
+
+                    <a
+                        class="app-button play-button"
+                        href="${app.playStore}"
+                        target="_blank"
+                        rel="noopener">
+
+                        ▶ Google Play Download
+
+                    </a>
+
+                `;
+
+            }
+
+
+            if (app.apk) {
+
+                buttons += `
+
+                    <a
+                        class="app-button apk-button"
+                        href="${app.apk}"
+                        download>
+
+                        📥 Direct APK Download
+
+                    </a>
+
+                `;
+
+            }
+
+        }
+
+
+        /* =========================
+           WINDOWS
+           ========================= */
+
+        if (
+            app.platform ===
+            "windows"
+        ) {
+
+
+            if (app.website) {
+
+                buttons += `
+
+                    <a
+                        class="app-button website-button"
+                        href="${app.website}"
+                        target="_blank"
+                        rel="noopener">
+
+                        🌐 Original Website
+
+                    </a>
+
+                `;
+
+            }
+
+
+            if (app.download) {
+
+                buttons += `
+
+                    <a
+                        class="app-button windows-button"
+                        href="${app.download}"
+                        download>
+
+                        💻 Official Download
+
+                    </a>
+
+                `;
+
+            }
+
+        }
+
+
+        /* =========================
+           DISPLAY APP
+           ========================= */
+
+        container.innerHTML = `
+
+            <img
+                class="app-detail-image"
+                src="${app.image}"
+                alt="${app.name}">
+
+
+            <h1
+                class="app-detail-name">
+
+                ${app.name}
+
+            </h1>
+
+
+            <div
+                class="app-info">
+
+                <strong>
+                    Platform:
+                </strong>
+
+                ${
+                    app.platform === "android"
+                    ? "Android"
+                    : "Windows"
+                }
+
+
+                <br><br>
+
+
+                <strong>
+                    Version:
+                </strong>
+
+                ${
+                    app.version ||
+                    "Not specified"
+                }
+
+            </div>
+
+
+            <div
+                class="app-detail-description">
+
+                <h3>
+                    About this App
+                </h3>
+
+
+                <p>
+
+                    ${
+                        app.description ||
+                        app.demo ||
+                        ""
+                    }
+
+                </p>
+
+            </div>
+
+
+            ${buttons}
+
+
+            <a
+                class="app-button back-button"
+                href="apps.html">
+
+                ← Back to Apps
+
+            </a>
+
+        `;
+
+
+        /* =========================
+           PAGE TITLE
+           ========================= */
+
+        document.title =
+            app.name +
+            " | SLExam Pro";
+
 
     }
 
@@ -385,13 +649,15 @@ async function loadAppDetail() {
             error
         );
 
+
         container.innerHTML = `
+
             <h2>
                 Unable to Load App
             </h2>
 
             <p>
-                Please try again later.
+                Apps data could not be loaded.
             </p>
 
             <a
@@ -401,256 +667,19 @@ async function loadAppDetail() {
                 ← Back to Apps
 
             </a>
+
         `;
 
     }
 
 }
 
+
+/* =========================
+   START
+   ========================= */
+
 loadAppDetail();
-
-
-/* =========================
-   GET APP ID
-   ========================= */
-
-const params =
-    new URLSearchParams(
-        window.location.search
-    );
-
-
-const appId =
-    params.get("id");
-
-
-
-/* =========================
-   FIND APP
-   ========================= */
-
-const app =
-    apps.find(
-        function(item) {
-
-            return item.id === appId;
-
-        }
-    );
-
-
-
-const container =
-    document.getElementById(
-        "appDetail"
-    );
-
-
-
-/* =========================
-   APP NOT FOUND
-   ========================= */
-
-if (!app) {
-
-    container.innerHTML = `
-
-        <h2>
-            App Not Found
-        </h2>
-
-        <p>
-            The requested application
-            could not be found.
-        </p>
-
-        <a
-            class="app-button back-button"
-            href="apps.html">
-
-            ← Back to Apps
-
-        </a>
-
-    `;
-
-}
-
-
-
-/* =========================
-   DISPLAY APP
-   ========================= */
-
-else {
-
-    let buttons = "";
-
-
-    /* Android */
-
-    if (
-        app.platform ===
-        "android"
-    ) {
-
-        if (app.playStore) {
-
-            buttons += `
-
-                <a
-                    class="app-button play-button"
-                    href="${app.playStore}"
-                    target="_blank"
-                    rel="noopener">
-
-                    ▶ Google Play Download
-
-                </a>
-
-            `;
-
-        }
-
-
-        if (app.apk) {
-
-            buttons += `
-
-                <a
-                    class="app-button apk-button"
-                    href="${app.apk}"
-                    download>
-
-                    📥 Direct APK Download
-
-                </a>
-
-            `;
-
-        }
-
-    }
-
-
-    /* Windows */
-
-    if (
-        app.platform ===
-        "windows"
-    ) {
-
-        if (app.website) {
-
-            buttons += `
-
-                <a
-                    class="app-button website-button"
-                    href="${app.website}"
-                    target="_blank"
-                    rel="noopener">
-
-                    🌐 Original Website
-
-                </a>
-
-            `;
-
-        }
-
-
-        if (app.download) {
-
-            buttons += `
-
-                <a
-                    class="app-button windows-button"
-                    href="${app.download}"
-                    download>
-
-                    💻 Official Download
-
-                </a>
-
-            `;
-
-        }
-
-    }
-
-
-
-    container.innerHTML = `
-
-        <img
-            class="app-detail-image"
-            src="${app.image}"
-            alt="${app.name}">
-
-
-        <h1
-            class="app-detail-name">
-
-            ${app.name}
-
-        </h1>
-
-
-        <div
-            class="app-info">
-
-            <strong>
-                Platform:
-            </strong>
-
-            ${app.platform === "android"
-                ? "Android"
-                : "Windows"}
-
-            <br><br>
-
-            <strong>
-                Version:
-            </strong>
-
-            ${app.version}
-
-        </div>
-
-
-        <div
-            class="app-detail-description">
-
-            <h3>
-                About this App
-            </h3>
-
-            <p>
-                ${app.description}
-            </p>
-
-        </div>
-
-
-        ${buttons}
-
-
-        <a
-            class="app-button back-button"
-            href="apps.html">
-
-            ← Back to Apps
-
-        </a>
-
-    `;
-
-
-    document.title =
-        app.name +
-        " | SLExam Pro";
-
-}
 
 </script>
 
