@@ -14,7 +14,92 @@
       href="assets/css/style.css">
 
 <style>
+/* =========================
+   PLATFORM BUTTONS
+   ========================= */
 
+.app-platform-buttons {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 20px;
+
+    flex-wrap: wrap;
+
+    margin: 20px auto 30px auto;
+
+}
+
+
+.app-platform-btn {
+
+    min-width: 220px;
+
+    padding: 15px 25px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #1976d2;
+
+    color: white;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+}
+
+
+.app-platform-btn:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 5px 15px
+        rgba(0,0,0,0.18);
+
+}
+
+
+/* Active button */
+
+.app-platform-btn.active {
+
+    background: #0d47a1;
+
+}
+
+
+/* Mobile */
+
+@media (max-width:600px) {
+
+    .app-platform-buttons {
+
+        flex-direction: column;
+
+        align-items: center;
+
+    }
+
+
+    .app-platform-btn {
+
+        width: 100%;
+
+        max-width: 350px;
+
+    }
+
+}
 /* =========================
    APP SECTIONS
    ========================= */
@@ -258,53 +343,85 @@ Useful Educational Applications
 
 
 
+
+
 <!-- =========================
-     ANDROID APPS
+     APP PLATFORM BUTTONS
      ========================= -->
 
 <section class="apps-section">
 
+    <div class="app-platform-buttons">
 
-<h2 class="apps-section-title">
+        <button
+            id="androidBtn"
+            class="app-platform-btn">
 
-🤖 Android Apps
+            🤖 Android Apps
 
-</h2>
+        </button>
 
 
-<div
-    id="androidApps"
-    class="apps-grid">
+        <button
+            id="windowsBtn"
+            class="app-platform-btn">
 
-</div>
+            🪟 Windows Apps
 
+        </button>
+
+    </div>
 
 </section>
 
+
+<!-- =========================
+     ANDROID APPS
+     ========================= -->
+
+<section
+    id="androidSection"
+    class="apps-section"
+    style="display:none;">
+
+    <h2 class="apps-section-title">
+
+        🤖 Android Apps
+
+    </h2>
+
+    <div
+        id="androidApps"
+        class="apps-grid">
+
+    </div>
+
+</section>
 
 
 <!-- =========================
      WINDOWS APPS
      ========================= -->
 
-<section class="apps-section">
+<section
+    id="windowsSection"
+    class="apps-section"
+    style="display:none;">
 
+    <h2 class="apps-section-title">
 
-<h2 class="apps-section-title">
+        🪟 Windows Apps
 
-🪟 Windows Apps
+    </h2>
 
-</h2>
+    <div
+        id="windowsApps"
+        class="apps-grid">
 
-
-<div
-    id="windowsApps"
-    class="apps-grid">
-
-</div>
-
+    </div>
 
 </section>
+
 
 
 
@@ -559,7 +676,82 @@ apps.forEach(
 
     }
 );
+/* =========================
+   PLATFORM BUTTONS
+   ========================= */
 
+const androidBtn =
+    document.getElementById(
+        "androidBtn"
+    );
+
+
+const windowsBtn =
+    document.getElementById(
+        "windowsBtn"
+    );
+
+
+const androidSection =
+    document.getElementById(
+        "androidSection"
+    );
+
+
+const windowsSection =
+    document.getElementById(
+        "windowsSection"
+    );
+
+
+/* Android */
+
+androidBtn.addEventListener(
+    "click",
+    function() {
+
+        androidSection.style.display =
+            "block";
+
+        windowsSection.style.display =
+            "none";
+
+
+        androidBtn.classList.add(
+            "active"
+        );
+
+        windowsBtn.classList.remove(
+            "active"
+        );
+
+    }
+);
+
+
+/* Windows */
+
+windowsBtn.addEventListener(
+    "click",
+    function() {
+
+        windowsSection.style.display =
+            "block";
+
+        androidSection.style.display =
+            "none";
+
+
+        windowsBtn.classList.add(
+            "active"
+        );
+
+        androidBtn.classList.remove(
+            "active"
+        );
+
+    }
+);
 </script>
 
 
