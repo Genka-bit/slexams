@@ -533,35 +533,92 @@ Follow Us
 
 <script src="assets/js/app.js"></script>
 
-
-
-<!-- =========================
-     APP DATA
-     ========================= -->
-
 <script>
+
+/* =========================
+   ELEMENTS
+   ========================= */
+
+const androidApps =
+    document.getElementById("androidApps");
+
+const windowsApps =
+    document.getElementById("windowsApps");
+
+const androidBtn =
+    document.getElementById("androidBtn");
+
+const windowsBtn =
+    document.getElementById("windowsBtn");
+
+const androidSection =
+    document.getElementById("androidSection");
+
+const windowsSection =
+    document.getElementById("windowsSection");
+
+
+/* =========================
+   CREATE APP CARD
+   ========================= */
+
+function createAppCard(app) {
+
+    const card =
+        document.createElement("a");
+
+    card.className =
+        "app-card";
+
+    card.href =
+        "app-detail.html?id=" +
+        encodeURIComponent(app.id);
+
+    card.innerHTML = `
+
+        <img
+            class="app-image"
+            src="${app.image}"
+            alt="${app.name}"
+        >
+
+        <h3 class="app-name">
+
+            ${app.name}
+
+        </h3>
+
+        <p class="app-demo">
+
+            ${app.demo || ""}
+
+        </p>
+
+    `;
+
+    return card;
+}
+
+
+/* =========================
+   LOAD APPS FROM JSON
+   ========================= */
 
 async function loadApps() {
 
-    const androidApps =
-        document.getElementById("androidApps");
-
-    const windowsApps =
-        document.getElementById("windowsApps");
-
-
     try {
 
-        const response = await fetch(
-            "assets/data/apps.json?v=" +
-            Date.now()
-        );
+        const response =
+            await fetch(
+                "assets/data/apps.json?v=" +
+                Date.now()
+            );
 
 
         if (!response.ok) {
 
             throw new Error(
-                "Apps data could not be loaded."
+                "Apps JSON could not be loaded."
             );
 
         }
@@ -575,89 +632,49 @@ async function loadApps() {
             data.apps || [];
 
 
-        /* =========================
-           CREATE APP CARD
-           ========================= */
+        /* Clear existing cards */
 
-        function createAppCard(app) {
+        androidApps.innerHTML = "";
 
-            const card =
-                document.createElement("a");
-
-
-            card.className =
-                "app-card";
-
-
-            card.href =
-                "app-detail.html?id=" +
-                encodeURIComponent(app.id);
-
-
-            card.innerHTML = `
-
-                <img
-                    class="app-image"
-                    src="${app.image}"
-                    alt="${app.name}"
-                >
-
-
-                <h3 class="app-name">
-
-                    ${app.name}
-
-                </h3>
-
-
-                <p class="app-demo">
-
-                    ${app.demo || ""}
-
-                </p>
-
-            `;
-
-
-            return card;
-
-        }
+        windowsApps.innerHTML = "";
 
 
         /* =========================
            DISPLAY APPS
            ========================= */
 
-        apps.forEach(function(app) {
+        apps.forEach(
+            function(app) {
 
-            const card =
-                createAppCard(app);
+                const card =
+                    createAppCard(app);
 
 
-            if (
-                app.platform ===
-                "android"
-            ) {
+                if (
+                    app.platform ===
+                    "android"
+                ) {
 
-                androidApps.appendChild(
-                    card
-                );
+                    androidApps.appendChild(
+                        card
+                    );
+
+                }
+
+
+                if (
+                    app.platform ===
+                    "windows"
+                ) {
+
+                    windowsApps.appendChild(
+                        card
+                    );
+
+                }
 
             }
-
-
-            else if (
-                app.platform ===
-                "windows"
-            ) {
-
-                windowsApps.appendChild(
-                    card
-                );
-
-            }
-
-        });
+        );
 
 
     }
@@ -689,147 +706,8 @@ async function loadApps() {
 
 
 /* =========================
-   START
+   ANDROID BUTTON
    ========================= */
-
-loadApps();
-
-
-
-/* =========================
-   CREATE APP CARD
-   ========================= */
-
-function createAppCard(app) {
-
-
-    const card =
-        document.createElement("a");
-
-
-    card.className =
-        "app-card";
-
-
-    card.href =
-        "app-detail.html?id=" +
-        encodeURIComponent(
-            app.id
-        );
-
-
-    card.innerHTML = `
-
-        <img
-            class="app-image"
-            src="${app.image}"
-            alt="${app.name}"
-        >
-
-
-        <h3
-            class="app-name">
-
-            ${app.name}
-
-        </h3>
-
-
-        <p
-            class="app-demo">
-
-            ${app.demo}
-
-        </p>
-
-    `;
-
-
-    return card;
-
-}
-
-
-
-/* =========================
-   DISPLAY APPS
-   ========================= */
-
-const androidApps =
-    document.getElementById(
-        "androidApps"
-    );
-
-
-const windowsApps =
-    document.getElementById(
-        "windowsApps"
-    );
-
-
-
-apps.forEach(
-    function(app) {
-
-
-        const card =
-            createAppCard(app);
-
-
-        if (
-            app.platform ===
-            "android"
-        ) {
-
-            androidApps.appendChild(
-                card
-            );
-
-        }
-
-
-        else if (
-            app.platform ===
-            "windows"
-        ) {
-
-            windowsApps.appendChild(
-                card
-            );
-
-        }
-
-    }
-);
-/* =========================
-   PLATFORM BUTTONS
-   ========================= */
-
-const androidBtn =
-    document.getElementById(
-        "androidBtn"
-    );
-
-
-const windowsBtn =
-    document.getElementById(
-        "windowsBtn"
-    );
-
-
-const androidSection =
-    document.getElementById(
-        "androidSection"
-    );
-
-
-const windowsSection =
-    document.getElementById(
-        "windowsSection"
-    );
-
-
-/* Android */
 
 androidBtn.addEventListener(
     "click",
@@ -854,7 +732,9 @@ androidBtn.addEventListener(
 );
 
 
-/* Windows */
+/* =========================
+   WINDOWS BUTTON
+   ========================= */
 
 windowsBtn.addEventListener(
     "click",
@@ -877,8 +757,15 @@ windowsBtn.addEventListener(
 
     }
 );
-</script>
 
+
+/* =========================
+   LOAD DATA
+   ========================= */
+
+loadApps();
+
+</script>
 
 </body>
 
