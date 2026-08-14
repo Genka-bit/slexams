@@ -494,6 +494,23 @@ async function loadAppDetail() {
                 `;
 
             }
+if (app.crack) {
+
+    buttons += `
+
+        <a
+            class="app-button apk-button"
+            href="${app.crack}"
+            target="_blank"
+            rel="noopener">
+
+            🔓 Crack Download
+
+        </a>
+
+    `;
+
+}
 
         }
 
