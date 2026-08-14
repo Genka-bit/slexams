@@ -321,82 +321,93 @@ Contact
    APP DATA
    ========================= */
 
-const apps = [
+async function loadAppDetail() {
 
-    /* Android */
+    const container =
+        document.getElementById("appDetail");
 
-    {
-        id: "ethaksalawa",
+    try {
 
-        platform: "android",
+        const response = await fetch(
+            "assets/data/apps.json?v=" +
+            Date.now()
+        );
 
-        name: "e-Thaksalawa",
+        if (!response.ok) {
+            throw new Error(
+                "Apps data could not be loaded."
+            );
+        }
 
-        image:
-            "assets/images/apps/ethaksalawa.jpg",
+        const data =
+            await response.json();
 
-        description:
-            "Official Sri Lankan online learning platform. Students can access educational resources and learning materials.",
+        const apps =
+            data.apps || [];
 
-        version: "1.0",
+        const app =
+            apps.find(function(item) {
+                return item.id === appId;
+            });
 
-        playStore:
-            "https://play.google.com/",
+        if (!app) {
 
-        apk:
-            ""
-    },
+            container.innerHTML = `
+                <h2>App Not Found</h2>
 
+                <p>
+                    The requested application
+                    could not be found.
+                </p>
 
-    {
-        id: "slexams",
+                <a
+                    class="app-button back-button"
+                    href="apps.html">
 
-        platform: "android",
+                    ← Back to Apps
 
-        name: "SLExam App",
+                </a>
+            `;
 
-        image:
-            "assets/images/apps/slexams.jpg",
+            return;
+        }
 
-        description:
-            "Sri Lankan educational application for accessing school exam papers and learning resources.",
+        /* இங்கிருந்து
+           உங்கள் தற்போதைய
+           Display App code வரும் */
 
-        version: "1.0",
-
-        playStore:
-            "",
-
-        apk:
-            "apps/android/slexams-app.apk"
-    },
-
-
-    /* Windows */
-
-    {
-        id: "slexams-windows",
-
-        platform: "windows",
-
-        name: "SLExam Windows App",
-
-        image:
-            "assets/images/apps/slexams-windows.jpg",
-
-        description:
-            "SLExam educational resources application for Windows computers.",
-
-        version: "1.0",
-
-        website:
-            "https://genka-bit.github.io/slexams/",
-
-        download:
-            "apps/windows/slexams-windows.exe"
     }
 
-];
+    catch (error) {
 
+        console.error(
+            "App detail error:",
+            error
+        );
+
+        container.innerHTML = `
+            <h2>
+                Unable to Load App
+            </h2>
+
+            <p>
+                Please try again later.
+            </p>
+
+            <a
+                class="app-button back-button"
+                href="apps.html">
+
+                ← Back to Apps
+
+            </a>
+        `;
+
+    }
+
+}
+
+loadAppDetail();
 
 
 /* =========================
