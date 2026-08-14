@@ -1,142 +1,568 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ta">
+
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>Education Apps | SLExam Pro</title>
 
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet"
+      href="assets/css/style.css">
+
+<style>
+
+/* =========================
+   APP SECTIONS
+   ========================= */
+
+.apps-section {
+
+    padding: 20px;
+
+    max-width: 1200px;
+
+    margin: auto;
+}
+
+
+.apps-section-title {
+
+    margin-bottom: 20px;
+
+    font-size: 25px;
+}
+
+
+/* =========================
+   APP GRID
+   ========================= */
+
+.apps-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(240px, 1fr)
+        );
+
+    gap: 20px;
+
+    margin-bottom: 45px;
+}
+
+
+/* =========================
+   APP CARD
+   ========================= */
+
+.app-card {
+
+    display: block;
+
+    text-decoration: none;
+
+    color: inherit;
+
+    background: white;
+
+    border-radius: 15px;
+
+    padding: 15px;
+
+    box-shadow:
+        0 4px 15px
+        rgba(0,0,0,0.10);
+
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+
+    cursor: pointer;
+}
+
+
+.app-card:hover {
+
+    transform:
+        translateY(-5px);
+
+    box-shadow:
+        0 8px 22px
+        rgba(0,0,0,0.16);
+}
+
+
+/* =========================
+   APP IMAGE
+   ========================= */
+
+.app-image {
+
+    width: 80px;
+
+    height: 80px;
+
+    object-fit: cover;
+
+    border-radius: 16px;
+
+    display: block;
+
+    margin-bottom: 12px;
+}
+
+
+/* =========================
+   APP NAME
+   ========================= */
+
+.app-name {
+
+    font-size: 20px;
+
+    margin:
+        5px 0 8px 0;
+}
+
+
+/* =========================
+   APP DEMO
+   ========================= */
+
+.app-demo {
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+    color: #666;
+
+    margin: 0;
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .apps-section {
+
+        padding:
+            15px;
+
+    }
+
+    .apps-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .app-card {
+
+        padding: 14px;
+
+    }
+
+}
+
+</style>
 
 </head>
+
+
 <body>
 
+
+<!-- =========================
+     HEADER
+     ========================= -->
+
 <header class="header">
-<button id="menuBtn" class="menu-btn">
+
+
+<button id="menuBtn"
+        class="menu-btn">
+
 ☰
+
 </button>
+
+
 <div class="logo">
-<h1>SLExam <span>Pro</span></h1>
+
+<h1>
+SLExam <span>Pro</span>
+</h1>
+
 </div>
 
+
 <nav class="navbar">
-<a href="index.html">Home</a>
-<a href="news.html">News</a>
-<a href="scheme.html">Schemes</a>
-<a href="apps.html">Apps</a>
+
+<a href="index.html">
+Home
+</a>
+
+<a href="news.html">
+News
+</a>
+
+<a href="scheme.html">
+Schemes
+</a>
+
+<a href="apps.html">
+Apps
+</a>
+
 </nav>
-<button id="darkModeBtn" class="dark-btn">
+
+
+<button id="darkModeBtn"
+        class="dark-btn">
+
 🌙
+
 </button>
+
+
 </header>
+
+
+
+<!-- =========================
+     HERO
+     ========================= -->
 
 <section class="hero">
 
-<h1>Education Apps</h1>
+<h1>
+📱 Education Apps
+</h1>
 
-<p>Useful Educational Applications</p>
+<p>
+Useful Educational Applications
+</p>
+
+</section>
+
+
+
+<!-- =========================
+     ANDROID APPS
+     ========================= -->
+
+<section class="apps-section">
+
+
+<h2 class="apps-section-title">
+
+🤖 Android Apps
+
+</h2>
+
+
+<div
+    id="androidApps"
+    class="apps-grid">
+
+</div>
+
 
 </section>
 
-<section class="news-section">
 
-<div class="news-card">
 
-<h2>📚 e-Thaksalawa</h2>
+<!-- =========================
+     WINDOWS APPS
+     ========================= -->
 
-<p>Official Sri Lankan online learning platform.</p>
+<section class="apps-section">
 
-<a class="grade-card"
-href="https://www.e-thaksalawa.moe.gov.lk/"
-target="_blank">
 
-Visit Website
+<h2 class="apps-section-title">
 
-</a>
+🪟 Windows Apps
 
-</div>
+</h2>
 
-<div class="news-card">
 
-<h2>📖 Past Papers</h2>
-
-<p>Access exam papers through SLExam Pro.</p>
-
-<a class="grade-card"
-href="index.html">
-
-Open
-
-</a>
+<div
+    id="windowsApps"
+    class="apps-grid">
 
 </div>
 
-<div class="news-card">
-
-<h2>💻 Microsoft Learn</h2>
-
-<p>Learn Microsoft technologies for free.</p>
-
-<a class="grade-card"
-href="https://learn.microsoft.com/"
-target="_blank">
-
-Visit Website
-
-</a>
-
-</div>
 
 </section>
+
+
+
+<!-- =========================
+     FOOTER
+     ========================= -->
 
 <footer class="footer">
 
+
 <div class="footer-container">
 
-<div class="footer-box">
-<h3>SLExam Pro</h3>
-<p>Free Sri Lankan Educational Resource Website.</p>
-</div>
 
 <div class="footer-box">
-<h3>Quick Links</h3>
 
-<a href="index.html">Home</a>
-<a href="news.html">News</a>
-<a href="scheme.html">Schemes</a>
-<a href="apps.html">Apps</a>
+<h3>
+SLExam Pro
+</h3>
+
+<p>
+Free Sri Lankan Educational Resource Website.
+</p>
 
 </div>
+
+
 
 <div class="footer-box">
-<h3>Support</h3>
 
-<a href="about.html">About Us</a>
-<a href="contact.html">Contact</a>
+<h3>
+Quick Links
+</h3>
+
+<a href="index.html">
+Home
+</a>
+
+<a href="news.html">
+News
+</a>
+
+<a href="scheme.html">
+Schemes
+</a>
+
+<a href="apps.html">
+Apps
+</a>
 
 </div>
+
+
 
 <div class="footer-box">
-<h3>Follow Us</h3>
 
-<p>📘 Facebook</p>
-<p>▶️ YouTube</p>
-<p>📸 Instagram</p>
+<h3>
+Support
+</h3>
+
+<a href="about.html">
+About Us
+</a>
+
+<a href="contact.html">
+Contact
+</a>
 
 </div>
 
+
+
+<div class="footer-box">
+
+<h3>
+Follow Us
+</h3>
+
+<p>
+📘 Facebook
+</p>
+
+<p>
+▶️ YouTube
+</p>
+
+<p>
+📸 Instagram
+</p>
+
 </div>
+
+
+</div>
+
 
 <hr>
 
+
 <p class="copyright">
+
 © 2026 SLExam Pro | All Rights Reserved
+
 </p>
+
 
 </footer>
 
+
+
 <script src="assets/js/app.js"></script>
 
+
+
+<!-- =========================
+     APP DATA
+     ========================= -->
+
+<script>
+
+const apps = [
+
+    {
+        id: "ethaksalawa",
+        platform: "android",
+        name: "e-Thaksalawa",
+        image: "assets/images/apps/ethaksalawa.jpg",
+        demo: "Official Sri Lankan online learning platform."
+    },
+
+    {
+        id: "slexams",
+        platform: "android",
+        name: "SLExam App",
+        image: "assets/images/apps/slexams.jpg",
+        demo: "Sri Lankan school exam papers and educational resources."
+    },
+
+    {
+        id: "slexams-windows",
+        platform: "windows",
+        name: "SLExam Windows App",
+        image: "assets/images/apps/slexams-windows.jpg",
+        demo: "SLExam educational resources for Windows."
+    }
+
+];
+
+
+
+/* =========================
+   CREATE APP CARD
+   ========================= */
+
+function createAppCard(app) {
+
+
+    const card =
+        document.createElement("a");
+
+
+    card.className =
+        "app-card";
+
+
+    card.href =
+        "app-detail.html?id=" +
+        encodeURIComponent(
+            app.id
+        );
+
+
+    card.innerHTML = `
+
+        <img
+            class="app-image"
+            src="${app.image}"
+            alt="${app.name}"
+        >
+
+
+        <h3
+            class="app-name">
+
+            ${app.name}
+
+        </h3>
+
+
+        <p
+            class="app-demo">
+
+            ${app.demo}
+
+        </p>
+
+    `;
+
+
+    return card;
+
+}
+
+
+
+/* =========================
+   DISPLAY APPS
+   ========================= */
+
+const androidApps =
+    document.getElementById(
+        "androidApps"
+    );
+
+
+const windowsApps =
+    document.getElementById(
+        "windowsApps"
+    );
+
+
+
+apps.forEach(
+    function(app) {
+
+
+        const card =
+            createAppCard(app);
+
+
+        if (
+            app.platform ===
+            "android"
+        ) {
+
+            androidApps.appendChild(
+                card
+            );
+
+        }
+
+
+        else if (
+            app.platform ===
+            "windows"
+        ) {
+
+            windowsApps.appendChild(
+                card
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+
 </body>
+
 </html>
