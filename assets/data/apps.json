@@ -15,16 +15,16 @@
 
   "crack": "YOUR_CRACK_PAGE_LINK"
 },
-    {
-  "id": "example-windows-app",
+  {
+  "id": "my-windows-app",
   "platform": "windows",
   "name": "My Windows App",
-  "image": "assets/images/apps/windows-app.jpg",
-  "demo": "Windows மாணவர்களுக்கான கல்வி பயன்பாடு.",
-  "description": "இந்த Windows application பற்றிய முழுமையான சிறிய விளக்கம் இங்கே வரும்.",
+  "image": "assets/images/apps/my-windows-app.jpg",
+  "demo": "Windows கல்வி பயன்பாடு.",
+  "description": "இந்த application பற்றிய சிறிய விளக்கம்.",
   "version": "1.0",
   "website": "https://example.com",
-  "download": "apps/windows/example-windows-app.exe"
+  "download": "apps/windows/my-windows-app.exe"
 }
   ]
 }
