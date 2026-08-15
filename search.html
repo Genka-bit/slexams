@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="ta">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Search | SLExam Pro</title>
+
+<link rel="stylesheet"
+      href="assets/css/style.css">
+
+<style>
+
+/* =========================
+   SEARCH AREA
+   ========================= */
+
+.search-section {
+
+    max-width: 1100px;
+
+    margin: auto;
+
+    padding: 25px 15px;
+
+}
+
+
+/* =========================
+   SEARCH BOX
+   ========================= */
+
+.search-box {
+
+    display: flex;
+
+    gap: 10px;
+
+    max-width: 800px;
+
+    margin: 0 auto 25px auto;
+
+}
+
+
+.search-input {
+
+    flex: 1;
+
+    padding: 15px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 12px;
+
+    font-size: 17px;
+
+    outline: none;
+
+}
+
+
+.search-input:focus {
+
+    border-color: #1976d2;
+
+}
+
+
+.search-button {
+
+    padding: 15px 25px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #1976d2;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+/* =========================
+   FILTERS
+   ========================= */
+
+.search-filters {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 30px;
+
+}
+
+
+.search-filter {
+
+    padding: 10px 14px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 10px;
+
+    background: white;
+
+}
+
+
+/* =========================
+   RESULT TITLE
+   ========================= */
+
+.results-title {
+
+    margin-bottom: 20px;
+
+}
+
+
+/* =========================
+   RESULT CARD
+   ========================= */
+
+.search-result-card {
+
+    display: block;
+
+    text-decoration: none;
+
+    color: inherit;
+
+    background: white;
+
+    border-radius: 15px;
+
+    padding: 18px;
+
+    margin-bottom: 15px;
+
+    box-shadow:
+        0 4px 15px
+        rgba(0,0,0,0.08);
+
+    transition: 0.2s;
+
+}
+
+
+.search-result-card:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 7px 20px
+        rgba(0,0,0,0.13);
+
+}
+
+
+.result-type {
+
+    display: inline-block;
+
+    padding: 5px 10px;
+
+    border-radius: 8px;
+
+    background: #e3f2fd;
+
+    color: #1565c0;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+
+}
+
+
+.search-result-card h3 {
+
+    margin: 5px 0;
+
+}
+
+
+.search-result-card p {
+
+    color: #666;
+
+    line-height: 1.6;
+
+    margin: 5px 0;
+
+}
+
+
+/* =========================
+   NO RESULTS
+   ========================= */
+
+.no-results {
+
+    text-align: center;
+
+    padding: 40px 20px;
+
+    color: #777;
+
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width:600px) {
+
+    .search-box {
+
+        flex-direction: column;
+
+    }
+
+    .search-button {
+
+        width: 100%;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     HEADER
+     ========================= -->
+
+<header class="header">
+
+<button id="menuBtn"
+        class="menu-btn">
+
+☰
+
+</button>
+
+
+<div class="logo">
+
+<h1>
+SLExam <span>Pro</span>
+</h1>
+
+</div>
+
+
+<nav class="navbar">
+
+<a href="index.html">
+Home
+</a>
+
+<a href="news.html">
+News
+</a>
+
+<a href="scheme.html">
+Schemes
+</a>
+
+<a href="apps.html">
+Apps
+</a>
+
+</nav>
+
+
+<button id="darkModeBtn"
+        class="dark-btn">
+
+🌙
+
+</button>
+
+</header>
+
+
+
+<!-- =========================
+     HERO
+     ========================= -->
+
+<section class="hero">
+
+<h1>
+🔎 Search SLExam
+</h1>
+
+<p>
+Find exam papers, schemes, news and apps
+</p>
+
+</section>
+
+
+
+<!-- =========================
+     SEARCH
+     ========================= -->
+
+<section class="search-section">
+
+
+<div class="search-box">
+
+<input
+    id="searchInput"
+    class="search-input"
+    type="search"
+    placeholder="Search Mathematics, Grade 10, Physics..."
+>
+
+
+<button
+    id="searchButton"
+    class="search-button">
+
+Search
+
+</button>
+
+</div>
+
+
+
+<!-- FILTERS -->
+
+<div class="search-filters">
+
+<select
+    id="gradeFilter"
+    class="search-filter">
+
+<option value="all">
+All Grades
+</option>
+
+<option value="Grade 1">
+Grade 1
+</option>
+
+<option value="Grade 2">
+Grade 2
+</option>
+
+<option value="Grade 3">
+Grade 3
+</option>
+
+<option value="Grade 4">
+Grade 4
+</option>
+
+<option value="Grade 5">
+Grade 5
+</option>
+
+<option value="Grade 6">
+Grade 6
+</option>
+
+<option value="Grade 7">
+Grade 7
+</option>
+
+<option value="Grade 8">
+Grade 8
+</option>
+
+<option value="Grade 9">
+Grade 9
+</option>
+
+<option value="Grade 10">
+Grade 10
+</option>
+
+<option value="Grade 11">
+Grade 11
+</option>
+
+<option value="A/L">
+A/L
+</option>
+
+</select>
+
+
+
+<select
+    id="typeFilter"
+    class="search-filter">
+
+<option value="all">
+All Resources
+</option>
+
+<option value="papers">
+Exam Papers
+</option>
+
+<option value="schemes">
+Schemes
+</option>
+
+<option value="news">
+News
+</option>
+
+<option value="apps">
+Apps
+</option>
+
+</select>
+
+</div>
+
+
+
+<!-- RESULTS -->
+
+<div id="searchResults">
+
+<p class="no-results">
+Type something above to search.
+</p>
+
+</div>
+
+
+</section>
+
+
+
+<!-- =========================
+     FOOTER
+     ========================= -->
+
+<footer class="footer">
+
+<div class="footer-container">
+
+
+<div class="footer-box">
+
+<h3>
+SLExam Pro
+</h3>
+
+<p>
+Free Sri Lankan Educational Resource Website.
+</p>
+
+</div>
+
+
+
+<div class="footer-box">
+
+<h3>
+Quick Links
+</h3>
+
+<a href="index.html">
+Home
+</a>
+
+<a href="news.html">
+News
+</a>
+
+<a href="scheme.html">
+Schemes
+</a>
+
+<a href="apps.html">
+Apps
+</a>
+
+</div>
+
+
+
+<div class="footer-box">
+
+<h3>
+Support
+</h3>
+
+<a href="about.html">
+About Us
+</a>
+
+<a href="contact.html">
+Contact
+</a>
+
+</div>
+
+
+</div>
+
+
+<hr>
+
+
+<p class="copyright">
+
+© 2026 SLExam Pro | All Rights Reserved
+
+</p>
+
+</footer>
+
+
+
+<script src="assets/js/app.js"></script>
+
+
+
+<script>
+
+/* =========================
+   VARIABLES
+   ========================= */
+
+const searchInput =
+    document.getElementById(
+        "searchInput"
+    );
+
+const searchButton =
+    document.getElementById(
+        "searchButton"
+    );
+
+const gradeFilter =
+    document.getElementById(
+        "gradeFilter"
+    );
+
+const typeFilter =
+    document.getElementById(
+        "typeFilter"
+    );
+
+const searchResults =
+    document.getElementById(
+        "searchResults"
+    );
+
+
+let allResults = [];
+
+
+
+/* =========================
+   LOAD DATA
+   ========================= */
+
+async function loadSearchData() {
+
+    allResults = [];
+
+
+    /* =========================
+       APPS
+       ========================= */
+
+    try {
+
+        const response =
+            await fetch(
+                "assets/data/apps.json?v=" +
+                Date.now()
+            );
+
+        if (response.ok) {
+
+            const data =
+                await response.json();
+
+            const apps =
+                data.apps || [];
+
+
+            apps.forEach(
+                function(app) {
+
+                    allResults.push({
+
+                        type: "apps",
+
+                        title: app.name,
+
+                        description:
+                            app.demo ||
+                            app.description ||
+                            "",
+
+                        searchText:
+                            (
+                                app.name +
+                                " " +
+                                app.demo +
+                                " " +
+                                app.description
+                            ).toLowerCase(),
+
+                        link:
+                            "app-detail.html?id=" +
+                            encodeURIComponent(
+                                app.id
+                            ),
+
+                        grade: ""
+
+                    });
+
+                }
+            );
+
+        }
+
+    }
+
+    catch(error) {
+
+        console.log(
+            "Apps search data unavailable"
+        );
+
+    }
+
+
+
+    /* =========================
+       NEWS
+       ========================= */
+
+    try {
+
+        const response =
+            await fetch(
+                "assets/data/news.json?v=" +
+                Date.now()
+            );
+
+        if (response.ok) {
+
+            const data =
+                await response.json();
+
+            const news =
+                data.news || [];
+
+
+            news.forEach(
+                function(item, index) {
+
+                    allResults.push({
+
+                        type: "news",
+
+                        title:
+                            item.title,
+
+                        description:
+                            item.description ||
+                            item.content ||
+                            "",
+
+                        searchText:
+                            (
+                                item.title +
+                                " " +
+                                item.description +
+                                " " +
+                                item.content
+                            ).toLowerCase(),
+
+                        link:
+                            "news-detail.html?id=" +
+                            index,
+
+                        grade: ""
+
+                    });
+
+                }
+            );
+
+        }
+
+    }
+
+    catch(error) {
+
+        console.log(
+            "News search data unavailable"
+        );
+
+    }
+
+
+
+    /*
+     * Initial search
+     */
+
+    performSearch();
+
+}
+
+
+
+/* =========================
+   SEARCH
+   ========================= */
+
+function performSearch() {
+
+    const keyword =
+        searchInput.value
+            .trim()
+            .toLowerCase();
+
+
+    const selectedGrade =
+        gradeFilter.value;
+
+
+    const selectedType =
+        typeFilter.value;
+
+
+    let results =
+        allResults.filter(
+            function(item) {
+
+
+                /* Keyword */
+
+                const keywordMatch =
+                    !keyword ||
+                    item.searchText.includes(
+                        keyword
+                    );
+
+
+                /* Type */
+
+                const typeMatch =
+                    selectedType === "all" ||
+                    item.type ===
+                        selectedType;
+
+
+                /* Grade */
+
+                const gradeMatch =
+                    selectedGrade === "all" ||
+                    item.searchText.includes(
+                        selectedGrade.toLowerCase()
+                    );
+
+
+                return (
+                    keywordMatch &&
+                    typeMatch &&
+                    gradeMatch
+                );
+
+            }
+        );
+
+
+    displayResults(
+        results,
+        keyword
+    );
+
+}
+
+
+
+/* =========================
+   DISPLAY RESULTS
+   ========================= */
+
+function displayResults(
+    results,
+    keyword
+) {
+
+
+    if (!results.length) {
+
+        searchResults.innerHTML = `
+
+            <div class="no-results">
+
+                <h2>
+                    😕 No Results Found
+                </h2>
+
+                <p>
+                    ${
+                        keyword
+                        ? "“" +
+                          keyword +
+                          "” தொடர்பான resources கிடைக்கவில்லை."
+                        : "Search something above."
+                    }
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+
+    searchResults.innerHTML = `
+
+        <h2 class="results-title">
+
+            Search Results
+            (${results.length})
+
+        </h2>
+
+    `;
+
+
+    results.forEach(
+        function(item) {
+
+
+            const card =
+                document.createElement("a");
+
+
+            card.className =
+                "search-result-card";
+
+
+            card.href =
+                item.link;
+
+
+            let typeName = "";
+
+
+            if (
+                item.type ===
+                "papers"
+            ) {
+
+                typeName =
+                    "📝 Exam Paper";
+
+            }
+
+            else if (
+                item.type ===
+                "schemes"
+            ) {
+
+                typeName =
+                    "📋 Scheme";
+
+            }
+
+            else if (
+                item.type ===
+                "news"
+            ) {
+
+                typeName =
+                    "📰 News";
+
+            }
+
+            else if (
+                item.type ===
+                "apps"
+            ) {
+
+                typeName =
+                    "📱 App";
+
+            }
+
+
+            card.innerHTML = `
+
+                <span
+                    class="result-type">
+
+                    ${typeName}
+
+                </span>
+
+
+                <h3>
+
+                    ${item.title}
+
+                </h3>
+
+
+                <p>
+
+                    ${item.description}
+
+                </p>
+
+            `;
+
+
+            searchResults.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =========================
+   EVENTS
+   ========================= */
+
+searchButton.addEventListener(
+    "click",
+    performSearch
+);
+
+
+searchInput.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key ===
+            "Enter"
+        ) {
+
+            performSearch();
+
+        }
+
+    }
+);
+
+
+gradeFilter.addEventListener(
+    "change",
+    performSearch
+);
+
+
+typeFilter.addEventListener(
+    "change",
+    performSearch
+);
+
+
+
+/* =========================
+   START
+   ========================= */
+
+loadSearchData();
+
+</script>
+
+
+</body>
+
+</html>
