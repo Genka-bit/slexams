@@ -16,15 +16,15 @@
   "crack": "YOUR_CRACK_PAGE_LINK"
 },
     {
-      "id": "slexams-windows",
-      "platform": "windows",
-      "name": "SLExam Windows App",
-      "image": "assets/images/apps/slexams-windows.jpg",
-      "demo": "SLExam educational resources for Windows.",
-      "description": "Windows கணினியில் SLExam கல்வி வளங்களைப் பயன்படுத்துவதற்கான application.",
-      "version": "1.0",
-      "website": "https://genka-bit.github.io/slexams/",
-      "download": "apps/windows/slexams-windows.exe"
-    }
+  "id": "example-windows-app",
+  "platform": "windows",
+  "name": "My Windows App",
+  "image": "assets/images/apps/windows-app.jpg",
+  "demo": "Windows மாணவர்களுக்கான கல்வி பயன்பாடு.",
+  "description": "இந்த Windows application பற்றிய முழுமையான சிறிய விளக்கம் இங்கே வரும்.",
+  "version": "1.0",
+  "website": "https://example.com",
+  "download": "apps/windows/example-windows-app.exe"
+}
   ]
 }
