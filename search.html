@@ -13,10 +13,11 @@
 <link rel="stylesheet"
       href="assets/css/style.css">
 
+
 <style>
 
 /* =========================
-   SEARCH AREA
+   SEARCH SECTION
    ========================= */
 
 .search-section {
@@ -40,9 +41,9 @@
 
     gap: 10px;
 
-    max-width: 800px;
+    max-width: 850px;
 
-    margin: 0 auto 25px auto;
+    margin: 0 auto 20px auto;
 
 }
 
@@ -50,6 +51,8 @@
 .search-input {
 
     flex: 1;
+
+    min-width: 0;
 
     padding: 15px;
 
@@ -113,7 +116,7 @@
 
 .search-filter {
 
-    padding: 10px 14px;
+    padding: 11px 14px;
 
     border: 1px solid #ddd;
 
@@ -121,11 +124,13 @@
 
     background: white;
 
+    font-size: 15px;
+
 }
 
 
 /* =========================
-   RESULT TITLE
+   RESULTS
    ========================= */
 
 .results-title {
@@ -134,10 +139,6 @@
 
 }
 
-
-/* =========================
-   RESULT CARD
-   ========================= */
 
 .search-result-card {
 
@@ -166,7 +167,8 @@
 
 .search-result-card:hover {
 
-    transform: translateY(-3px);
+    transform:
+        translateY(-3px);
 
     box-shadow:
         0 7px 20px
@@ -198,7 +200,9 @@
 
 .search-result-card h3 {
 
-    margin: 5px 0;
+    margin: 5px 0 8px 0;
+
+    font-size: 20px;
 
 }
 
@@ -214,6 +218,17 @@
 }
 
 
+.result-meta {
+
+    margin-top: 10px;
+
+    font-size: 14px;
+
+    color: #777;
+
+}
+
+
 /* =========================
    NO RESULTS
    ========================= */
@@ -222,7 +237,22 @@
 
     text-align: center;
 
-    padding: 40px 20px;
+    padding: 45px 20px;
+
+    color: #777;
+
+}
+
+
+/* =========================
+   LOADING
+   ========================= */
+
+.loading {
+
+    text-align: center;
+
+    padding: 40px;
 
     color: #777;
 
@@ -235,15 +265,40 @@
 
 @media (max-width:600px) {
 
+    .search-section {
+
+        padding:
+            20px 12px;
+
+    }
+
+
     .search-box {
 
         flex-direction: column;
 
     }
 
+
     .search-button {
 
         width: 100%;
+
+    }
+
+
+    .search-filter {
+
+        width: 100%;
+
+        max-width: 350px;
+
+    }
+
+
+    .search-result-card {
+
+        padding: 15px;
 
     }
 
@@ -262,6 +317,7 @@
      ========================= -->
 
 <header class="header">
+
 
 <button id="menuBtn"
         class="menu-btn">
@@ -298,6 +354,10 @@ Schemes
 Apps
 </a>
 
+<a href="about.html">
+About
+</a>
+
 </nav>
 
 
@@ -307,6 +367,7 @@ Apps
 🌙
 
 </button>
+
 
 </header>
 
@@ -323,7 +384,7 @@ Apps
 </h1>
 
 <p>
-Find exam papers, schemes, news and apps
+Find Papers, Schemes, News and Apps
 </p>
 
 </section>
@@ -339,11 +400,12 @@ Find exam papers, schemes, news and apps
 
 <div class="search-box">
 
+
 <input
     id="searchInput"
     class="search-input"
     type="search"
-    placeholder="Search Mathematics, Grade 10, Physics..."
+    placeholder="Search Mathematics, Physics, Grade 10..."
 >
 
 
@@ -351,73 +413,91 @@ Find exam papers, schemes, news and apps
     id="searchButton"
     class="search-button">
 
-Search
+🔎 Search
 
 </button>
+
 
 </div>
 
 
 
-<!-- FILTERS -->
+<!-- =========================
+     FILTERS
+     ========================= -->
 
 <div class="search-filters">
+
 
 <select
     id="gradeFilter"
     class="search-filter">
 
+
 <option value="all">
-All Grades
+🎓 All Grades
 </option>
+
 
 <option value="Grade 1">
 Grade 1
 </option>
 
+
 <option value="Grade 2">
 Grade 2
 </option>
+
 
 <option value="Grade 3">
 Grade 3
 </option>
 
+
 <option value="Grade 4">
 Grade 4
 </option>
+
 
 <option value="Grade 5">
 Grade 5
 </option>
 
+
 <option value="Grade 6">
 Grade 6
 </option>
+
 
 <option value="Grade 7">
 Grade 7
 </option>
 
+
 <option value="Grade 8">
 Grade 8
 </option>
+
 
 <option value="Grade 9">
 Grade 9
 </option>
 
+
 <option value="Grade 10">
 Grade 10
 </option>
+
 
 <option value="Grade 11">
 Grade 11
 </option>
 
+
 <option value="A/L">
 A/L
 </option>
+
 
 </select>
 
@@ -427,39 +507,50 @@ A/L
     id="typeFilter"
     class="search-filter">
 
+
 <option value="all">
-All Resources
+📚 All Resources
 </option>
+
 
 <option value="papers">
-Exam Papers
+📝 Exam Papers
 </option>
+
 
 <option value="schemes">
-Schemes
+📋 Schemes
 </option>
+
 
 <option value="news">
-News
+📰 News
 </option>
+
 
 <option value="apps">
-Apps
+📱 Apps
 </option>
 
+
 </select>
+
 
 </div>
 
 
 
-<!-- RESULTS -->
+<!-- =========================
+     RESULTS
+     ========================= -->
 
 <div id="searchResults">
 
-<p class="no-results">
-Type something above to search.
-</p>
+<div class="loading">
+
+⏳ Loading resources...
+
+</div>
 
 </div>
 
@@ -473,6 +564,7 @@ Type something above to search.
      ========================= -->
 
 <footer class="footer">
+
 
 <div class="footer-container">
 
@@ -534,6 +626,28 @@ Contact
 </div>
 
 
+
+<div class="footer-box">
+
+<h3>
+Follow Us
+</h3>
+
+<p>
+📘 Facebook
+</p>
+
+<p>
+▶️ YouTube
+</p>
+
+<p>
+📸 Instagram
+</p>
+
+</div>
+
+
 </div>
 
 
@@ -546,6 +660,7 @@ Contact
 
 </p>
 
+
 </footer>
 
 
@@ -556,8 +671,13 @@ Contact
 
 <script>
 
+/* =====================================================
+   SEARCH SYSTEM
+   ===================================================== */
+
+
 /* =========================
-   VARIABLES
+   ELEMENTS
    ========================= */
 
 const searchInput =
@@ -565,20 +685,24 @@ const searchInput =
         "searchInput"
     );
 
+
 const searchButton =
     document.getElementById(
         "searchButton"
     );
+
 
 const gradeFilter =
     document.getElementById(
         "gradeFilter"
     );
 
+
 const typeFilter =
     document.getElementById(
         "typeFilter"
     );
+
 
 const searchResults =
     document.getElementById(
@@ -586,22 +710,95 @@ const searchResults =
     );
 
 
+
+/* =========================
+   ALL RESOURCES
+   ========================= */
+
 let allResults = [];
 
 
 
-/* =========================
-   LOAD DATA
-   ========================= */
+/* =====================================================
+   SUBJECT TRANSLATIONS
+   ===================================================== */
 
-async function loadSearchData() {
+const subjectAliases = {
 
-    allResults = [];
+    "mathematics":
+        "கணிதம்",
+
+    "math":
+        "கணிதம்",
+
+    "science":
+        "விஞ்ஞானம்",
+
+    "history":
+        "வரலாறு",
+
+    "english":
+        "ஆங்கிலம்",
+
+    "geography":
+        "புவியியல்",
+
+    "civics":
+        "குடியியல்",
+
+    "health":
+        "சுகாதாரம்",
+
+    "religion":
+        "சைவசமயம்",
+
+    "tamil":
+        "தமிழ்",
+
+    "agriculture":
+        "விவசாயம்",
+
+    "business":
+        "வணிகக்கல்வி",
+
+    "ict":
+        "ICT"
+
+};
 
 
-    /* =========================
-       APPS
-       ========================= */
+
+/* =====================================================
+   NORMALIZE TEXT
+   ===================================================== */
+
+function normalizeText(text) {
+
+    return String(text || "")
+        .toLowerCase()
+        .trim();
+
+}
+
+
+
+/* =====================================================
+   ADD RESOURCE
+   ===================================================== */
+
+function addResult(resource) {
+
+    allResults.push(resource);
+
+}
+
+
+
+/* =====================================================
+   LOAD APPS
+   ===================================================== */
+
+async function loadApps() {
 
     try {
 
@@ -611,68 +808,94 @@ async function loadSearchData() {
                 Date.now()
             );
 
-        if (response.ok) {
 
-            const data =
-                await response.json();
+        if (!response.ok) {
 
-            const apps =
-                data.apps || [];
-
-
-            apps.forEach(
-                function(app) {
-
-                    allResults.push({
-
-                        type: "apps",
-
-                        title: app.name,
-
-                        description:
-                            app.demo ||
-                            app.description ||
-                            "",
-
-                        searchText:
-                            (
-                                app.name +
-                                " " +
-                                app.demo +
-                                " " +
-                                app.description
-                            ).toLowerCase(),
-
-                        link:
-                            "app-detail.html?id=" +
-                            encodeURIComponent(
-                                app.id
-                            ),
-
-                        grade: ""
-
-                    });
-
-                }
-            );
+            return;
 
         }
+
+
+        const data =
+            await response.json();
+
+
+        const apps =
+            data.apps || [];
+
+
+        apps.forEach(
+            function(app) {
+
+
+                const text =
+
+                    app.name +
+                    " " +
+
+                    app.demo +
+                    " " +
+
+                    app.description +
+                    " " +
+
+                    app.platform;
+
+
+                addResult({
+
+                    type:
+                        "apps",
+
+                    title:
+                        app.name,
+
+                    description:
+                        app.demo ||
+                        app.description ||
+                        "",
+
+                    searchText:
+                        normalizeText(
+                            text
+                        ),
+
+                    link:
+                        "app-detail.html?id=" +
+                        encodeURIComponent(
+                            app.id
+                        ),
+
+                    grade:
+                        ""
+
+                });
+
+
+            }
+        );
+
 
     }
 
     catch(error) {
 
         console.log(
-            "Apps search data unavailable"
+            "Apps unavailable",
+            error
         );
 
     }
 
+}
 
 
-    /* =========================
-       NEWS
-       ========================= */
+
+/* =====================================================
+   LOAD NEWS
+   ===================================================== */
+
+async function loadNews() {
 
     try {
 
@@ -682,58 +905,429 @@ async function loadSearchData() {
                 Date.now()
             );
 
-        if (response.ok) {
 
-            const data =
-                await response.json();
+        if (!response.ok) {
 
-            const news =
-                data.news || [];
-
-
-            news.forEach(
-                function(item, index) {
-
-                    allResults.push({
-
-                        type: "news",
-
-                        title:
-                            item.title,
-
-                        description:
-                            item.description ||
-                            item.content ||
-                            "",
-
-                        searchText:
-                            (
-                                item.title +
-                                " " +
-                                item.description +
-                                " " +
-                                item.content
-                            ).toLowerCase(),
-
-                        link:
-                            "news-detail.html?id=" +
-                            index,
-
-                        grade: ""
-
-                    });
-
-                }
-            );
+            return;
 
         }
+
+
+        const data =
+            await response.json();
+
+
+        const news =
+            data.news || [];
+
+
+        news.forEach(
+            function(item, index) {
+
+
+                const text =
+
+                    item.title +
+                    " " +
+
+                    item.description +
+                    " " +
+
+                    item.content;
+
+
+                addResult({
+
+                    type:
+                        "news",
+
+                    title:
+                        item.title,
+
+                    description:
+                        item.description ||
+                        "",
+
+                    searchText:
+                        normalizeText(
+                            text
+                        ),
+
+                    link:
+                        "news-detail.html?id=" +
+                        index,
+
+                    grade:
+                        ""
+
+                });
+
+
+            }
+        );
+
 
     }
 
     catch(error) {
 
         console.log(
-            "News search data unavailable"
+            "News unavailable",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   LOAD PAPERS
+   ===================================================== */
+
+async function loadPapers() {
+
+    try {
+
+        const response =
+            await fetch(
+                "assets/data/papers.json?v=" +
+                Date.now()
+            );
+
+
+        if (!response.ok) {
+
+            return;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const subjects =
+            data.subjects || {};
+
+
+        Object.keys(subjects)
+            .forEach(
+                function(subject) {
+
+
+                    const terms =
+                        subjects[
+                            subject
+                        ] || {};
+
+
+                    Object.keys(terms)
+                        .forEach(
+                            function(term) {
+
+
+                                const papers =
+                                    terms[
+                                        term
+                                    ] || [];
+
+
+                                papers.forEach(
+                                    function(
+                                        paper
+                                    ) {
+
+
+                                        /*
+                                         * Grade is
+                                         * taken from
+                                         * paper title.
+                                         */
+
+                                        let grade =
+                                            "";
+
+
+                                        const title =
+                                            paper.title ||
+                                            "";
+
+
+                                        const gradeMatch =
+                                            title.match(
+                                                /(?:grade\s*)?(\d{1,2})/i
+                                            );
+
+
+                                        if (
+                                            gradeMatch
+                                        ) {
+
+                                            grade =
+                                                "Grade " +
+                                                gradeMatch[1];
+
+                                        }
+
+
+                                        /*
+                                         * English
+                                         * subject alias
+                                         */
+
+                                        let aliases =
+                                            "";
+
+
+                                        Object.keys(
+                                            subjectAliases
+                                        )
+                                        .forEach(
+                                            function(
+                                                key
+                                            ) {
+
+                                                if (
+                                                    subjectAliases[
+                                                        key
+                                                    ] ===
+                                                    subject
+                                                ) {
+
+                                                    aliases +=
+                                                        " " +
+                                                        key;
+
+                                                }
+
+                                            }
+                                        );
+
+
+                                        const text =
+
+                                            subject +
+                                            " " +
+
+                                            aliases +
+                                            " " +
+
+                                            title +
+                                            " " +
+
+                                            "term " +
+                                            term;
+
+
+                                        addResult({
+
+                                            type:
+                                                "papers",
+
+                                            title:
+                                                title,
+
+                                            description:
+
+                                                subject +
+                                                " • " +
+                                                grade +
+                                                " • Term " +
+                                                term,
+
+                                            searchText:
+                                                normalizeText(
+                                                    text
+                                                ),
+
+                                            link:
+                                                paper.pdf,
+
+                                            grade:
+                                                grade
+
+                                        });
+
+
+                                    }
+                                );
+
+
+                            }
+                        );
+
+
+                }
+            );
+
+
+    }
+
+    catch(error) {
+
+        console.log(
+            "Papers unavailable",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   GENERATE SCHEMES
+   ===================================================== */
+
+function generateSchemes() {
+
+
+    /*
+     * Grade 1–5
+     */
+
+    const primarySubjects = [
+
+        "தமிழ்",
+
+        "கணிதம்",
+
+        "சுற்றாடல்",
+
+        "ஆங்கிலம்",
+
+        "இரண்டாம் மொழி"
+
+    ];
+
+
+    /*
+     * Grade 6–11
+     */
+
+    const secondarySubjects = [
+
+        "தமிழ்",
+
+        "கணிதம்",
+
+        "விஞ்ஞானம்",
+
+        "வரலாறு",
+
+        "புவியியல்",
+
+        "குடியியல்",
+
+        "ஆங்கிலம்",
+
+        "சுகாதாரம்",
+
+        "சைவசமயம்",
+
+        "கத்தோலிக்கம்",
+
+        "கிறிஸ்தவம்",
+
+        "இஸ்லாம்",
+
+        "அழகியல்",
+
+        "சிங்களம்",
+
+        "ICT",
+
+        "PTS"
+
+    ];
+
+
+    /*
+     * A/L
+     */
+
+    const alSubjects = [
+
+        "Combined Mathematics",
+
+        "Physics",
+
+        "Chemistry",
+
+        "Biology",
+
+        "Agricultural Science",
+
+        "ICT",
+
+        "Accounting",
+
+        "Business Studies",
+
+        "Economics",
+
+        "தமிழ்",
+
+        "வரலாறு",
+
+        "புவியியல்",
+
+        "அரசியல் விஞ்ஞானம்",
+
+        "இந்து சமயம்",
+
+        "கிறிஸ்தவம்",
+
+        "கத்தோலிக்கம்",
+
+        "இந்து நாகரிகம்",
+
+        "கிறிஸ்தவ நாகரிகம்",
+
+        "தர்க்கவியல்",
+
+        "சித்திரம்",
+
+        "நடனம்",
+
+        "இசை",
+
+        "நாடகம்",
+
+        "Science for Technology",
+
+        "Engineering Technology",
+
+        "Bio Systems Technology"
+
+    ];
+
+
+
+    /*
+     * Create Grade 1–5
+     */
+
+    for (
+        let grade = 1;
+        grade <= 5;
+        grade++
+    ) {
+
+
+        primarySubjects.forEach(
+            function(subject) {
+
+                addScheme(
+                    subject,
+                    grade,
+                    "primary"
+                );
+
+            }
         );
 
     }
@@ -741,25 +1335,157 @@ async function loadSearchData() {
 
 
     /*
-     * Initial search
+     * Create Grade 6–11
      */
 
-    performSearch();
+    for (
+        let grade = 6;
+        grade <= 11;
+        grade++
+    ) {
+
+
+        secondarySubjects.forEach(
+            function(subject) {
+
+                addScheme(
+                    subject,
+                    grade,
+                    "secondary"
+                );
+
+            }
+        );
+
+    }
+
+
+
+    /*
+     * A/L
+     *
+     * A/L grade = 12
+     */
+
+    alSubjects.forEach(
+        function(subject) {
+
+            addScheme(
+                subject,
+                12,
+                "al"
+            );
+
+        }
+    );
 
 }
 
 
 
-/* =========================
+/* =====================================================
+   ADD SCHEME
+   ===================================================== */
+
+function addScheme(
+    subject,
+    grade,
+    level
+) {
+
+
+    let aliases = "";
+
+
+    Object.keys(
+        subjectAliases
+    )
+    .forEach(
+        function(key) {
+
+            if (
+                subjectAliases[key] ===
+                subject
+            ) {
+
+                aliases +=
+                    " " + key;
+
+            }
+
+        }
+    );
+
+
+    const text =
+
+        subject +
+        " " +
+
+        aliases +
+        " Grade " +
+        grade +
+        " Scheme";
+
+
+    addResult({
+
+        type:
+            "schemes",
+
+        title:
+
+            subject +
+            " – Grade " +
+            grade,
+
+        description:
+
+            "Marking Scheme • Grade " +
+            grade,
+
+        searchText:
+            normalizeText(
+                text
+            ),
+
+        link:
+
+            "scheme-view.html" +
+
+            "?level=" +
+            encodeURIComponent(
+                level
+            ) +
+
+            "&subject=" +
+            encodeURIComponent(
+                subject
+            ) +
+
+            "&grade=" +
+            grade,
+
+        grade:
+            "Grade " + grade
+
+    });
+
+}
+
+
+
+/* =====================================================
    SEARCH
-   ========================= */
+   ===================================================== */
 
 function performSearch() {
 
+
     const keyword =
-        searchInput.value
-            .trim()
-            .toLowerCase();
+        normalizeText(
+            searchInput.value
+        );
 
 
     const selectedGrade =
@@ -770,45 +1496,92 @@ function performSearch() {
         typeFilter.value;
 
 
-    let results =
+    /*
+     * If English alias is searched,
+     * include Tamil subject.
+     */
+
+    let expandedKeyword =
+        keyword;
+
+
+    if (
+        subjectAliases[
+            keyword
+        ]
+    ) {
+
+        expandedKeyword +=
+            " " +
+            normalizeText(
+                subjectAliases[
+                    keyword
+                ]
+            );
+
+    }
+
+
+
+    const results =
         allResults.filter(
             function(item) {
 
 
-                /* Keyword */
+                /*
+                 * Keyword match
+                 */
 
                 const keywordMatch =
+
                     !keyword ||
-                    item.searchText.includes(
-                        keyword
-                    );
+
+                    item.searchText
+                        .includes(
+                            expandedKeyword
+                        );
 
 
-                /* Type */
+
+                /*
+                 * Type match
+                 */
 
                 const typeMatch =
-                    selectedType === "all" ||
+
+                    selectedType ===
+                    "all" ||
+
                     item.type ===
-                        selectedType;
+                    selectedType;
 
 
-                /* Grade */
+
+                /*
+                 * Grade match
+                 */
 
                 const gradeMatch =
-                    selectedGrade === "all" ||
-                    item.searchText.includes(
-                        selectedGrade.toLowerCase()
-                    );
+
+                    selectedGrade ===
+                    "all" ||
+
+                    item.grade ===
+                    selectedGrade;
+
 
 
                 return (
+
                     keywordMatch &&
                     typeMatch &&
                     gradeMatch
+
                 );
 
             }
         );
+
 
 
     displayResults(
@@ -820,9 +1593,9 @@ function performSearch() {
 
 
 
-/* =========================
+/* =====================================================
    DISPLAY RESULTS
-   ========================= */
+   ===================================================== */
 
 function displayResults(
     results,
@@ -830,29 +1603,36 @@ function displayResults(
 ) {
 
 
-    if (!results.length) {
+    if (
+        !results.length
+    ) {
+
 
         searchResults.innerHTML = `
 
-            <div class="no-results">
+            <div
+                class="no-results">
 
                 <h2>
                     😕 No Results Found
                 </h2>
 
                 <p>
+
                     ${
                         keyword
                         ? "“" +
                           keyword +
                           "” தொடர்பான resources கிடைக்கவில்லை."
-                        : "Search something above."
+                        : "மேலே Search செய்யவும்."
                     }
+
                 </p>
 
             </div>
 
         `;
+
 
         return;
 
@@ -862,9 +1642,10 @@ function displayResults(
 
     searchResults.innerHTML = `
 
-        <h2 class="results-title">
+        <h2
+            class="results-title">
 
-            Search Results
+            🔎 Search Results
             (${results.length})
 
         </h2>
@@ -872,12 +1653,15 @@ function displayResults(
     `;
 
 
+
     results.forEach(
         function(item) {
 
 
             const card =
-                document.createElement("a");
+                document.createElement(
+                    "a"
+                );
 
 
             card.className =
@@ -888,7 +1672,9 @@ function displayResults(
                 item.link;
 
 
+
             let typeName = "";
+
 
 
             if (
@@ -901,6 +1687,7 @@ function displayResults(
 
             }
 
+
             else if (
                 item.type ===
                 "schemes"
@@ -910,6 +1697,7 @@ function displayResults(
                     "📋 Scheme";
 
             }
+
 
             else if (
                 item.type ===
@@ -921,6 +1709,7 @@ function displayResults(
 
             }
 
+
             else if (
                 item.type ===
                 "apps"
@@ -930,6 +1719,7 @@ function displayResults(
                     "📱 App";
 
             }
+
 
 
             card.innerHTML = `
@@ -955,12 +1745,22 @@ function displayResults(
 
                 </p>
 
+
+                <div
+                    class="result-meta">
+
+                    Click to open →
+
+                </div>
+
             `;
+
 
 
             searchResults.appendChild(
                 card
             );
+
 
         }
     );
@@ -969,9 +1769,9 @@ function displayResults(
 
 
 
-/* =========================
+/* =====================================================
    EVENTS
-   ========================= */
+   ===================================================== */
 
 searchButton.addEventListener(
     "click",
@@ -1009,11 +1809,69 @@ typeFilter.addEventListener(
 
 
 
-/* =========================
+/* =====================================================
    START
-   ========================= */
+   ===================================================== */
 
-loadSearchData();
+async function startSearch() {
+
+
+    searchResults.innerHTML = `
+
+        <div class="loading">
+
+            ⏳ Loading resources...
+
+        </div>
+
+    `;
+
+
+    /*
+     * Load all current resources
+     */
+
+    await loadApps();
+
+    await loadNews();
+
+    await loadPapers();
+
+
+    /*
+     * Schemes are generated
+     * from current structure.
+     */
+
+    generateSchemes();
+
+
+    /*
+     * Ready
+     */
+
+    searchResults.innerHTML = `
+
+        <div class="no-results">
+
+            <h2>
+                🔎 Search SLExam
+            </h2>
+
+            <p>
+                Mathematics, Physics,
+                Grade 10, Scheme...
+                போன்றவற்றை Search செய்யலாம்.
+            </p>
+
+        </div>
+
+    `;
+
+}
+
+
+startSearch();
 
 </script>
 
