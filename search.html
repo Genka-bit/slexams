@@ -13,7 +13,6 @@
 <link rel="stylesheet"
       href="assets/css/style.css">
 
-
 <style>
 
 /* =========================
@@ -63,6 +62,8 @@
     font-size: 17px;
 
     outline: none;
+
+    box-sizing: border-box;
 
 }
 
@@ -354,6 +355,10 @@ Schemes
 Apps
 </a>
 
+<a href="search.html">
+🔎 Search
+</a>
+
 <a href="about.html">
 About
 </a>
@@ -405,7 +410,7 @@ Find Papers, Schemes, News and Apps
     id="searchInput"
     class="search-input"
     type="search"
-    placeholder="Search Mathematics, Physics, Grade 10..."
+    placeholder="Mathematics, Physics, Grade 11..."
 >
 
 
@@ -433,71 +438,53 @@ Find Papers, Schemes, News and Apps
     id="gradeFilter"
     class="search-filter">
 
-
 <option value="all">
 🎓 All Grades
 </option>
 
-
-<option value="Grade 1">
+<option value="1">
 Grade 1
 </option>
 
-
-<option value="Grade 2">
+<option value="2">
 Grade 2
 </option>
 
-
-<option value="Grade 3">
+<option value="3">
 Grade 3
 </option>
 
-
-<option value="Grade 4">
+<option value="4">
 Grade 4
 </option>
 
-
-<option value="Grade 5">
+<option value="5">
 Grade 5
 </option>
 
-
-<option value="Grade 6">
+<option value="6">
 Grade 6
 </option>
 
-
-<option value="Grade 7">
+<option value="7">
 Grade 7
 </option>
 
-
-<option value="Grade 8">
+<option value="8">
 Grade 8
 </option>
 
-
-<option value="Grade 9">
+<option value="9">
 Grade 9
 </option>
 
-
-<option value="Grade 10">
+<option value="10">
 Grade 10
 </option>
 
-
-<option value="Grade 11">
+<option value="11">
 Grade 11
 </option>
-
-
-<option value="A/L">
-A/L
-</option>
-
 
 </select>
 
@@ -507,31 +494,25 @@ A/L
     id="typeFilter"
     class="search-filter">
 
-
 <option value="all">
 📚 All Resources
 </option>
-
 
 <option value="papers">
 📝 Exam Papers
 </option>
 
-
 <option value="schemes">
 📋 Schemes
 </option>
-
 
 <option value="news">
 📰 News
 </option>
 
-
 <option value="apps">
 📱 Apps
 </option>
-
 
 </select>
 
@@ -605,6 +586,10 @@ Schemes
 Apps
 </a>
 
+<a href="search.html">
+Search
+</a>
+
 </div>
 
 
@@ -669,16 +654,31 @@ Follow Us
 
 
 
+<!-- =====================================================
+     SEARCH JAVASCRIPT
+     ===================================================== -->
+
 <script>
 
+
 /* =====================================================
-   SEARCH SYSTEM
+   SETTINGS
    ===================================================== */
 
+const GITHUB_OWNER =
+    "Genka-bit";
 
-/* =========================
+const GITHUB_REPO =
+    "slexams";
+
+const GITHUB_BRANCH =
+    "main";
+
+
+
+/* =====================================================
    ELEMENTS
-   ========================= */
+   ===================================================== */
 
 const searchInput =
     document.getElementById(
@@ -711,19 +711,33 @@ const searchResults =
 
 
 
-/* =========================
-   ALL RESOURCES
-   ========================= */
+/* =====================================================
+   DATABASE
+   ===================================================== */
 
 let allResults = [];
 
 
 
 /* =====================================================
-   SUBJECT TRANSLATIONS
+   NORMALIZE
    ===================================================== */
 
-const subjectAliases = {
+function normalizeText(text) {
+
+    return String(text || "")
+        .toLowerCase()
+        .trim();
+
+}
+
+
+
+/* =====================================================
+   SUBJECT ALIASES
+   ===================================================== */
+
+const aliases = {
 
     "mathematics":
         "கணிதம்",
@@ -734,11 +748,23 @@ const subjectAliases = {
     "science":
         "விஞ்ஞானம்",
 
-    "history":
-        "வரலாறு",
+    "physics":
+        "physics",
+
+    "chemistry":
+        "chemistry",
+
+    "biology":
+        "biology",
+
+    "tamil":
+        "தமிழ்",
 
     "english":
         "ஆங்கிலம்",
+
+    "history":
+        "வரலாறு",
 
     "geography":
         "புவியியல்",
@@ -748,12 +774,6 @@ const subjectAliases = {
 
     "health":
         "சுகாதாரம்",
-
-    "religion":
-        "சைவசமயம்",
-
-    "tamil":
-        "தமிழ்",
 
     "agriculture":
         "விவசாயம்",
@@ -769,26 +789,469 @@ const subjectAliases = {
 
 
 /* =====================================================
-   NORMALIZE TEXT
+   ADD RESULT
    ===================================================== */
 
-function normalizeText(text) {
+function addResult(item) {
 
-    return String(text || "")
-        .toLowerCase()
-        .trim();
+    allResults.push(item);
 
 }
 
 
 
 /* =====================================================
-   ADD RESOURCE
+   LOAD GRADE JSON
    ===================================================== */
 
-function addResult(resource) {
+async function loadGrade(
+    grade
+) {
 
-    allResults.push(resource);
+    try {
+
+        const url =
+
+            "https://raw.githubusercontent.com/" +
+
+            GITHUB_OWNER +
+            "/" +
+            GITHUB_REPO +
+            "/" +
+            GITHUB_BRANCH +
+            "/assets/data/grade" +
+            grade +
+            ".json?v=" +
+            Date.now();
+
+
+        const response =
+            await fetch(url);
+
+
+        if (!response.ok) {
+
+            console.log(
+                "Grade " +
+                grade +
+                " not available"
+            );
+
+            return;
+
+        }
+
+
+        const database =
+            await response.json();
+
+
+        const subjects =
+            database.subjects || {};
+
+
+        /* =================================================
+           NORMAL SUBJECT STRUCTURE
+           ================================================= */
+
+        Object.keys(subjects)
+            .forEach(
+                function(subject) {
+
+
+                    const terms =
+                        subjects[
+                            subject
+                        ] || {};
+
+
+                    Object.keys(terms)
+                        .forEach(
+                            function(term) {
+
+
+                                const papers =
+                                    terms[
+                                        term
+                                    ] || [];
+
+
+                                if (
+                                    !Array.isArray(
+                                        papers
+                                    )
+                                ) {
+
+                                    return;
+
+                                }
+
+
+                                papers.forEach(
+                                    function(paper) {
+
+
+                                        const title =
+                                            paper.title ||
+                                            "";
+
+
+                                        const pdf =
+                                            paper.pdf ||
+                                            "";
+
+
+                                        const searchText =
+
+                                            subject +
+                                            " " +
+
+                                            aliases[
+                                                normalizeText(
+                                                    subject
+                                                )
+                                            ] +
+                                            " " +
+
+                                            title +
+                                            " " +
+
+                                            "Grade " +
+                                            grade +
+                                            " " +
+
+                                            "Term " +
+                                            term;
+
+
+                                        addResult({
+
+                                            type:
+                                                "papers",
+
+                                            title:
+                                                title,
+
+                                            description:
+
+                                                subject +
+                                                " • Grade " +
+                                                grade +
+                                                " • Term " +
+                                                term,
+
+                                            searchText:
+                                                normalizeText(
+                                                    searchText
+                                                ),
+
+                                            link:
+                                                pdf,
+
+                                            grade:
+                                                String(
+                                                    grade
+                                                )
+
+                                        });
+
+
+                                    }
+                                );
+
+
+                            }
+                        );
+
+
+                }
+            );
+
+
+
+        /* =================================================
+           STREAM STRUCTURE
+           ================================================= */
+
+        const streamSubjects =
+            database.streamSubjects;
+
+
+        if (
+            streamSubjects
+        ) {
+
+
+            Object.keys(
+                streamSubjects
+            )
+            .forEach(
+                function(stream) {
+
+
+                    const subjects =
+                        streamSubjects[
+                            stream
+                        ] || {};
+
+
+                    Object.keys(subjects)
+                    .forEach(
+                        function(subject) {
+
+
+                            const terms =
+                                subjects[
+                                    subject
+                                ] || {};
+
+
+                            Object.keys(terms)
+                            .forEach(
+                                function(term) {
+
+
+                                    const papers =
+                                        terms[
+                                            term
+                                        ] || [];
+
+
+                                    if (
+                                        !Array.isArray(
+                                            papers
+                                        )
+                                    ) {
+
+                                        return;
+
+                                    }
+
+
+                                    papers.forEach(
+                                        function(
+                                            paper
+                                        ) {
+
+
+                                            const title =
+                                                paper.title ||
+                                                "";
+
+
+                                            const pdf =
+                                                paper.pdf ||
+                                                "";
+
+
+                                            const searchText =
+
+                                                stream +
+                                                " " +
+
+                                                subject +
+                                                " " +
+
+                                                title +
+                                                " " +
+
+                                                "Grade " +
+                                                grade +
+                                                " " +
+
+                                                "Term " +
+                                                term;
+
+
+                                            addResult({
+
+                                                type:
+                                                    "papers",
+
+                                                title:
+                                                    title,
+
+                                                description:
+
+                                                    stream +
+                                                    " • " +
+                                                    subject +
+                                                    " • Grade " +
+                                                    grade +
+                                                    " • Term " +
+                                                    term,
+
+                                                searchText:
+                                                    normalizeText(
+                                                        searchText
+                                                    ),
+
+                                                link:
+                                                    pdf,
+
+                                                grade:
+                                                    String(
+                                                        grade
+                                                    )
+
+                                            });
+
+
+                                        }
+                                    );
+
+
+                                }
+                            );
+
+
+                        }
+                    );
+
+
+                }
+            );
+
+        }
+
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "Grade " +
+            grade +
+            " error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   LOAD ALL PAPERS
+   ===================================================== */
+
+async function loadAllPapers() {
+
+    const promises = [];
+
+
+    for (
+        let grade = 1;
+        grade <= 13;
+        grade++
+    ) {
+
+        promises.push(
+            loadGrade(
+                grade
+            )
+        );
+
+    }
+
+
+    await Promise.all(
+        promises
+    );
+
+}
+
+
+
+/* =====================================================
+   LOAD NEWS
+   ===================================================== */
+
+async function loadNews() {
+
+    try {
+
+        const url =
+            "assets/data/news.json?v=" +
+            Date.now();
+
+
+        const response =
+            await fetch(url);
+
+
+        if (!response.ok) {
+
+            return;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const news =
+            data.news || [];
+
+
+        news.forEach(
+            function(item, index) {
+
+
+                const searchText =
+
+                    item.title +
+                    " " +
+
+                    item.description +
+                    " " +
+
+                    item.content;
+
+
+                addResult({
+
+                    type:
+                        "news",
+
+                    title:
+                        item.title,
+
+                    description:
+                        item.description ||
+                        "",
+
+                    searchText:
+                        normalizeText(
+                            searchText
+                        ),
+
+                    link:
+                        "news-detail.html?id=" +
+                        index,
+
+                    grade:
+                        ""
+
+                });
+
+
+            }
+        );
+
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "News error:",
+            error
+        );
+
+    }
 
 }
 
@@ -802,11 +1265,13 @@ async function loadApps() {
 
     try {
 
+        const url =
+            "assets/data/apps.json?v=" +
+            Date.now();
+
+
         const response =
-            await fetch(
-                "assets/data/apps.json?v=" +
-                Date.now()
-            );
+            await fetch(url);
 
 
         if (!response.ok) {
@@ -828,7 +1293,7 @@ async function loadApps() {
             function(app) {
 
 
-                const text =
+                const searchText =
 
                     app.name +
                     " " +
@@ -857,7 +1322,7 @@ async function loadApps() {
 
                     searchText:
                         normalizeText(
-                            text
+                            searchText
                         ),
 
                     link:
@@ -880,295 +1345,8 @@ async function loadApps() {
 
     catch(error) {
 
-        console.log(
-            "Apps unavailable",
-            error
-        );
-
-    }
-
-}
-
-
-
-/* =====================================================
-   LOAD NEWS
-   ===================================================== */
-
-async function loadNews() {
-
-    try {
-
-        const response =
-            await fetch(
-                "assets/data/news.json?v=" +
-                Date.now()
-            );
-
-
-        if (!response.ok) {
-
-            return;
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        const news =
-            data.news || [];
-
-
-        news.forEach(
-            function(item, index) {
-
-
-                const text =
-
-                    item.title +
-                    " " +
-
-                    item.description +
-                    " " +
-
-                    item.content;
-
-
-                addResult({
-
-                    type:
-                        "news",
-
-                    title:
-                        item.title,
-
-                    description:
-                        item.description ||
-                        "",
-
-                    searchText:
-                        normalizeText(
-                            text
-                        ),
-
-                    link:
-                        "news-detail.html?id=" +
-                        index,
-
-                    grade:
-                        ""
-
-                });
-
-
-            }
-        );
-
-
-    }
-
-    catch(error) {
-
-        console.log(
-            "News unavailable",
-            error
-        );
-
-    }
-
-}
-
-
-
-/* =====================================================
-   LOAD PAPERS
-   ===================================================== */
-
-async function loadPapers() {
-
-    try {
-
-        const response =
-            await fetch(
-                "assets/data/papers.json?v=" +
-                Date.now()
-            );
-
-
-        if (!response.ok) {
-
-            return;
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        const subjects =
-            data.subjects || {};
-
-
-        Object.keys(subjects)
-            .forEach(
-                function(subject) {
-
-
-                    const terms =
-                        subjects[
-                            subject
-                        ] || {};
-
-
-                    Object.keys(terms)
-                        .forEach(
-                            function(term) {
-
-
-                                const papers =
-                                    terms[
-                                        term
-                                    ] || [];
-
-
-                                papers.forEach(
-                                    function(
-                                        paper
-                                    ) {
-
-
-                                        /*
-                                         * Grade is
-                                         * taken from
-                                         * paper title.
-                                         */
-
-                                        let grade =
-                                            "";
-
-
-                                        const title =
-                                            paper.title ||
-                                            "";
-
-
-                                        const gradeMatch =
-                                            title.match(
-                                                /(?:grade\s*)?(\d{1,2})/i
-                                            );
-
-
-                                        if (
-                                            gradeMatch
-                                        ) {
-
-                                            grade =
-                                                "Grade " +
-                                                gradeMatch[1];
-
-                                        }
-
-
-                                        /*
-                                         * English
-                                         * subject alias
-                                         */
-
-                                        let aliases =
-                                            "";
-
-
-                                        Object.keys(
-                                            subjectAliases
-                                        )
-                                        .forEach(
-                                            function(
-                                                key
-                                            ) {
-
-                                                if (
-                                                    subjectAliases[
-                                                        key
-                                                    ] ===
-                                                    subject
-                                                ) {
-
-                                                    aliases +=
-                                                        " " +
-                                                        key;
-
-                                                }
-
-                                            }
-                                        );
-
-
-                                        const text =
-
-                                            subject +
-                                            " " +
-
-                                            aliases +
-                                            " " +
-
-                                            title +
-                                            " " +
-
-                                            "term " +
-                                            term;
-
-
-                                        addResult({
-
-                                            type:
-                                                "papers",
-
-                                            title:
-                                                title,
-
-                                            description:
-
-                                                subject +
-                                                " • " +
-                                                grade +
-                                                " • Term " +
-                                                term,
-
-                                            searchText:
-                                                normalizeText(
-                                                    text
-                                                ),
-
-                                            link:
-                                                paper.pdf,
-
-                                            grade:
-                                                grade
-
-                                        });
-
-
-                                    }
-                                );
-
-
-                            }
-                        );
-
-
-                }
-            );
-
-
-    }
-
-    catch(error) {
-
-        console.log(
-            "Papers unavailable",
+        console.error(
+            "Apps error:",
             error
         );
 
@@ -1186,129 +1364,48 @@ function generateSchemes() {
 
 
     /*
-     * Grade 1–5
+     * Grade 1 – 5
      */
 
-    const primarySubjects = [
+    const primary = [
 
         "தமிழ்",
-
         "கணிதம்",
-
         "சுற்றாடல்",
-
         "ஆங்கிலம்",
-
         "இரண்டாம் மொழி"
 
     ];
 
 
     /*
-     * Grade 6–11
+     * Grade 6 – 11
      */
 
-    const secondarySubjects = [
+    const secondary = [
 
         "தமிழ்",
-
         "கணிதம்",
-
         "விஞ்ஞானம்",
-
         "வரலாறு",
-
         "புவியியல்",
-
         "குடியியல்",
-
         "ஆங்கிலம்",
-
         "சுகாதாரம்",
-
         "சைவசமயம்",
-
         "கத்தோலிக்கம்",
-
         "கிறிஸ்தவம்",
-
         "இஸ்லாம்",
-
         "அழகியல்",
-
         "சிங்களம்",
-
         "ICT",
-
         "PTS"
 
     ];
 
 
     /*
-     * A/L
-     */
-
-    const alSubjects = [
-
-        "Combined Mathematics",
-
-        "Physics",
-
-        "Chemistry",
-
-        "Biology",
-
-        "Agricultural Science",
-
-        "ICT",
-
-        "Accounting",
-
-        "Business Studies",
-
-        "Economics",
-
-        "தமிழ்",
-
-        "வரலாறு",
-
-        "புவியியல்",
-
-        "அரசியல் விஞ்ஞானம்",
-
-        "இந்து சமயம்",
-
-        "கிறிஸ்தவம்",
-
-        "கத்தோலிக்கம்",
-
-        "இந்து நாகரிகம்",
-
-        "கிறிஸ்தவ நாகரிகம்",
-
-        "தர்க்கவியல்",
-
-        "சித்திரம்",
-
-        "நடனம்",
-
-        "இசை",
-
-        "நாடகம்",
-
-        "Science for Technology",
-
-        "Engineering Technology",
-
-        "Bio Systems Technology"
-
-    ];
-
-
-
-    /*
-     * Create Grade 1–5
+     * Grade 1 – 5
      */
 
     for (
@@ -1318,13 +1415,12 @@ function generateSchemes() {
     ) {
 
 
-        primarySubjects.forEach(
+        primary.forEach(
             function(subject) {
 
                 addScheme(
                     subject,
-                    grade,
-                    "primary"
+                    grade
                 );
 
             }
@@ -1333,9 +1429,8 @@ function generateSchemes() {
     }
 
 
-
     /*
-     * Create Grade 6–11
+     * Grade 6 – 11
      */
 
     for (
@@ -1345,39 +1440,18 @@ function generateSchemes() {
     ) {
 
 
-        secondarySubjects.forEach(
+        secondary.forEach(
             function(subject) {
 
                 addScheme(
                     subject,
-                    grade,
-                    "secondary"
+                    grade
                 );
 
             }
         );
 
     }
-
-
-
-    /*
-     * A/L
-     *
-     * A/L grade = 12
-     */
-
-    alSubjects.forEach(
-        function(subject) {
-
-            addScheme(
-                subject,
-                12,
-                "al"
-            );
-
-        }
-    );
 
 }
 
@@ -1389,43 +1463,45 @@ function generateSchemes() {
 
 function addScheme(
     subject,
-    grade,
-    level
+    grade
 ) {
 
 
-    let aliases = "";
+    const englishAlias =
+        Object.keys(
+            aliases
+        )
+        .find(
+            function(key) {
 
-
-    Object.keys(
-        subjectAliases
-    )
-    .forEach(
-        function(key) {
-
-            if (
-                subjectAliases[key] ===
-                subject
-            ) {
-
-                aliases +=
-                    " " + key;
+                return (
+                    aliases[key] ===
+                    subject
+                );
 
             }
-
-        }
-    );
+        );
 
 
-    const text =
+    let searchText =
 
         subject +
         " " +
 
-        aliases +
-        " Grade " +
+        "Grade " +
         grade +
         " Scheme";
+
+
+    if (
+        englishAlias
+    ) {
+
+        searchText +=
+            " " +
+            englishAlias;
+
+    }
 
 
     addResult({
@@ -1446,19 +1522,14 @@ function addScheme(
 
         searchText:
             normalizeText(
-                text
+                searchText
             ),
 
         link:
 
             "scheme-view.html" +
 
-            "?level=" +
-            encodeURIComponent(
-                level
-            ) +
-
-            "&subject=" +
+            "?subject=" +
             encodeURIComponent(
                 subject
             ) +
@@ -1467,7 +1538,9 @@ function addScheme(
             grade,
 
         grade:
-            "Grade " + grade
+            String(
+                grade
+            )
 
     });
 
@@ -1496,25 +1569,25 @@ function performSearch() {
         typeFilter.value;
 
 
-    /*
-     * If English alias is searched,
-     * include Tamil subject.
-     */
 
-    let expandedKeyword =
+    let searchKeyword =
         keyword;
 
 
+    /*
+     * Mathematics → கணிதம்
+     */
+
     if (
-        subjectAliases[
+        aliases[
             keyword
         ]
     ) {
 
-        expandedKeyword +=
+        searchKeyword +=
             " " +
             normalizeText(
-                subjectAliases[
+                aliases[
                     keyword
                 ]
             );
@@ -1523,29 +1596,17 @@ function performSearch() {
 
 
 
+    const words =
+        searchKeyword
+            .split(/\s+/)
+            .filter(Boolean);
+
+
+
     const results =
         allResults.filter(
             function(item) {
 
-
-                /*
-                 * Keyword match
-                 */
-
-                const keywordMatch =
-
-                    !keyword ||
-
-                    item.searchText
-                        .includes(
-                            expandedKeyword
-                        );
-
-
-
-                /*
-                 * Type match
-                 */
 
                 const typeMatch =
 
@@ -1557,10 +1618,6 @@ function performSearch() {
 
 
 
-                /*
-                 * Grade match
-                 */
-
                 const gradeMatch =
 
                     selectedGrade ===
@@ -1571,17 +1628,37 @@ function performSearch() {
 
 
 
+                /*
+                 * Every search word
+                 * should exist
+                 */
+
+                const keywordMatch =
+
+                    words.length === 0 ||
+
+                    words.every(
+                        function(word) {
+
+                            return item.searchText
+                                .includes(
+                                    word
+                                );
+
+                        }
+                    );
+
+
                 return (
 
-                    keywordMatch &&
                     typeMatch &&
-                    gradeMatch
+                    gradeMatch &&
+                    keywordMatch
 
                 );
 
             }
         );
-
 
 
     displayResults(
@@ -1604,7 +1681,7 @@ function displayResults(
 
 
     if (
-        !results.length
+        results.length === 0
     ) {
 
 
@@ -1624,7 +1701,7 @@ function displayResults(
                         ? "“" +
                           keyword +
                           "” தொடர்பான resources கிடைக்கவில்லை."
-                        : "மேலே Search செய்யவும்."
+                        : "Search செய்யவும்."
                     }
 
                 </p>
@@ -1673,7 +1750,8 @@ function displayResults(
 
 
 
-            let typeName = "";
+            let typeName =
+                "";
 
 
 
@@ -1756,7 +1834,6 @@ function displayResults(
             `;
 
 
-
             searchResults.appendChild(
                 card
             );
@@ -1820,7 +1897,7 @@ async function startSearch() {
 
         <div class="loading">
 
-            ⏳ Loading resources...
+            ⏳ Loading Papers...
 
         </div>
 
@@ -1828,19 +1905,28 @@ async function startSearch() {
 
 
     /*
-     * Load all current resources
+     * Load Papers
+     */
+
+    await loadAllPapers();
+
+
+    /*
+     * Load News
+     */
+
+    await loadNews();
+
+
+    /*
+     * Load Apps
      */
 
     await loadApps();
 
-    await loadNews();
-
-    await loadPapers();
-
 
     /*
-     * Schemes are generated
-     * from current structure.
+     * Generate Schemes
      */
 
     generateSchemes();
@@ -1852,16 +1938,19 @@ async function startSearch() {
 
     searchResults.innerHTML = `
 
-        <div class="no-results">
+        <div
+            class="no-results">
 
             <h2>
                 🔎 Search SLExam
             </h2>
 
             <p>
+
                 Mathematics, Physics,
-                Grade 10, Scheme...
+                Grade 11, Scheme...
                 போன்றவற்றை Search செய்யலாம்.
+
             </p>
 
         </div>
@@ -1872,6 +1961,7 @@ async function startSearch() {
 
 
 startSearch();
+
 
 </script>
 
