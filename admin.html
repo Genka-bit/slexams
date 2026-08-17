@@ -3,17 +3,15 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-    <title>SLExam Paper Manager</title>
+<title>SLExam Paper Manager</title>
 
-    <link
-        rel="stylesheet"
-        href="style.css">
+<link rel="stylesheet"
+      href="style.css">
 
 </head>
 
@@ -28,7 +26,7 @@
     </div>
 
     <h1>
-        Paper Manager
+        Admin Manager
     </h1>
 
 </header>
@@ -38,129 +36,133 @@
 <main class="admin-container">
 
 
-    <div class="admin-card">
+<!-- =====================================================
+     ADMIN KEY
+===================================================== -->
 
-        <h2>
-            Add New Paper
-        </h2>
+<div class="admin-card">
+
+    <h2>🔐 Admin Authentication</h2>
+
+    <label>
+        Admin Key
+    </label>
+
+    <input
+        type="password"
+        id="adminKey"
+        placeholder="Enter Admin Key">
+
+</div>
+
+
+
+<!-- =====================================================
+     PAPER MANAGER
+===================================================== -->
+
+<div class="admin-card">
+
+<h2>
+    📄 Add New Paper
+</h2>
+
 
 <label>
-    Admin Key
+    Grade
 </label>
 
-<input
-    type="password"
-    id="adminKey"
-    placeholder="Enter Admin Key">
-        <!-- Grade -->
+<select id="gradeSelect">
 
-        <label>
-            Grade
-        </label>
+<option value="">
+    Select Grade
+</option>
 
-        <select id="gradeSelect">
+<option value="1">Grade 1</option>
+<option value="2">Grade 2</option>
+<option value="3">Grade 3</option>
+<option value="4">Grade 4</option>
+<option value="5">Grade 5</option>
+<option value="6">Grade 6</option>
+<option value="7">Grade 7</option>
+<option value="8">Grade 8</option>
+<option value="9">Grade 9</option>
+<option value="10">Grade 10</option>
+<option value="11">Grade 11</option>
+<option value="12">Grade 12</option>
+<option value="13">Grade 13</option>
 
-            <option value="">
-                Select Grade
-            </option>
-
-            <option value="1">Grade 1</option>
-            <option value="2">Grade 2</option>
-            <option value="3">Grade 3</option>
-            <option value="4">Grade 4</option>
-            <option value="5">Grade 5</option>
-            <option value="6">Grade 6</option>
-            <option value="7">Grade 7</option>
-            <option value="8">Grade 8</option>
-            <option value="9">Grade 9</option>
-            <option value="10">Grade 10</option>
-            <option value="11">Grade 11</option>
-            <option value="12">Grade 12</option>
-            <option value="13">Grade 13</option>
-
-        </select>
+</select>
 
 
+<label>
+    Stream
+</label>
 
-        <!-- Stream -->
+<select id="streamSelect" disabled>
 
-        <label>
-            Stream
-        </label>
+<option value="">
+    Select Stream
+</option>
 
-        <select id="streamSelect">
+<option value="Science">
+    Science
+</option>
 
-            <option value="">
-                Select Stream
-            </option>
+<option value="Commerce">
+    Commerce
+</option>
 
-            <option value="Science">
-                Science
-            </option>
+<option value="Arts">
+    Arts
+</option>
 
-            <option value="Commerce">
-                Commerce
-            </option>
+<option value="Technology">
+    Technology
+</option>
 
-            <option value="Arts">
-                Arts
-            </option>
-
-            <option value="Technology">
-                Technology
-            </option>
-
-        </select>
+</select>
 
 
-
-        <!-- Subject -->
-
-        <label>
+<label>
     Subject
 </label>
 
 <select id="subjectSelect">
 
-    <option value="">
-        Select Subject
-    </option>
+<option value="">
+    Select Subject
+</option>
 
 </select>
 
 
+<label>
+    Term
+</label>
 
-        <!-- Term -->
+<select id="termSelect">
 
-        <label>
-            Term
-        </label>
+<option value="">
+    Select Term
+</option>
 
-        <select id="termSelect">
+<option value="1">
+    1st Term
+</option>
 
-            <option value="">
-                Select Term
-            </option>
+<option value="2">
+    2nd Term
+</option>
 
-            <option value="1">
-                1st Term
-            </option>
+<option value="3">
+    3rd Term
+</option>
 
-            <option value="2">
-                2nd Term
-            </option>
-
-            <option value="3">
-                3rd Term
-            </option>
-
-        </select>
+</select>
 
 
-
-        <!-- PDF Filename -->
-
-        <label>
+<label>
     PDF File
 </label>
 
@@ -168,66 +170,48 @@
     type="file"
     id="pdfFile"
     accept=".pdf">
+
+
 <button
     type="button"
-    id="uploadBtn">
+    id="addPaperBtn">
 
-    Upload Paper to GitHub
+    ➕ Add Paper
 
 </button>
 
 
-        <button
-            id="generateBtn">
+<button
+    type="button"
+    id="uploadBtn">
 
-            Generate Paper JSON
+    📤 Upload Papers to GitHub
 
-        </button>
-
-
-
-    </div>
+</button>
 
 
-
-    <!-- Result -->
-
-    <div
-        class="admin-card"
-        id="resultCard"
-        style="display:none;">
-
-        <h2>
-            Generated JSON
-        </h2>
+<div
+    id="paperList"
+    style="margin-top:20px;">
+</div>
 
 
-        <textarea
-            id="jsonOutput"
-            rows="10"
-            readonly>
-        </textarea>
+<p id="paperStatus"></p>
+
+</div>
 
 
-        <button
-            id="copyBtn">
 
-            Copy JSON
+<!-- =====================================================
+     NEWS MANAGER
+===================================================== -->
 
-        </button>
+<div class="admin-card">
 
-
-        <p id="status"></p>
-
-    </div>
-
-<!-- ======================================
-     News Manager
-====================================== --><div class="admin-card"><h2>
+<h2>
     📰 Add Education News
 </h2>
 
-<!-- News Title -->
 
 <label>
     News Title
@@ -239,8 +223,6 @@
     placeholder="Enter news title">
 
 
-<!-- News Description -->
-
 <label>
     News Description
 </label>
@@ -249,6 +231,8 @@
     id="newsDescription"
     rows="5"
     placeholder="Enter news description"></textarea>
+
+
 <label>
     Full News Content
 </label>
@@ -256,10 +240,8 @@
 <textarea
     id="newsContent"
     rows="12"
-    placeholder="Write the full news article here...">
-</textarea>
+    placeholder="Write the full news article here..."></textarea>
 
-<!-- News Date -->
 
 <label>
     News Date
@@ -269,8 +251,6 @@
     type="date"
     id="newsDate">
 
-
-<!-- News Image -->
 
 <label>
     News Image
@@ -282,8 +262,6 @@
     accept="image/*">
 
 
-<!-- News Link -->
-
 <label>
     News Link
 </label>
@@ -294,1146 +272,1786 @@
     placeholder="https://example.com/news">
 
 
-<!-- Publish Button -->
-
 <button
     type="button"
     id="publishNewsBtn">
 
-    Publish News
+    🚀 Publish News
 
 </button>
+
 
 <p id="newsStatus"></p>
 
 </div>
+
+
+
+<!-- =====================================================
+     SCHEME MANAGER
+===================================================== -->
+
+<div class="admin-card">
+
+<h2>
+    📚 Scheme Manager
+</h2>
+
+
+<p>
+    Scheme PDF upload செய்தவுடன் GitHub-ல்
+    automatic-ஆக சேர்க்கப்படும்.
+</p>
+
+
+<label>
+    Grade
+</label>
+
+<select id="schemeGrade">
+
+<option value="">
+    Select Grade
+</option>
+
+<option value="1">Grade 1</option>
+<option value="2">Grade 2</option>
+<option value="3">Grade 3</option>
+<option value="4">Grade 4</option>
+<option value="5">Grade 5</option>
+<option value="6">Grade 6</option>
+<option value="7">Grade 7</option>
+<option value="8">Grade 8</option>
+<option value="9">Grade 9</option>
+<option value="10">Grade 10</option>
+<option value="11">Grade 11</option>
+<option value="12">Grade 12</option>
+<option value="13">Grade 13</option>
+
+</select>
+
+
+<label>
+    Subject
+</label>
+
+<select id="schemeSubject">
+
+<option value="">
+    Select Subject
+</option>
+
+</select>
+
+
+<label>
+    Scheme PDF
+</label>
+
+<input
+    type="file"
+    id="schemeFile"
+    accept=".pdf">
+
+
+<button
+    type="button"
+    id="uploadSchemeBtn">
+
+    📤 Upload Scheme
+
+</button>
+
+
+<p id="schemeStatus"></p>
+
+</div>
+
+
+
+<!-- =====================================================
+     APP MANAGER
+===================================================== -->
+
+<div class="admin-card">
+
+<h2>
+    📱 App Manager
+</h2>
+
+
+<label>
+    Platform
+</label>
+
+<select id="appPlatform">
+
+<option value="">
+    Select Platform
+</option>
+
+<option value="android">
+    🤖 Android
+</option>
+
+<option value="windows">
+    🪟 Windows
+</option>
+
+</select>
+
+
+<label>
+    App Name
+</label>
+
+<input
+    type="text"
+    id="appName"
+    placeholder="Example: SLExam App">
+
+
+<label>
+    App Image
+</label>
+
+<input
+    type="file"
+    id="appImage"
+    accept="image/*">
+
+
+<label>
+    Short Description / Demo
+</label>
+
+<textarea
+    id="appDemo"
+    rows="3"
+    placeholder="Short description shown on app card"></textarea>
+
+
+<label>
+    Full Description
+</label>
+
+<textarea
+    id="appDescription"
+    rows="6"
+    placeholder="Full application description"></textarea>
+
+
+<label>
+    Version
+</label>
+
+<input
+    type="text"
+    id="appVersion"
+    placeholder="Example: 1.0">
+
+
+<label>
+    Website Link
+</label>
+
+<input
+    type="url"
+    id="appWebsite"
+    placeholder="https://example.com">
+
+
+<label>
+    Play Store Link
+</label>
+
+<input
+    type="url"
+    id="appPlayStore"
+    placeholder="https://play.google.com/...">
+
+
+<hr>
+
+
+<h3>
+    📦 Download Option
+</h3>
+
+
+<label>
+    Download Method
+</label>
+
+<select id="downloadMethod">
+
+<option value="file">
+    Upload APK / EXE file
+</option>
+
+<option value="external">
+    External Download Link
+</option>
+
+</select>
+
+
+<div id="appFileBox">
+
+<label>
+    APK / EXE File
+</label>
+
+<input
+    type="file"
+    id="appFile">
+
+</div>
+
+
+<div
+    id="externalLinkBox"
+    style="display:none;">
+
+<label>
+    External Download Link
+</label>
+
+<input
+    type="url"
+    id="externalDownload"
+    placeholder="https://example.com/download">
+
+</div>
+
+
+<button
+    type="button"
+    id="publishAppBtn">
+
+    🚀 Publish App
+
+</button>
+
+
+<p id="appStatus"></p>
+
+</div>
+
+
+
 </main>
 
 
 
 <script>
 
-const gradeSelect =
-    document.getElementById("gradeSelect");
 
-const streamSelect =
-    document.getElementById("streamSelect");
-
-const subjectSelect =
-    document.getElementById("subjectSelect");
-
-const termSelect =
-    document.getElementById("termSelect");
-
-const pdfFile =
-    document.getElementById("pdfFile");
-
-const generateBtn =
-    document.getElementById("generateBtn");
-
-const uploadBtn =
-    document.getElementById("uploadBtn");
-
-const adminKeyInput =
-    document.getElementById("adminKey");
-
-const resultCard =
-    document.getElementById("resultCard");
-
-const jsonOutput =
-    document.getElementById("jsonOutput");
-
-const copyBtn =
-    document.getElementById("copyBtn");
-
-const status =
-    document.getElementById("status");
-
-
-// ======================================
-// Cloudflare Worker
-// ======================================
+/* =====================================================
+   WORKER URL
+===================================================== */
 
 const WORKER_URL =
     "https://slexams-upload.genkaweb.workers.dev";
 
 
-// ======================================
-// Subject Lists - Grade 1 to 11
-// ======================================
+
+/* =====================================================
+   ADMIN KEY
+===================================================== */
+
+const adminKeyInput =
+    document.getElementById("adminKey");
+
+
+
+/* =====================================================
+   SUBJECT LISTS
+===================================================== */
 
 const subjectLists = {
 
-    1: [
-        "தமிழ்",
-        "கணிதம்",
-        "சுற்றாடல்",
-        "ஆங்கிலம்",
-        "இரண்டாம் மொழி"
-    ],
+1: [
+"தமிழ்",
+"கணிதம்",
+"சுற்றாடல்",
+"ஆங்கிலம்",
+"இரண்டாம் மொழி"
+],
 
-    2: [
-        "தமிழ்",
-        "கணிதம்",
-        "சுற்றாடல்",
-        "ஆங்கிலம்",
-        "இரண்டாம் மொழி"
-    ],
+2: [
+"தமிழ்",
+"கணிதம்",
+"சுற்றாடல்",
+"ஆங்கிலம்",
+"இரண்டாம் மொழி"
+],
 
-    3: [
-        "தமிழ்",
-        "கணிதம்",
-        "சுற்றாடல்",
-        "ஆங்கிலம்",
-        "இரண்டாம் மொழி"
-    ],
+3: [
+"தமிழ்",
+"கணிதம்",
+"சுற்றாடல்",
+"ஆங்கிலம்",
+"இரண்டாம் மொழி"
+],
 
-    4: [
-        "தமிழ்",
-        "கணிதம்",
-        "சுற்றாடல்",
-        "ஆங்கிலம்",
-        "இரண்டாம் மொழி"
-    ],
+4: [
+"தமிழ்",
+"கணிதம்",
+"சுற்றாடல்",
+"ஆங்கிலம்",
+"இரண்டாம் மொழி"
+],
 
-    5: [
-        "தமிழ்",
-        "கணிதம்",
-        "சுற்றாடல்",
-        "ஆங்கிலம்",
-        "இரண்டாம் மொழி"
-    ],
+5: [
+"தமிழ்",
+"கணிதம்",
+"சுற்றாடல்",
+"ஆங்கிலம்",
+"இரண்டாம் மொழி"
+],
 
-    6: [
-        "தமிழ்",
-        "கணிதம்",
-        "விஞ்ஞானம்",
-        "வரலாறு",
-        "புவியியல்",
-        "குடியியல்",
-        "ஆங்கிலம்",
-        "சுகாதாரம்",
-        "சைவசமயம்",
-        "கத்தோலிக்கம்",
-        "கிறிஸ்தவம்",
-        "இஸ்லாம்",
-        "அழகியல்",
-        "சிங்களம்",
-        "ICT",
-        "PTS"
-    ],
+6: [
+"தமிழ்",
+"கணிதம்",
+"விஞ்ஞானம்",
+"வரலாறு",
+"புவியியல்",
+"குடியியல்",
+"ஆங்கிலம்",
+"சுகாதாரம்",
+"சைவசமயம்",
+"கத்தோலிக்கம்",
+"கிறிஸ்தவம்",
+"இஸ்லாம்",
+"அழகியல்",
+"சிங்களம்",
+"ICT",
+"PTS"
+],
 
-    7: [
-        "தமிழ்",
-        "கணிதம்",
-        "விஞ்ஞானம்",
-        "வரலாறு",
-        "புவியியல்",
-        "குடியியல்",
-        "ஆங்கிலம்",
-        "சுகாதாரம்",
-        "சைவசமயம்",
-        "கத்தோலிக்கம்",
-        "கிறிஸ்தவம்",
-        "இஸ்லாம்",
-        "அழகியல்",
-        "சிங்களம்",
-        "ICT",
-        "PTS"
-    ],
+7: [
+"தமிழ்",
+"கணிதம்",
+"விஞ்ஞானம்",
+"வரலாறு",
+"புவியியல்",
+"குடியியல்",
+"ஆங்கிலம்",
+"சுகாதாரம்",
+"சைவசமயம்",
+"கத்தோலிக்கம்",
+"கிறிஸ்தவம்",
+"இஸ்லாம்",
+"அழகியல்",
+"சிங்களம்",
+"ICT",
+"PTS"
+],
 
-    8: [
-        "தமிழ்",
-        "கணிதம்",
-        "விஞ்ஞானம்",
-        "வரலாறு",
-        "புவியியல்",
-        "குடியியல்",
-        "ஆங்கிலம்",
-        "சுகாதாரம்",
-        "சைவசமயம்",
-        "கத்தோலிக்கம்",
-        "கிறிஸ்தவம்",
-        "இஸ்லாம்",
-        "அழகியல்",
-        "சிங்களம்",
-        "ICT",
-        "PTS"
-    ],
+8: [
+"தமிழ்",
+"கணிதம்",
+"விஞ்ஞானம்",
+"வரலாறு",
+"புவியியல்",
+"குடியியல்",
+"ஆங்கிலம்",
+"சுகாதாரம்",
+"சைவசமயம்",
+"கத்தோலிக்கம்",
+"கிறிஸ்தவம்",
+"இஸ்லாம்",
+"அழகியல்",
+"சிங்களம்",
+"ICT",
+"PTS"
+],
 
-    9: [
-        "தமிழ்",
-        "கணிதம்",
-        "விஞ்ஞானம்",
-        "வரலாறு",
-        "புவியியல்",
-        "குடியியல்",
-        "ஆங்கிலம்",
-        "சுகாதாரம்",
-        "சைவசமயம்",
-        "கத்தோலிக்கம்",
-        "கிறிஸ்தவம்",
-        "இஸ்லாம்",
-        "அழகியல்",
-        "சிங்களம்",
-        "ICT",
-        "PTS"
-    ],
+9: [
+"தமிழ்",
+"கணிதம்",
+"விஞ்ஞானம்",
+"வரலாறு",
+"புவியியல்",
+"குடியியல்",
+"ஆங்கிலம்",
+"சுகாதாரம்",
+"சைவசமயம்",
+"கத்தோலிக்கம்",
+"கிறிஸ்தவம்",
+"இஸ்லாம்",
+"அழகியல்",
+"சிங்களம்",
+"ICT",
+"PTS"
+],
 
-    10: [
-        "தமிழ்",
-        "கணிதம்",
-        "விஞ்ஞானம்",
-        "வரலாறு",
-        "ஆங்கிலம்",
-        "சைவசமயம்",
-        "கத்தோலிக்கம்",
-        "கிறிஸ்தவம்",
-        "இஸ்லாம்",
-        "புவியியல்",
-        "குடியியல்",
-        "வணிகக்கல்வி",
-        "சிங்களம்",
-        "அழகியல்",
-        "தமிழ் இலக்கிய நயம்",
-        "சுகாதாரம்",
-        "விவசாயம்",
-        "ICT",
-        "TECHNOLOGY",
-        "வேறு தொகுதி III பாடங்கள்"
-    ],
+10: [
+"தமிழ்",
+"கணிதம்",
+"விஞ்ஞானம்",
+"வரலாறு",
+"ஆங்கிலம்",
+"சைவசமயம்",
+"கத்தோலிக்கம்",
+"கிறிஸ்தவம்",
+"இஸ்லாம்",
+"புவியியல்",
+"குடியியல்",
+"வணிகக்கல்வி",
+"சிங்களம்",
+"அழகியல்",
+"தமிழ் இலக்கிய நயம்",
+"சுகாதாரம்",
+"விவசாயம்",
+"ICT",
+"TECHNOLOGY",
+"வேறு தொகுதி III பாடங்கள்"
+],
 
-    11: [
-        "தமிழ்",
-        "கணிதம்",
-        "விஞ்ஞானம்",
-        "வரலாறு",
-        "ஆங்கிலம்",
-        "சைவசமயம்",
-        "கத்தோலிக்கம்",
-        "கிறிஸ்தவம்",
-        "இஸ்லாம்",
-        "புவியியல்",
-        "குடியியல்",
-        "வணிகக்கல்வி",
-        "சிங்களம்",
-        "அழகியல்",
-        "தமிழ் இலக்கிய நயம்",
-        "சுகாதாரம்",
-        "விவசாயம்",
-        "ICT",
-        "TECHNOLOGY",
-        "வேறு தொகுதி III பாடங்கள்"
-    ]
+11: [
+"தமிழ்",
+"கணிதம்",
+"விஞ்ஞானம்",
+"வரலாறு",
+"ஆங்கிலம்",
+"சைவசமயம்",
+"கத்தோலிக்கம்",
+"கிறிஸ்தவம்",
+"இஸ்லாம்",
+"புவியியல்",
+"குடியியல்",
+"வணிகக்கல்வி",
+"சிங்களம்",
+"அழகியல்",
+"தமிழ் இலக்கிய நயம்",
+"சுகாதாரம்",
+"விவசாயம்",
+"ICT",
+"TECHNOLOGY",
+"வேறு தொகுதி III பாடங்கள்"
+]
 
 };
 
 
-// ======================================
-// Grade 12 - 13 Stream Subjects
-// ======================================
+
+/* =====================================================
+   A/L STREAM SUBJECTS
+===================================================== */
 
 const streamSubjects = {
 
-    "Science": [
-        "Combined Mathematics",
-        "Physics",
-        "Chemistry",
-        "Biology",
-        "ICT",
-        "Agricultural Science"
-    ],
+Science: [
+"Combined Mathematics",
+"Physics",
+"Chemistry",
+"Biology",
+"ICT",
+"Agricultural Science"
+],
 
-    "Commerce": [
-        "Accounting",
-        "Business Studies",
-        "Economics"
-    ],
+Commerce: [
+"Accounting",
+"Business Studies",
+"Economics"
+],
 
-    "Arts": [
-        "தமிழ்",
-        "வரலாறு",
-        "புவியியல்",
-        "அரசியல் விஞ்ஞானம்",
-        "இந்து சமயம்",
-        "கிறிஸ்தவம்",
-        "கத்தோலிக்கம்",
-        "இந்து நாகரிகம்",
-        "கிறிஸ்தவ நாகரிகம்",
-        "தர்க்கவியல்",
-        "சித்திரம்",
-        "நடனம்",
-        "இசை",
-        "நாடகம்"
-    ],
+Arts: [
+"தமிழ்",
+"வரலாறு",
+"புவியியல்",
+"அரசியல் விஞ்ஞானம்",
+"இந்து சமயம்",
+"கிறிஸ்தவம்",
+"கத்தோலிக்கம்",
+"இந்து நாகரிகம்",
+"கிறிஸ்தவ நாகரிகம்",
+"தர்க்கவியல்",
+"சித்திரம்",
+"நடனம்",
+"இசை",
+"நாடகம்"
+],
 
-    "Technology": [
-        "Science for Technology",
-        "Engineering Technology",
-        "Bio Systems Technology",
-        "ICT",
-        "Agricultural Science"
-    ]
+Technology: [
+"Science for Technology",
+"Engineering Technology",
+"Bio Systems Technology",
+"ICT",
+"Agricultural Science"
+]
 
 };
 
 
-// ======================================
-// Grade Change
-// ======================================
 
-gradeSelect.addEventListener("change", () => {
+/* =====================================================
+   HELPERS
+===================================================== */
 
-    const grade =
-        parseInt(gradeSelect.value, 10);
+function getAdminKey() {
 
-    subjectSelect.innerHTML = `
-        <option value="">
-            Select Subject
-        </option>
-    `;
+return adminKeyInput.value.trim();
 
-    streamSelect.value = "";
-    streamSelect.disabled = true;
+}
 
 
-    if (grade >= 1 && grade <= 11) {
+function requireAdminKey() {
 
-        const subjects =
-            subjectLists[grade] || [];
+if (!getAdminKey()) {
 
-        subjects.forEach(subject => {
+alert("Please enter Admin Key.");
 
-            const option =
-                document.createElement("option");
+return false;
 
-            option.value = subject;
-            option.textContent = subject;
+}
 
-            subjectSelect.appendChild(option);
+return true;
 
-        });
-
-        return;
-    }
+}
 
 
-    if (grade === 12 || grade === 13) {
+function addOptions(select, subjects) {
 
-        streamSelect.disabled = false;
+select.innerHTML =
+`<option value="">Select Subject</option>`;
 
-    }
+subjects.forEach(subject => {
+
+const option =
+document.createElement("option");
+
+option.value = subject;
+
+option.textContent = subject;
+
+select.appendChild(option);
 
 });
 
-
-// ======================================
-// Stream Change
-// ======================================
-
-streamSelect.addEventListener("change", () => {
-
-    const grade =
-        parseInt(gradeSelect.value, 10);
-
-    const stream =
-        streamSelect.value;
-
-    subjectSelect.innerHTML = `
-        <option value="">
-            Select Subject
-        </option>
-    `;
+}
 
 
-    if (grade !== 12 && grade !== 13) {
 
-        return;
+/* =====================================================
+   PAPER MANAGER
+===================================================== */
 
-    }
+const gradeSelect =
+document.getElementById("gradeSelect");
 
+const streamSelect =
+document.getElementById("streamSelect");
 
-    const subjects =
-        streamSubjects[stream] || [];
+const subjectSelect =
+document.getElementById("subjectSelect");
 
+const termSelect =
+document.getElementById("termSelect");
 
-    subjects.forEach(subject => {
+const pdfFile =
+document.getElementById("pdfFile");
 
-        const option =
-            document.createElement("option");
+const addPaperBtn =
+document.getElementById("addPaperBtn");
 
-        option.value = subject;
-        option.textContent = subject;
+const uploadBtn =
+document.getElementById("uploadBtn");
 
-        subjectSelect.appendChild(option);
+const paperList =
+document.getElementById("paperList");
 
-    });
+const paperStatus =
+document.getElementById("paperStatus");
 
-});
-
-
-// ======================================
-// Papers Collection
-// ======================================
 
 let papers = [];
 
 
-// ======================================
-// Add Paper Button
-// ======================================
+gradeSelect.addEventListener(
+"change",
+function() {
 
-const addPaperBtn =
-    document.createElement("button");
-
-addPaperBtn.type =
-    "button";
-
-addPaperBtn.textContent =
-    "Add Paper";
-
-addPaperBtn.style.marginTop =
-    "10px";
-
-pdfFile.parentNode.appendChild(
-    addPaperBtn
+const grade =
+parseInt(
+gradeSelect.value,
+10
 );
 
+subjectSelect.innerHTML =
+`<option value="">Select Subject</option>`;
 
-// ======================================
-// Paper List
-// ======================================
+streamSelect.value = "";
 
-const paperList =
-    document.createElement("div");
+streamSelect.disabled = true;
 
-paperList.style.marginTop =
-    "20px";
 
-resultCard.parentNode.insertBefore(
-    paperList,
-    resultCard
+if (grade >= 1 && grade <= 11) {
+
+addOptions(
+subjectSelect,
+subjectLists[grade] || []
 );
 
+}
 
-// ======================================
-// Add Paper
-// ======================================
 
-addPaperBtn.addEventListener("click", () => {
+if (grade === 12 || grade === 13) {
 
-    const grade =
-        gradeSelect.value;
+streamSelect.disabled = false;
 
-    const stream =
-        streamSelect.value;
-
-    const subject =
-        subjectSelect.value;
-
-    const term =
-        termSelect.value;
-
-
-    if (!grade) {
-
-        alert("Please select Grade.");
-
-        return;
-
-    }
-
-
-    if (
-        (grade === "12" || grade === "13")
-        && !stream
-    ) {
-
-        alert("Please select Stream.");
-
-        return;
-
-    }
-
-
-    if (!subject) {
-
-        alert("Please select Subject.");
-
-        return;
-
-    }
-
-
-    if (!term) {
-
-        alert("Please select Term.");
-
-        return;
-
-    }
-
-
-    if (!pdfFile.files.length) {
-
-        alert("Please select a PDF file.");
-
-        return;
-
-    }
-
-
-    const file =
-        pdfFile.files[0];
-
-
-    if (
-        !file.name
-            .toLowerCase()
-            .endsWith(".pdf")
-    ) {
-
-        alert("Please select a PDF file.");
-
-        return;
-
-    }
-
-
-    const pdfName =
-        file.name;
-
-
-    const title =
-        pdfName
-            .replace(/\.pdf$/i, "")
-            .trim();
-
-
-    let folder =
-        `assets/pdf/grade${grade}/`;
-
-
-    if (stream) {
-
-        folder +=
-            `${stream}/`;
-
-    }
-
-
-    folder +=
-        `${subject}/term${term}/`;
-
-
-    const pdfPath =
-        folder + pdfName;
-
-
-    // Keep the actual File object
-    const paper = {
-
-        grade: grade,
-
-        stream: stream,
-
-        subject: subject,
-
-        term: term,
-
-        title: title,
-
-        pdf: pdfPath,
-
-        file: file
-
-    };
-
-
-    papers.push(paper);
-
-
-    pdfFile.value = "";
-
-
-    renderPaperList();
-
-
-    status.textContent =
-        "Paper added successfully.";
+}
 
 });
 
 
-// ======================================
-// Render Paper List
-// ======================================
+streamSelect.addEventListener(
+"change",
+function() {
+
+const grade =
+parseInt(
+gradeSelect.value,
+10
+);
+
+if (
+grade !== 12 &&
+grade !== 13
+) return;
+
+addOptions(
+subjectSelect,
+streamSubjects[
+streamSelect.value
+] || []
+);
+
+});
+
+
+
+addPaperBtn.addEventListener(
+"click",
+function() {
+
+const grade =
+gradeSelect.value;
+
+const stream =
+streamSelect.value;
+
+const subject =
+subjectSelect.value;
+
+const term =
+termSelect.value;
+
+const file =
+pdfFile.files[0];
+
+
+if (!grade) {
+
+alert("Select Grade.");
+
+return;
+
+}
+
+
+if (
+(grade === "12" ||
+grade === "13") &&
+!stream
+) {
+
+alert("Select Stream.");
+
+return;
+
+}
+
+
+if (!subject) {
+
+alert("Select Subject.");
+
+return;
+
+}
+
+
+if (!term) {
+
+alert("Select Term.");
+
+return;
+
+}
+
+
+if (!file) {
+
+alert("Select PDF.");
+
+return;
+
+}
+
+
+if (
+!file.name
+.toLowerCase()
+.endsWith(".pdf")
+) {
+
+alert("Only PDF files.");
+
+return;
+
+}
+
+
+papers.push({
+
+grade,
+stream,
+subject,
+term,
+title:
+file.name.replace(
+/\.pdf$/i,
+""
+),
+file
+
+});
+
+
+pdfFile.value = "";
+
+renderPaperList();
+
+paperStatus.textContent =
+"Paper added.";
+
+});
+
 
 function renderPaperList() {
 
-    paperList.innerHTML = "";
+paperList.innerHTML = "";
 
-    if (papers.length === 0) {
+papers.forEach(
+(paper, index) => {
 
-        return;
+const div =
+document.createElement("div");
 
-    }
+div.style.padding = "10px";
+div.style.marginBottom = "8px";
+div.style.border = "1px solid #ddd";
+div.style.borderRadius = "8px";
 
+div.innerHTML = `
 
-    const heading =
-        document.createElement("h3");
+<strong>
+${index + 1}. ${paper.title}
+</strong>
 
-    heading.textContent =
-        `Added Papers (${papers.length})`;
+<br>
 
-    paperList.appendChild(
-        heading
-    );
+<small>
+Grade ${paper.grade}
+${paper.stream
+? " - " + paper.stream
+: ""}
+ - ${paper.subject}
+ - Term ${paper.term}
+</small>
 
+<br>
 
-    papers.forEach((paper, index) => {
+<button
+type="button"
+data-index="${index}">
 
-        const item =
-            document.createElement("div");
+Remove
 
-        item.style.padding =
-            "10px";
+</button>
 
-        item.style.marginBottom =
-            "8px";
+`;
 
-        item.style.border =
-            "1px solid #ddd";
+div.querySelector("button")
+.addEventListener(
+"click",
+function() {
 
-        item.style.borderRadius =
-            "8px";
-
-
-        item.innerHTML = `
-            <strong>
-                ${index + 1}. ${paper.title}
-            </strong>
-            <br>
-            <small>
-                Grade ${paper.grade}
-                ${paper.stream
-                    ? " - " + paper.stream
-                    : ""}
-                - ${paper.subject}
-                - Term ${paper.term}
-            </small>
-        `;
-
-
-        const removeBtn =
-            document.createElement("button");
-
-        removeBtn.type =
-            "button";
-
-        removeBtn.textContent =
-            "Remove";
-
-        removeBtn.style.marginTop =
-            "5px";
-
-
-        removeBtn.addEventListener(
-            "click",
-            () => {
-
-                papers.splice(index, 1);
-
-                renderPaperList();
-
-            }
-        );
-
-
-        item.appendChild(
-            removeBtn
-        );
-
-
-        paperList.appendChild(
-            item
-        );
-
-    });
-
-}
-
-
-// ======================================
-// Generate JSON
-// ======================================
-
-generateBtn.addEventListener(
-    "click",
-    () => {
-
-        if (papers.length === 0) {
-
-            alert(
-                "Please add at least one paper."
-            );
-
-            return;
-
-        }
-
-
-        // Remove File object before JSON
-        const jsonPapers =
-            papers.map(paper => ({
-
-                title: paper.title,
-
-                pdf: paper.pdf
-
-            }));
-
-
-        const json =
-            JSON.stringify(
-                jsonPapers,
-                null,
-                2
-            );
-
-
-        jsonOutput.value =
-            json;
-
-
-        resultCard.style.display =
-            "block";
-
-
-        status.textContent =
-            "JSON generated successfully.";
-
-    }
+papers.splice(
+index,
+1
 );
 
-
-// ======================================
-// Copy JSON
-// ======================================
-
-copyBtn.addEventListener(
-    "click",
-    async () => {
-
-        try {
-
-            await navigator.clipboard.writeText(
-                jsonOutput.value
-            );
-
-            status.textContent =
-                "JSON copied successfully!";
-
-        } catch (error) {
-
-            jsonOutput.select();
-
-            document.execCommand("copy");
-
-            status.textContent =
-                "JSON copied.";
-
-        }
-
-    }
-);
-
-
-// ======================================
-// Upload Papers to GitHub
-// ======================================
-
-uploadBtn.addEventListener(
-    "click",
-    async () => {
-
-        if (papers.length === 0) {
-
-            alert(
-                "Please add at least one paper."
-            );
-
-            return;
-
-        }
-
-
-        const adminKey =
-            adminKeyInput.value.trim();
-
-
-        if (!adminKey) {
-
-            alert(
-                "Please enter Admin Key."
-            );
-
-            return;
-
-        }
-
-
-        uploadBtn.disabled =
-            true;
-
-        addPaperBtn.disabled =
-            true;
-
-
-        try {
-
-            for (
-                let i = 0;
-                i < papers.length;
-                i++
-            ) {
-
-                const paper =
-                    papers[i];
-
-
-                status.textContent =
-                    `Uploading ${i + 1} of ${papers.length}: ${paper.title}`;
-
-
-                const formData =
-                    new FormData();
-
-
-                formData.append(
-                    "grade",
-                    paper.grade
-                );
-
-
-                formData.append(
-                    "stream",
-                    paper.stream
-                );
-
-
-                formData.append(
-                    "subject",
-                    paper.subject
-                );
-
-
-                formData.append(
-                    "term",
-                    paper.term
-                );
-
-
-                formData.append(
-                    "pdf",
-                    paper.file,
-                    paper.file.name
-                );
-
-
-                const response =
-                    await fetch(
-                        WORKER_URL,
-                        {
-
-                            method: "POST",
-
-                            headers: {
-
-                                "X-Admin-Key":
-                                    adminKey
-
-                            },
-
-                            body: formData
-
-                        }
-                    );
-
-
-                const result =
-                    await response.json();
-
-
-                if (!response.ok || !result.success) {
-
-                    throw new Error(
-                        result.message ||
-                        `Upload failed for ${paper.title}`
-                    );
-
-                }
-
-            }
-
-
-            status.textContent =
-                "All papers uploaded successfully!";
-
-
-            alert(
-                "All papers uploaded successfully to GitHub."
-            );
-
-
-            papers = [];
-
-            renderPaperList();
-
-            jsonOutput.value = "";
-
-            resultCard.style.display =
-                "none";
-
-
-        } catch (error) {
-
-            console.error(
-                "Upload Error:",
-                error
-            );
-
-
-            status.textContent =
-                "Upload failed: " +
-                error.message;
-
-
-            alert(
-                "Upload failed:\n\n" +
-                error.message
-            );
-
-        } finally {
-
-            uploadBtn.disabled =
-                false;
-
-            addPaperBtn.disabled =
-                false;
-
-        }
-
-    }
-);
-
-// ======================================
-// News Upload
-// ======================================
-
-const publishNewsBtn =
-    document.getElementById("publishNewsBtn");
-
-const newsTitle =
-    document.getElementById("newsTitle");
-
-const newsDescription =
-    document.getElementById("newsDescription");
-const newsContent =
-    document.getElementById("newsContent");
-const newsDate =
-    document.getElementById("newsDate");
-
-const newsImage =
-    document.getElementById("newsImage");
-
-const newsLink =
-    document.getElementById("newsLink");
-
-const newsStatus =
-    document.getElementById("newsStatus");
-
-
-publishNewsBtn.addEventListener("click", async () => {
-
-    const title =
-        newsTitle.value.trim();
-
-    const description =
-        newsDescription.value.trim();
-const content =
-    newsContent.value.trim();
-    const date =
-        newsDate.value;
-
-    const link =
-        newsLink.value.trim();
-
-
-    if (!title) {
-        alert("Please enter News Title.");
-        return;
-    }
-
-    if (!description) {
-        alert("Please enter News Description.");
-        return;
-    }
-if (!content) {
-
-    alert(
-        "Please enter Full News Content."
-    );
-
-    return;
-
-}
-    if (!date) {
-        alert("Please select News Date.");
-        return;
-    }
-
-
-    const adminKey =
-        adminKeyInput.value.trim();
-
-
-    if (!adminKey) {
-        alert("Please enter Admin Key.");
-        return;
-    }
-
-
-    publishNewsBtn.disabled = true;
-
-    newsStatus.textContent =
-        "Publishing News...";
-
-
-    try {
-
-        const formData =
-            new FormData();
-
-
-        formData.append(
-            "type",
-            "news"
-        );
-
-        formData.append(
-            "title",
-            title
-        );
-
-        formData.append(
-            "description",
-            description
-        );
-console.log(
-    "FULL NEWS CONTENT:",
-    newsContent.value
-);
-formData.append(
-    "content",
-    newsContent.value.trim()
-);
-        formData.append(
-            "date",
-            date
-        );
-
-        formData.append(
-            "link",
-            link
-        );
-
-
-        if (newsImage.files.length) {
-
-            formData.append(
-                "image",
-                newsImage.files[0],
-                newsImage.files[0].name
-            );
-
-        }
-
-
-        const response =
-            await fetch(
-                WORKER_URL,
-                {
-                    method: "POST",
-
-                    headers: {
-                        "X-Admin-Key":
-                            adminKey
-                    },
-
-                    body: formData
-                }
-            );
-
-
-        const result =
-            await response.json();
-
-
-        if (!response.ok ||
-            !result.success) {
-
-            throw new Error(
-                result.message ||
-                "News upload failed."
-            );
-
-        }
-
-
-        newsStatus.textContent =
-            "News published successfully!";
-
-        alert(
-            "News published successfully!"
-        );
-
-
-        newsTitle.value = "";
-        newsDescription.value = "";
-        newsDate.value = "";
-        newsImage.value = "";
-        newsLink.value = "";
-
-
-    }
-    catch (error) {
-
-        console.error(
-            "News Upload Error:",
-            error
-        );
-
-
-        newsStatus.textContent =
-            "News upload failed: " +
-            error.message;
-
-
-        alert(
-            "News upload failed:\n\n" +
-            error.message
-        );
-
-    }
-    finally {
-
-        publishNewsBtn.disabled =
-            false;
-
-    }
+renderPaperList();
 
 });
+
+paperList.appendChild(div);
+
+});
+
+}
+
+
+
+uploadBtn.addEventListener(
+"click",
+async function() {
+
+if (!papers.length) {
+
+alert("Add at least one paper.");
+
+return;
+
+}
+
+if (!requireAdminKey()) return;
+
+uploadBtn.disabled = true;
+
+try {
+
+for (
+let i = 0;
+i < papers.length;
+i++
+) {
+
+const paper =
+papers[i];
+
+paperStatus.textContent =
+`Uploading ${i + 1} / ${papers.length}...`;
+
+const formData =
+new FormData();
+
+formData.append(
+"type",
+"paper"
+);
+
+formData.append(
+"grade",
+paper.grade
+);
+
+formData.append(
+"stream",
+paper.stream
+);
+
+formData.append(
+"subject",
+paper.subject
+);
+
+formData.append(
+"term",
+paper.term
+);
+
+formData.append(
+"pdf",
+paper.file,
+paper.file.name
+);
+
+
+const response =
+await fetch(
+WORKER_URL,
+{
+
+method:
+"POST",
+
+headers: {
+
+"X-Admin-Key":
+getAdminKey()
+
+},
+
+body:
+formData
+
+});
+
+
+const result =
+await response.json();
+
+if (
+!response.ok ||
+!result.success
+) {
+
+throw new Error(
+result.message ||
+"Paper upload failed."
+);
+
+}
+
+}
+
+
+papers = [];
+
+renderPaperList();
+
+paperStatus.textContent =
+"✅ All papers uploaded successfully.";
+
+alert(
+"All papers uploaded successfully."
+);
+
+}
+catch(error) {
+
+paperStatus.textContent =
+"❌ " + error.message;
+
+alert(error.message);
+
+}
+finally {
+
+uploadBtn.disabled = false;
+
+}
+
+});
+
+
+
+/* =====================================================
+   NEWS MANAGER
+===================================================== */
+
+const publishNewsBtn =
+document.getElementById(
+"publishNewsBtn"
+);
+
+publishNewsBtn.addEventListener(
+"click",
+async function() {
+
+if (!requireAdminKey()) return;
+
+const formData =
+new FormData();
+
+formData.append(
+"type",
+"news"
+);
+
+formData.append(
+"title",
+document.getElementById(
+"newsTitle"
+).value.trim()
+);
+
+formData.append(
+"description",
+document.getElementById(
+"newsDescription"
+).value.trim()
+);
+
+formData.append(
+"content",
+document.getElementById(
+"newsContent"
+).value.trim()
+);
+
+formData.append(
+"date",
+document.getElementById(
+"newsDate"
+).value
+);
+
+formData.append(
+"link",
+document.getElementById(
+"newsLink"
+).value.trim()
+);
+
+
+const image =
+document.getElementById(
+"newsImage"
+).files[0];
+
+if (image) {
+
+formData.append(
+"image",
+image,
+image.name
+);
+
+}
+
+
+const status =
+document.getElementById(
+"newsStatus"
+);
+
+publishNewsBtn.disabled = true;
+
+status.textContent =
+"Publishing...";
+
+
+try {
+
+const response =
+await fetch(
+WORKER_URL,
+{
+
+method:
+"POST",
+
+headers: {
+
+"X-Admin-Key":
+getAdminKey()
+
+},
+
+body:
+formData
+
+});
+
+
+const result =
+await response.json();
+
+if (
+!response.ok ||
+!result.success
+) {
+
+throw new Error(
+result.message ||
+"News upload failed."
+);
+
+}
+
+
+status.textContent =
+"✅ News published successfully.";
+
+alert(
+"News published successfully."
+);
+
+
+document.getElementById(
+"newsTitle"
+).value = "";
+
+document.getElementById(
+"newsDescription"
+).value = "";
+
+document.getElementById(
+"newsContent"
+).value = "";
+
+document.getElementById(
+"newsDate"
+).value = "";
+
+document.getElementById(
+"newsLink"
+).value = "";
+
+document.getElementById(
+"newsImage"
+).value = "";
+
+}
+catch(error) {
+
+status.textContent =
+"❌ " + error.message;
+
+alert(error.message);
+
+}
+finally {
+
+publishNewsBtn.disabled =
+false;
+
+}
+
+});
+
+
+
+/* =====================================================
+   SCHEME MANAGER
+===================================================== */
+
+const schemeGrade =
+document.getElementById(
+"schemeGrade"
+);
+
+const schemeSubject =
+document.getElementById(
+"schemeSubject"
+);
+
+
+schemeGrade.addEventListener(
+"change",
+function() {
+
+const grade =
+parseInt(
+schemeGrade.value,
+10
+);
+
+if (
+grade >= 1 &&
+grade <= 11
+) {
+
+addOptions(
+schemeSubject,
+subjectLists[grade] || []
+);
+
+return;
+
+}
+
+
+if (
+grade === 12 ||
+grade === 13
+) {
+
+/*
+   For A/L, first choose
+   stream in future version.
+*/
+
+const allSubjects =
+[
+...new Set(
+Object.values(
+streamSubjects
+).flat()
+)
+];
+
+addOptions(
+schemeSubject,
+allSubjects
+);
+
+return;
+
+}
+
+
+schemeSubject.innerHTML =
+`<option value="">Select Subject</option>`;
+
+});
+
+
+document.getElementById(
+"uploadSchemeBtn"
+)
+.addEventListener(
+"click",
+async function() {
+
+if (!requireAdminKey()) return;
+
+const grade =
+schemeGrade.value;
+
+const subject =
+schemeSubject.value;
+
+const file =
+document.getElementById(
+"schemeFile"
+).files[0];
+
+
+if (!grade) {
+
+alert("Select Grade.");
+
+return;
+
+}
+
+
+if (!subject) {
+
+alert("Select Subject.");
+
+return;
+
+}
+
+
+if (!file) {
+
+alert("Select Scheme PDF.");
+
+return;
+
+}
+
+
+if (
+!file.name
+.toLowerCase()
+.endsWith(".pdf")
+) {
+
+alert("Only PDF files are allowed.");
+
+return;
+
+}
+
+
+const formData =
+new FormData();
+
+formData.append(
+"type",
+"scheme"
+);
+
+formData.append(
+"grade",
+grade
+);
+
+formData.append(
+"subject",
+subject
+);
+
+formData.append(
+"pdf",
+file,
+file.name
+);
+
+
+const button =
+document.getElementById(
+"uploadSchemeBtn"
+);
+
+const status =
+document.getElementById(
+"schemeStatus"
+);
+
+button.disabled = true;
+
+status.textContent =
+"Uploading Scheme...";
+
+
+try {
+
+const response =
+await fetch(
+WORKER_URL,
+{
+
+method:
+"POST",
+
+headers: {
+
+"X-Admin-Key":
+getAdminKey()
+
+},
+
+body:
+formData
+
+});
+
+
+const result =
+await response.json();
+
+if (
+!response.ok ||
+!result.success
+) {
+
+throw new Error(
+result.message ||
+"Scheme upload failed."
+);
+
+}
+
+
+status.textContent =
+"✅ Scheme uploaded successfully.";
+
+alert(
+"Scheme uploaded successfully."
+);
+
+document.getElementById(
+"schemeFile"
+).value = "";
+
+}
+catch(error) {
+
+status.textContent =
+"❌ " + error.message;
+
+alert(error.message);
+
+}
+finally {
+
+button.disabled = false;
+
+}
+
+});
+
+
+
+/* =====================================================
+   APP MANAGER
+===================================================== */
+
+const downloadMethod =
+document.getElementById(
+"downloadMethod"
+);
+
+const appFileBox =
+document.getElementById(
+"appFileBox"
+);
+
+const externalLinkBox =
+document.getElementById(
+"externalLinkBox"
+);
+
+
+downloadMethod.addEventListener(
+"change",
+function() {
+
+if (
+downloadMethod.value ===
+"external"
+) {
+
+appFileBox.style.display =
+"none";
+
+externalLinkBox.style.display =
+"block";
+
+}
+else {
+
+appFileBox.style.display =
+"block";
+
+externalLinkBox.style.display =
+"none";
+
+}
+
+});
+
+
+document.getElementById(
+"publishAppBtn"
+)
+.addEventListener(
+"click",
+async function() {
+
+if (!requireAdminKey()) return;
+
+
+const platform =
+document.getElementById(
+"appPlatform"
+).value;
+
+const name =
+document.getElementById(
+"appName"
+).value.trim();
+
+const demo =
+document.getElementById(
+"appDemo"
+).value.trim();
+
+const description =
+document.getElementById(
+"appDescription"
+).value.trim();
+
+const version =
+document.getElementById(
+"appVersion"
+).value.trim();
+
+const website =
+document.getElementById(
+"appWebsite"
+).value.trim();
+
+const playStore =
+document.getElementById(
+"appPlayStore"
+).value.trim();
+
+const image =
+document.getElementById(
+"appImage"
+).files[0];
+
+const method =
+downloadMethod.value;
+
+const appFile =
+document.getElementById(
+"appFile"
+).files[0];
+
+const externalDownload =
+document.getElementById(
+"externalDownload"
+).value.trim();
+
+
+if (!platform) {
+
+alert("Select Platform.");
+
+return;
+
+}
+
+
+if (!name) {
+
+alert("Enter App Name.");
+
+return;
+
+}
+
+
+if (!image) {
+
+alert("Select App Image.");
+
+return;
+
+}
+
+
+if (!demo) {
+
+alert("Enter App Demo.");
+
+return;
+
+}
+
+
+if (!description) {
+
+alert("Enter App Description.");
+
+return;
+
+}
+
+
+if (!version) {
+
+alert("Enter App Version.");
+
+return;
+
+}
+
+
+if (
+method === "file" &&
+!appFile
+) {
+
+alert(
+"Select APK / EXE file."
+);
+
+return;
+
+}
+
+
+if (
+method === "external" &&
+!externalDownload
+) {
+
+alert(
+"Enter External Download Link."
+);
+
+return;
+
+}
+
+
+const formData =
+new FormData();
+
+formData.append(
+"type",
+"app"
+);
+
+formData.append(
+"platform",
+platform
+);
+
+formData.append(
+"name",
+name
+);
+
+formData.append(
+"demo",
+demo
+);
+
+formData.append(
+"description",
+description
+);
+
+formData.append(
+"version",
+version
+);
+
+formData.append(
+"website",
+website
+);
+
+formData.append(
+"playStore",
+playStore
+);
+
+formData.append(
+"downloadMethod",
+method
+);
+
+formData.append(
+"externalDownload",
+externalDownload
+);
+
+
+formData.append(
+"image",
+image,
+image.name
+);
+
+
+if (
+method === "file"
+) {
+
+formData.append(
+"appFile",
+appFile,
+appFile.name
+);
+
+}
+
+
+const button =
+document.getElementById(
+"publishAppBtn"
+);
+
+const status =
+document.getElementById(
+"appStatus"
+);
+
+button.disabled = true;
+
+status.textContent =
+"Publishing App...";
+
+
+try {
+
+const response =
+await fetch(
+WORKER_URL,
+{
+
+method:
+"POST",
+
+headers: {
+
+"X-Admin-Key":
+getAdminKey()
+
+},
+
+body:
+formData
+
+});
+
+
+const result =
+await response.json();
+
+if (
+!response.ok ||
+!result.success
+) {
+
+throw new Error(
+result.message ||
+"App publishing failed."
+);
+
+}
+
+
+status.textContent =
+"✅ App published successfully.";
+
+alert(
+"App published successfully."
+);
+
+
+/* Clear */
+
+document.getElementById(
+"appName"
+).value = "";
+
+document.getElementById(
+"appDemo"
+).value = "";
+
+document.getElementById(
+"appDescription"
+).value = "";
+
+document.getElementById(
+"appVersion"
+).value = "";
+
+document.getElementById(
+"appWebsite"
+).value = "";
+
+document.getElementById(
+"appPlayStore"
+).value = "";
+
+document.getElementById(
+"appImage"
+).value = "";
+
+document.getElementById(
+"appFile"
+).value = "";
+
+document.getElementById(
+"externalDownload"
+).value = "";
+
+}
+catch(error) {
+
+status.textContent =
+"❌ " + error.message;
+
+alert(error.message);
+
+}
+finally {
+
+button.disabled = false;
+
+}
+
+});
+
+
 </script>
 
 </body>
