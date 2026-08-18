@@ -287,254 +287,178 @@
 
 
 
-<!-- =====================================================
+
+
+<!-- ======================================
      SCHEME MANAGER
-===================================================== -->
+====================================== -->
 
 <div class="admin-card">
 
-<h2>
-    📚 Scheme Manager
-</h2>
+    <h2>📚 Add Scheme</h2>
+
+    <label>Grade</label>
+
+    <select id="schemeGrade">
+
+        <option value="">Select Grade</option>
+
+        <option value="1">Grade 1</option>
+        <option value="2">Grade 2</option>
+        <option value="3">Grade 3</option>
+        <option value="4">Grade 4</option>
+        <option value="5">Grade 5</option>
+        <option value="6">Grade 6</option>
+        <option value="7">Grade 7</option>
+        <option value="8">Grade 8</option>
+        <option value="9">Grade 9</option>
+        <option value="10">Grade 10</option>
+        <option value="11">Grade 11</option>
+        <option value="12">Grade 12</option>
+        <option value="13">Grade 13</option>
+
+    </select>
 
 
-<p>
-    Scheme PDF upload செய்தவுடன் GitHub-ல்
-    automatic-ஆக சேர்க்கப்படும்.
-</p>
+    <label>Subject</label>
+
+    <input
+        type="text"
+        id="schemeSubject"
+        placeholder="Eg: Mathematics">
 
 
-<label>
-    Grade
-</label>
+    <label>Scheme Title</label>
 
-<select id="schemeGrade">
-
-<option value="">
-    Select Grade
-</option>
-
-<option value="1">Grade 1</option>
-<option value="2">Grade 2</option>
-<option value="3">Grade 3</option>
-<option value="4">Grade 4</option>
-<option value="5">Grade 5</option>
-<option value="6">Grade 6</option>
-<option value="7">Grade 7</option>
-<option value="8">Grade 8</option>
-<option value="9">Grade 9</option>
-<option value="10">Grade 10</option>
-<option value="11">Grade 11</option>
-<option value="12">Grade 12</option>
-<option value="13">Grade 13</option>
-
-</select>
+    <input
+        type="text"
+        id="schemeTitle"
+        placeholder="Eg: Grade 11 Mathematics Scheme">
 
 
-<label>
-    Subject
-</label>
+    <label>Scheme Download URL</label>
 
-<select id="schemeSubject">
-
-<option value="">
-    Select Subject
-</option>
-
-</select>
+    <input
+        type="url"
+        id="schemeUrl"
+        placeholder="https://example.com/scheme.pdf">
 
 
-<label>
-    Scheme PDF
-</label>
+    <button
+        type="button"
+        id="publishSchemeBtn">
 
-<input
-    type="file"
-    id="schemeFile"
-    accept=".pdf">
+        📚 Publish Scheme
 
-
-<button
-    type="button"
-    id="uploadSchemeBtn">
-
-    📤 Upload Scheme
-
-</button>
+    </button>
 
 
-<p id="schemeStatus"></p>
+    <p id="schemeStatus"></p>
 
 </div>
 
 
-
-<!-- =====================================================
+ <!-- ======================================
      APP MANAGER
-===================================================== -->
+====================================== -->
 
 <div class="admin-card">
 
-<h2>
-    📱 App Manager
-</h2>
+    <h2>📱 Add Educational App</h2>
 
 
-<label>
-    Platform
-</label>
+    <label>Platform</label>
 
-<select id="appPlatform">
+    <select id="appPlatform">
 
-<option value="">
-    Select Platform
-</option>
+        <option value="">Select Platform</option>
 
-<option value="android">
-    🤖 Android
-</option>
+        <option value="android">
+            🤖 Android
+        </option>
 
-<option value="windows">
-    🪟 Windows
-</option>
+        <option value="windows">
+            🪟 Windows
+        </option>
 
-</select>
+    </select>
 
 
-<label>
-    App Name
-</label>
+    <label>App Name</label>
 
-<input
-    type="text"
-    id="appName"
-    placeholder="Example: SLExam App">
+    <input
+        type="text"
+        id="appName"
+        placeholder="Eg: SLExam App">
 
 
-<label>
-    App Image
-</label>
+    <label>Version</label>
 
-<input
-    type="file"
-    id="appImage"
-    accept="image/*">
+    <input
+        type="text"
+        id="appVersion"
+        placeholder="Eg: 1.0">
 
 
-<label>
-    Short Description / Demo
-</label>
+    <label>Demo / Short Description</label>
 
-<textarea
-    id="appDemo"
-    rows="3"
-    placeholder="Short description shown on app card"></textarea>
+    <input
+        type="text"
+        id="appDemo"
+        placeholder="Short description">
 
 
-<label>
-    Full Description
-</label>
+    <label>Full Description</label>
 
-<textarea
-    id="appDescription"
-    rows="6"
-    placeholder="Full application description"></textarea>
-
-
-<label>
-    Version
-</label>
-
-<input
-    type="text"
-    id="appVersion"
-    placeholder="Example: 1.0">
+    <textarea
+        id="appDescription"
+        rows="6"
+        placeholder="Full application description">
+    </textarea>
 
 
-<label>
-    Website Link
-</label>
+    <label>App Image URL</label>
 
-<input
-    type="url"
-    id="appWebsite"
-    placeholder="https://example.com">
+    <input
+        type="url"
+        id="appImage"
+        placeholder="https://example.com/app-image.jpg">
 
 
-<label>
-    Play Store Link
-</label>
+    <label>Download URL</label>
 
-<input
-    type="url"
-    id="appPlayStore"
-    placeholder="https://play.google.com/...">
+    <input
+        type="url"
+        id="appDownload"
+        placeholder="https://example.com/app.apk">
 
 
-<hr>
+    <label>Play Store URL</label>
+
+    <input
+        type="url"
+        id="appPlayStore"
+        placeholder="https://play.google.com/...">
 
 
-<h3>
-    📦 Download Option
-</h3>
+    <label>Website URL</label>
+
+    <input
+        type="url"
+        id="appWebsite"
+        placeholder="https://example.com">
 
 
-<label>
-    Download Method
-</label>
+    <button
+        type="button"
+        id="publishAppBtn">
 
-<select id="downloadMethod">
+        📱 Publish App
 
-<option value="file">
-    Upload APK / EXE file
-</option>
-
-<option value="external">
-    External Download Link
-</option>
-
-</select>
+    </button>
 
 
-<div id="appFileBox">
-
-<label>
-    APK / EXE File
-</label>
-
-<input
-    type="file"
-    id="appFile">
-
-</div>
-
-
-<div
-    id="externalLinkBox"
-    style="display:none;">
-
-<label>
-    External Download Link
-</label>
-
-<input
-    type="url"
-    id="externalDownload"
-    placeholder="https://example.com/download">
-
-</div>
-
-
-<button
-    type="button"
-    id="publishAppBtn">
-
-    🚀 Publish App
-
-</button>
-
-
-<p id="appStatus"></p>
+    <p id="appStatus"></p>
 
 </div>
 
