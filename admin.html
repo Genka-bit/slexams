@@ -1341,639 +1341,567 @@ false;
 });
 
 
+// ======================================
+// Scheme Manager
+// ======================================
 
-/* =====================================================
-   SCHEME MANAGER
-===================================================== */
+const publishSchemeBtn =
+    document.getElementById("publishSchemeBtn");
 
 const schemeGrade =
-document.getElementById(
-"schemeGrade"
-);
+    document.getElementById("schemeGrade");
 
 const schemeSubject =
-document.getElementById(
-"schemeSubject"
+    document.getElementById("schemeSubject");
+
+const schemeTitle =
+    document.getElementById("schemeTitle");
+
+const schemeUrl =
+    document.getElementById("schemeUrl");
+
+const schemeStatus =
+    document.getElementById("schemeStatus");
+
+
+publishSchemeBtn.addEventListener(
+    "click",
+    async () => {
+
+        const grade =
+            schemeGrade.value.trim();
+
+        const subject =
+            schemeSubject.value.trim();
+
+        const title =
+            schemeTitle.value.trim();
+
+        const url =
+            schemeUrl.value.trim();
+
+        const adminKey =
+            adminKeyInput.value.trim();
+
+
+        // -----------------------------
+        // Validation
+        // -----------------------------
+
+        if (!grade) {
+
+            alert("Please select Grade.");
+
+            return;
+
+        }
+
+
+        if (!subject) {
+
+            alert("Please enter Subject.");
+
+            return;
+
+        }
+
+
+        if (!title) {
+
+            alert("Please enter Scheme Title.");
+
+            return;
+
+        }
+
+
+        if (!url) {
+
+            alert(
+                "Please enter Scheme Download URL."
+            );
+
+            return;
+
+        }
+
+
+        if (!adminKey) {
+
+            alert("Please enter Admin Key.");
+
+            return;
+
+        }
+
+
+        publishSchemeBtn.disabled =
+            true;
+
+
+        schemeStatus.textContent =
+            "Publishing Scheme...";
+
+
+        try {
+
+            const formData =
+                new FormData();
+
+
+            formData.append(
+                "type",
+                "scheme"
+            );
+
+
+            formData.append(
+                "grade",
+                grade
+            );
+
+
+            formData.append(
+                "subject",
+                subject
+            );
+
+
+            formData.append(
+                "title",
+                title
+            );
+
+
+            formData.append(
+                "url",
+                url
+            );
+
+
+            formData.append(
+                "date",
+                new Date()
+                    .toISOString()
+                    .slice(0, 10)
+            );
+
+
+            const response =
+                await fetch(
+                    WORKER_URL,
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "X-Admin-Key":
+                                adminKey
+
+                        },
+
+                        body: formData
+
+                    }
+                );
+
+
+            const result =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !result.success
+            ) {
+
+                throw new Error(
+                    result.message ||
+                    "Scheme publishing failed."
+                );
+
+            }
+
+
+            schemeStatus.textContent =
+                "✅ Scheme published successfully!";
+
+
+            alert(
+                "Scheme published successfully!"
+            );
+
+
+            // Clear fields
+
+            schemeGrade.value = "";
+
+            schemeSubject.value = "";
+
+            schemeTitle.value = "";
+
+            schemeUrl.value = "";
+
+
+        }
+        catch (error) {
+
+            console.error(
+                "Scheme Error:",
+                error
+            );
+
+
+            schemeStatus.textContent =
+                "❌ Scheme publishing failed: " +
+                error.message;
+
+
+            alert(
+                "Scheme publishing failed:\n\n" +
+                error.message
+            );
+
+        }
+        finally {
+
+            publishSchemeBtn.disabled =
+                false;
+
+        }
+
+    }
 );
 
 
-schemeGrade.addEventListener(
-"change",
-function() {
 
-const grade =
-parseInt(
-schemeGrade.value,
-10
+// ======================================
+// App Manager
+// ======================================
+
+const publishAppBtn =
+    document.getElementById(
+        "publishAppBtn"
+    );
+
+
+const appPlatform =
+    document.getElementById(
+        "appPlatform"
+    );
+
+
+const appName =
+    document.getElementById(
+        "appName"
+    );
+
+
+const appVersion =
+    document.getElementById(
+        "appVersion"
+    );
+
+
+const appDemo =
+    document.getElementById(
+        "appDemo"
+    );
+
+
+const appDescription =
+    document.getElementById(
+        "appDescription"
+    );
+
+
+const appImage =
+    document.getElementById(
+        "appImage"
+    );
+
+
+const appDownload =
+    document.getElementById(
+        "appDownload"
+    );
+
+
+const appPlayStore =
+    document.getElementById(
+        "appPlayStore"
+    );
+
+
+const appWebsite =
+    document.getElementById(
+        "appWebsite"
+    );
+
+
+const appStatus =
+    document.getElementById(
+        "appStatus"
+    );
+
+
+
+publishAppBtn.addEventListener(
+    "click",
+    async () => {
+
+        const platform =
+            appPlatform.value.trim();
+
+        const name =
+            appName.value.trim();
+
+        const version =
+            appVersion.value.trim();
+
+        const demo =
+            appDemo.value.trim();
+
+        const description =
+            appDescription.value.trim();
+
+        const image =
+            appImage.value.trim();
+
+        const download =
+            appDownload.value.trim();
+
+        const playStore =
+            appPlayStore.value.trim();
+
+        const website =
+            appWebsite.value.trim();
+
+        const adminKey =
+            adminKeyInput.value.trim();
+
+
+        // -----------------------------
+        // Validation
+        // -----------------------------
+
+        if (!platform) {
+
+            alert(
+                "Please select Platform."
+            );
+
+            return;
+
+        }
+
+
+        if (!name) {
+
+            alert(
+                "Please enter App Name."
+            );
+
+            return;
+
+        }
+
+
+        if (!download) {
+
+            alert(
+                "Please enter Download URL."
+            );
+
+            return;
+
+        }
+
+
+        if (!adminKey) {
+
+            alert(
+                "Please enter Admin Key."
+            );
+
+            return;
+
+        }
+
+
+        publishAppBtn.disabled =
+            true;
+
+
+        appStatus.textContent =
+            "Publishing App...";
+
+
+        try {
+
+            const formData =
+                new FormData();
+
+
+            formData.append(
+                "type",
+                "app"
+            );
+
+
+            formData.append(
+                "platform",
+                platform
+            );
+
+
+            formData.append(
+                "name",
+                name
+            );
+
+
+            formData.append(
+                "version",
+                version
+            );
+
+
+            formData.append(
+                "demo",
+                demo
+            );
+
+
+            formData.append(
+                "description",
+                description
+            );
+
+
+            formData.append(
+                "image",
+                image
+            );
+
+
+            formData.append(
+                "download",
+                download
+            );
+
+
+            formData.append(
+                "playStore",
+                playStore
+            );
+
+
+            formData.append(
+                "website",
+                website
+            );
+
+
+            const response =
+                await fetch(
+                    WORKER_URL,
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "X-Admin-Key":
+                                adminKey
+
+                        },
+
+                        body: formData
+
+                    }
+                );
+
+
+            const result =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !result.success
+            ) {
+
+                throw new Error(
+                    result.message ||
+                    "App publishing failed."
+                );
+
+            }
+
+
+            appStatus.textContent =
+                "✅ App published successfully!";
+
+
+            alert(
+                "App published successfully!"
+            );
+
+
+            // -----------------------------
+            // Clear fields
+            // -----------------------------
+
+            appPlatform.value = "";
+
+            appName.value = "";
+
+            appVersion.value = "";
+
+            appDemo.value = "";
+
+            appDescription.value = "";
+
+            appImage.value = "";
+
+            appDownload.value = "";
+
+            appPlayStore.value = "";
+
+            appWebsite.value = "";
+
+
+        }
+        catch (error) {
+
+            console.error(
+                "App Error:",
+                error
+            );
+
+
+            appStatus.textContent =
+                "❌ App publishing failed: " +
+                error.message;
+
+
+            alert(
+                "App publishing failed:\n\n" +
+                error.message
+            );
+
+        }
+        finally {
+
+            publishAppBtn.disabled =
+                false;
+
+        }
+
+    }
 );
-
-if (
-grade >= 1 &&
-grade <= 11
-) {
-
-addOptions(
-schemeSubject,
-subjectLists[grade] || []
-);
-
-return;
-
-}
-
-
-if (
-grade === 12 ||
-grade === 13
-) {
-
-/*
-   For A/L, first choose
-   stream in future version.
-*/
-
-const allSubjects =
-[
-...new Set(
-Object.values(
-streamSubjects
-).flat()
-)
-];
-
-addOptions(
-schemeSubject,
-allSubjects
-);
-
-return;
-
-}
-
-
-schemeSubject.innerHTML =
-`<option value="">Select Subject</option>`;
-
-});
-
-
-document.getElementById(
-"uploadSchemeBtn"
-)
-.addEventListener(
-"click",
-async function() {
-
-if (!requireAdminKey()) return;
-
-const grade =
-schemeGrade.value;
-
-const subject =
-schemeSubject.value;
-
-const file =
-document.getElementById(
-"schemeFile"
-).files[0];
-
-
-if (!grade) {
-
-alert("Select Grade.");
-
-return;
-
-}
-
-
-if (!subject) {
-
-alert("Select Subject.");
-
-return;
-
-}
-
-
-if (!file) {
-
-alert("Select Scheme PDF.");
-
-return;
-
-}
-
-
-if (
-!file.name
-.toLowerCase()
-.endsWith(".pdf")
-) {
-
-alert("Only PDF files are allowed.");
-
-return;
-
-}
-
-
-const formData =
-new FormData();
-
-formData.append(
-"type",
-"scheme"
-);
-
-formData.append(
-"grade",
-grade
-);
-
-formData.append(
-"subject",
-subject
-);
-
-formData.append(
-"pdf",
-file,
-file.name
-);
-
-
-const button =
-document.getElementById(
-"uploadSchemeBtn"
-);
-
-const status =
-document.getElementById(
-"schemeStatus"
-);
-
-button.disabled = true;
-
-status.textContent =
-"Uploading Scheme...";
-
-
-try {
-
-const response =
-await fetch(
-WORKER_URL,
-{
-
-method:
-"POST",
-
-headers: {
-
-"X-Admin-Key":
-getAdminKey()
-
-},
-
-body:
-formData
-
-});
-
-
-const result =
-await response.json();
-
-if (
-!response.ok ||
-!result.success
-) {
-
-throw new Error(
-result.message ||
-"Scheme upload failed."
-);
-
-}
-
-
-status.textContent =
-"✅ Scheme uploaded successfully.";
-
-alert(
-"Scheme uploaded successfully."
-);
-
-document.getElementById(
-"schemeFile"
-).value = "";
-
-}
-catch(error) {
-
-status.textContent =
-"❌ " + error.message;
-
-alert(error.message);
-
-}
-finally {
-
-button.disabled = false;
-
-}
-
-});
-
-
-
-/* =====================================================
-   APP MANAGER
-===================================================== */
-
-const downloadMethod =
-document.getElementById(
-"downloadMethod"
-);
-
-const appFileBox =
-document.getElementById(
-"appFileBox"
-);
-
-const externalLinkBox =
-document.getElementById(
-"externalLinkBox"
-);
-
-
-downloadMethod.addEventListener(
-"change",
-function() {
-
-if (
-downloadMethod.value ===
-"external"
-) {
-
-appFileBox.style.display =
-"none";
-
-externalLinkBox.style.display =
-"block";
-
-}
-else {
-
-appFileBox.style.display =
-"block";
-
-externalLinkBox.style.display =
-"none";
-
-}
-
-});
-
-
-document.getElementById(
-"publishAppBtn"
-)
-.addEventListener(
-"click",
-async function() {
-
-if (!requireAdminKey()) return;
-
-
-const platform =
-document.getElementById(
-"appPlatform"
-).value;
-
-const name =
-document.getElementById(
-"appName"
-).value.trim();
-
-const demo =
-document.getElementById(
-"appDemo"
-).value.trim();
-
-const description =
-document.getElementById(
-"appDescription"
-).value.trim();
-
-const version =
-document.getElementById(
-"appVersion"
-).value.trim();
-
-const website =
-document.getElementById(
-"appWebsite"
-).value.trim();
-
-const playStore =
-document.getElementById(
-"appPlayStore"
-).value.trim();
-
-const image =
-document.getElementById(
-"appImage"
-).files[0];
-
-const method =
-downloadMethod.value;
-
-const appFile =
-document.getElementById(
-"appFile"
-).files[0];
-
-const externalDownload =
-document.getElementById(
-"externalDownload"
-).value.trim();
-
-
-if (!platform) {
-
-alert("Select Platform.");
-
-return;
-
-}
-
-
-if (!name) {
-
-alert("Enter App Name.");
-
-return;
-
-}
-
-
-if (!image) {
-
-alert("Select App Image.");
-
-return;
-
-}
-
-
-if (!demo) {
-
-alert("Enter App Demo.");
-
-return;
-
-}
-
-
-if (!description) {
-
-alert("Enter App Description.");
-
-return;
-
-}
-
-
-if (!version) {
-
-alert("Enter App Version.");
-
-return;
-
-}
-
-
-if (
-method === "file" &&
-!appFile
-) {
-
-alert(
-"Select APK / EXE file."
-);
-
-return;
-
-}
-
-
-if (
-method === "external" &&
-!externalDownload
-) {
-
-alert(
-"Enter External Download Link."
-);
-
-return;
-
-}
-
-
-const formData =
-new FormData();
-
-formData.append(
-"type",
-"app"
-);
-
-formData.append(
-"platform",
-platform
-);
-
-formData.append(
-"name",
-name
-);
-
-formData.append(
-"demo",
-demo
-);
-
-formData.append(
-"description",
-description
-);
-
-formData.append(
-"version",
-version
-);
-
-formData.append(
-"website",
-website
-);
-
-formData.append(
-"playStore",
-playStore
-);
-
-formData.append(
-"downloadMethod",
-method
-);
-
-formData.append(
-"externalDownload",
-externalDownload
-);
-
-
-formData.append(
-"image",
-image,
-image.name
-);
-
-
-if (
-method === "file"
-) {
-
-formData.append(
-"appFile",
-appFile,
-appFile.name
-);
-
-}
-
-
-const button =
-document.getElementById(
-"publishAppBtn"
-);
-
-const status =
-document.getElementById(
-"appStatus"
-);
-
-button.disabled = true;
-
-status.textContent =
-"Publishing App...";
-
-
-try {
-
-const response =
-await fetch(
-WORKER_URL,
-{
-
-method:
-"POST",
-
-headers: {
-
-"X-Admin-Key":
-getAdminKey()
-
-},
-
-body:
-formData
-
-});
-
-
-const result =
-await response.json();
-
-if (
-!response.ok ||
-!result.success
-) {
-
-throw new Error(
-result.message ||
-"App publishing failed."
-);
-
-}
-
-
-status.textContent =
-"✅ App published successfully.";
-
-alert(
-"App published successfully."
-);
-
-
-/* Clear */
-
-document.getElementById(
-"appName"
-).value = "";
-
-document.getElementById(
-"appDemo"
-).value = "";
-
-document.getElementById(
-"appDescription"
-).value = "";
-
-document.getElementById(
-"appVersion"
-).value = "";
-
-document.getElementById(
-"appWebsite"
-).value = "";
-
-document.getElementById(
-"appPlayStore"
-).value = "";
-
-document.getElementById(
-"appImage"
-).value = "";
-
-document.getElementById(
-"appFile"
-).value = "";
-
-document.getElementById(
-"externalDownload"
-).value = "";
-
-}
-catch(error) {
-
-status.textContent =
-"❌ " + error.message;
-
-alert(error.message);
-
-}
-finally {
-
-button.disabled = false;
-
-}
-
-});
 
 
 </script>
