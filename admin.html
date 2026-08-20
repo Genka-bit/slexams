@@ -1422,21 +1422,16 @@ const schemeSubject =
 const schemeTitle =
     document.getElementById("schemeTitle");
 
-const schemePdf =
-    document.getElementById("schemePdf");
-
-const publishSchemeBtn =
-    document.getElementById("publishSchemeBtn");
-
-const schemeStatus =
-    document.getElementById("schemeStatus");
-
 
 // ======================================
-// Initial
+// Initial State
 // ======================================
 
 schemeStreamBox.style.display = "none";
+
+schemeStream.disabled = true;
+
+schemeSubject.disabled = true;
 
 
 // ======================================
@@ -1445,7 +1440,7 @@ schemeStreamBox.style.display = "none";
 
 schemeGrade.addEventListener(
     "change",
-    function () {
+    () => {
 
         const grade =
             parseInt(
@@ -1456,27 +1451,17 @@ schemeGrade.addEventListener(
 
         // Reset
 
+        schemeStream.value = "";
+
         schemeSubject.innerHTML = `
             <option value="">
                 Select Subject
             </option>
         `;
 
-        schemeStream.value = "";
+        schemeSubject.disabled = true;
 
         schemeTitle.value = "";
-
-
-        // No grade
-
-        if (!grade) {
-
-            schemeStreamBox.style.display =
-                "none";
-
-            return;
-
-        }
 
 
         // ==================================
@@ -1491,13 +1476,16 @@ schemeGrade.addEventListener(
             schemeStreamBox.style.display =
                 "none";
 
+            schemeStream.disabled =
+                true;
+
 
             const subjects =
                 subjectLists[grade] || [];
 
 
             subjects.forEach(
-                function (subject) {
+                subject => {
 
                     const option =
                         document.createElement(
@@ -1518,8 +1506,11 @@ schemeGrade.addEventListener(
             );
 
 
-            return;
+            schemeSubject.disabled =
+                false;
 
+
+            return;
         }
 
 
@@ -1535,6 +1526,13 @@ schemeGrade.addEventListener(
             schemeStreamBox.style.display =
                 "block";
 
+            schemeStream.disabled =
+                false;
+
+
+            schemeSubject.disabled =
+                true;
+
         }
 
     }
@@ -1547,14 +1545,13 @@ schemeGrade.addEventListener(
 
 schemeStream.addEventListener(
     "change",
-    function () {
+    () => {
 
         const grade =
             parseInt(
                 schemeGrade.value,
                 10
             );
-
 
         const stream =
             schemeStream.value;
@@ -1566,6 +1563,8 @@ schemeStream.addEventListener(
             </option>
         `;
 
+        schemeSubject.disabled =
+            true;
 
         schemeTitle.value = "";
 
@@ -1580,12 +1579,19 @@ schemeStream.addEventListener(
         }
 
 
+        if (!stream) {
+
+            return;
+
+        }
+
+
         const subjects =
             streamSubjects[stream] || [];
 
 
         subjects.forEach(
-            function (subject) {
+            subject => {
 
                 const option =
                     document.createElement(
@@ -1605,6 +1611,10 @@ schemeStream.addEventListener(
             }
         );
 
+
+        schemeSubject.disabled =
+            false;
+
     }
 );
 
@@ -1615,10 +1625,13 @@ schemeStream.addEventListener(
 
 schemeSubject.addEventListener(
     "change",
-    function () {
+    () => {
 
         const grade =
             schemeGrade.value;
+
+        const stream =
+            schemeStream.value;
 
         const subject =
             schemeSubject.value;
@@ -1636,277 +1649,36 @@ schemeSubject.addEventListener(
         }
 
 
-        schemeTitle.value =
-            `${subject} – Grade ${grade} Scheme`;
-
-    }
-);
-
-
-// ======================================
-// Publish Scheme
-// ======================================
-
-publishSchemeBtn.addEventListener(
-    "click",
-    async function () {
-
-        const grade =
-            schemeGrade.value;
-
-        const stream =
-            schemeStream.value;
-
-        const subject =
-            schemeSubject.value;
-
-        const title =
-            schemeTitle.value;
-
-        const file =
-            schemePdf.files[0];
-
-        const adminKey =
-            adminKeyInput.value.trim();
-
-
-        // ==================================
-        // Validation
-        // ==================================
-
-        if (!grade) {
-
-            alert(
-                "Please select Grade."
-            );
-
-            return;
-
-        }
-
+        // Grade 12 / 13
 
         if (
-            (grade === "12" ||
-             grade === "13") &&
-            !stream
+            grade === "12" ||
+            grade === "13"
         ) {
 
-            alert(
-                "Please select Stream."
-            );
+            if (stream) {
 
-            return;
+                schemeTitle.value =
+                    `Grade ${grade} ${stream} - ${subject} Scheme`;
 
-        }
+            } else {
 
-
-        if (!subject) {
-
-            alert(
-                "Please select Subject."
-            );
-
-            return;
-
-        }
-
-
-        if (!file) {
-
-            alert(
-                "Please select Scheme PDF."
-            );
-
-            return;
-
-        }
-
-
-        if (
-            !file.name
-                .toLowerCase()
-                .endsWith(".pdf")
-        ) {
-
-            alert(
-                "Only PDF files are allowed."
-            );
-
-            return;
-
-        }
-
-
-        if (!adminKey) {
-
-            alert(
-                "Please enter Admin Key."
-            );
-
-            return;
-
-        }
-
-
-        // ==================================
-        // Disable button
-        // ==================================
-
-        publishSchemeBtn.disabled =
-            true;
-
-
-        schemeStatus.textContent =
-            "📤 Publishing Scheme...";
-
-
-        try {
-
-            const formData =
-                new FormData();
-
-
-            formData.append(
-                "type",
-                "scheme"
-            );
-
-
-            formData.append(
-                "grade",
-                grade
-            );
-
-
-            formData.append(
-                "stream",
-                stream
-            );
-
-
-            formData.append(
-                "subject",
-                subject
-            );
-
-
-            formData.append(
-                "title",
-                title
-            );
-
-
-            formData.append(
-                "pdf",
-                file,
-                file.name
-            );
-
-
-            // ==================================
-            // Cloudflare Worker
-            // ==================================
-
-            const response =
-                await fetch(
-                    WORKER_URL,
-                    {
-
-                        method: "POST",
-
-                        headers: {
-
-                            "X-Admin-Key":
-                                adminKey
-
-                        },
-
-                        body: formData
-
-                    }
-                );
-
-
-            const result =
-                await response.json();
-
-
-            if (
-                !response.ok ||
-                !result.success
-            ) {
-
-                throw new Error(
-                    result.message ||
-                    "Scheme upload failed."
-                );
+                schemeTitle.value =
+                    `Grade ${grade} ${subject} Scheme`;
 
             }
 
-
-            // ==================================
-            // Success
-            // ==================================
-
-            schemeStatus.textContent =
-                "✅ Scheme published successfully!";
-
-
-            alert(
-                "Scheme published successfully!"
-            );
-
-
-            // Reset
-
-            schemeGrade.value = "";
-
-            schemeStream.value = "";
-
-            schemeSubject.innerHTML = `
-                <option value="">
-                    Select Subject
-                </option>
-            `;
-
-            schemeTitle.value = "";
-
-            schemePdf.value = "";
-
-            schemeStreamBox.style.display =
-                "none";
-
-
+            return;
         }
-        catch (error) {
-
-            console.error(
-                "Scheme Upload Error:",
-                error
-            );
 
 
-            schemeStatus.textContent =
-                "❌ Scheme upload failed: " +
-                error.message;
+        // Grade 1 - 11
 
-
-            alert(
-                "Scheme upload failed:\n\n" +
-                error.message
-            );
-
-        }
-        finally {
-
-            publishSchemeBtn.disabled =
-                false;
-
-        }
+        schemeTitle.value =
+            `Grade ${grade} ${subject} Scheme`;
 
     }
 );
-
 // ======================================
 // App Manager
 // ======================================
