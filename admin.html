@@ -1680,6 +1680,262 @@ schemeSubject.addEventListener(
     }
 );
 // ======================================
+// SCHEME PUBLISH
+// ======================================
+
+const publishSchemeBtn =
+    document.getElementById("publishSchemeBtn");
+
+const schemeUrl =
+    document.getElementById("schemeUrl");
+
+const schemeStatus =
+    document.getElementById("schemeStatus");
+
+
+publishSchemeBtn.addEventListener(
+    "click",
+    async () => {
+
+        const grade =
+            schemeGrade.value;
+
+        const stream =
+            schemeStream.value;
+
+        const subject =
+            schemeSubject.value;
+
+        const title =
+            schemeTitle.value.trim();
+
+        const url =
+            schemeUrl.value.trim();
+
+        const adminKey =
+            adminKeyInput.value.trim();
+
+
+        // -----------------------------
+        // Validation
+        // -----------------------------
+
+        if (!grade) {
+
+            alert("Please select Grade.");
+
+            return;
+
+        }
+
+
+        if (
+            (grade === "12" ||
+             grade === "13") &&
+            !stream
+        ) {
+
+            alert("Please select Stream.");
+
+            return;
+
+        }
+
+
+        if (!subject) {
+
+            alert("Please select Subject.");
+
+            return;
+
+        }
+
+
+        if (!title) {
+
+            alert("Scheme title is missing.");
+
+            return;
+
+        }
+
+
+        if (!url) {
+
+            alert(
+                "Please enter Scheme PDF URL."
+            );
+
+            return;
+
+        }
+
+
+        if (!adminKey) {
+
+            alert("Please enter Admin Key.");
+
+            return;
+
+        }
+
+
+        publishSchemeBtn.disabled =
+            true;
+
+
+        schemeStatus.textContent =
+            "Publishing Scheme...";
+
+
+        try {
+
+            const formData =
+                new FormData();
+
+
+            formData.append(
+                "type",
+                "scheme"
+            );
+
+
+            formData.append(
+                "grade",
+                grade
+            );
+
+
+            formData.append(
+                "stream",
+                stream
+            );
+
+
+            formData.append(
+                "subject",
+                subject
+            );
+
+
+            formData.append(
+                "title",
+                title
+            );
+
+
+            formData.append(
+                "url",
+                url
+            );
+
+
+            const response =
+                await fetch(
+                    WORKER_URL,
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "X-Admin-Key":
+                                adminKey
+
+                        },
+
+                        body: formData
+
+                    }
+                );
+
+
+            const result =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !result.success
+            ) {
+
+                throw new Error(
+                    result.message ||
+                    "Scheme publishing failed."
+                );
+
+            }
+
+
+            // -----------------------------
+            // Success
+            // -----------------------------
+
+            schemeStatus.textContent =
+                "Scheme published successfully!";
+
+
+            alert(
+                "Scheme published successfully!"
+            );
+
+
+            // Clear fields
+
+            schemeGrade.value = "";
+
+            schemeStream.value = "";
+
+            schemeSubject.innerHTML = `
+                <option value="">
+                    Select Subject
+                </option>
+            `;
+
+            schemeSubject.disabled =
+                true;
+
+            schemeStreamBox.style.display =
+                "none";
+
+            schemeStream.disabled =
+                true;
+
+            schemeTitle.value = "";
+
+            schemeUrl.value = "";
+
+
+        }
+        catch (error) {
+
+            console.error(
+                "Scheme Publish Error:",
+                error
+            );
+
+
+            schemeStatus.textContent =
+                "Scheme publish failed: " +
+                error.message;
+
+
+            alert(
+                "Scheme publish failed:\n\n" +
+                error.message
+            );
+
+        }
+        finally {
+
+            publishSchemeBtn.disabled =
+                false;
+
+        }
+
+    }
+);
+// ======================================
 // App Manager
 // ======================================
 
@@ -2006,262 +2262,6 @@ publishAppBtn.addEventListener(
     }
 );
 
-// ======================================
-// SCHEME PUBLISH
-// ======================================
-
-const publishSchemeBtn =
-    document.getElementById("publishSchemeBtn");
-
-const schemeUrl =
-    document.getElementById("schemeUrl");
-
-const schemeStatus =
-    document.getElementById("schemeStatus");
-
-
-publishSchemeBtn.addEventListener(
-    "click",
-    async () => {
-
-        const grade =
-            schemeGrade.value;
-
-        const stream =
-            schemeStream.value;
-
-        const subject =
-            schemeSubject.value;
-
-        const title =
-            schemeTitle.value.trim();
-
-        const url =
-            schemeUrl.value.trim();
-
-        const adminKey =
-            adminKeyInput.value.trim();
-
-
-        // -----------------------------
-        // Validation
-        // -----------------------------
-
-        if (!grade) {
-
-            alert("Please select Grade.");
-
-            return;
-
-        }
-
-
-        if (
-            (grade === "12" ||
-             grade === "13") &&
-            !stream
-        ) {
-
-            alert("Please select Stream.");
-
-            return;
-
-        }
-
-
-        if (!subject) {
-
-            alert("Please select Subject.");
-
-            return;
-
-        }
-
-
-        if (!title) {
-
-            alert("Scheme title is missing.");
-
-            return;
-
-        }
-
-
-        if (!url) {
-
-            alert(
-                "Please enter Scheme PDF URL."
-            );
-
-            return;
-
-        }
-
-
-        if (!adminKey) {
-
-            alert("Please enter Admin Key.");
-
-            return;
-
-        }
-
-
-        publishSchemeBtn.disabled =
-            true;
-
-
-        schemeStatus.textContent =
-            "Publishing Scheme...";
-
-
-        try {
-
-            const formData =
-                new FormData();
-
-
-            formData.append(
-                "type",
-                "scheme"
-            );
-
-
-            formData.append(
-                "grade",
-                grade
-            );
-
-
-            formData.append(
-                "stream",
-                stream
-            );
-
-
-            formData.append(
-                "subject",
-                subject
-            );
-
-
-            formData.append(
-                "title",
-                title
-            );
-
-
-            formData.append(
-                "url",
-                url
-            );
-
-
-            const response =
-                await fetch(
-                    WORKER_URL,
-                    {
-
-                        method: "POST",
-
-                        headers: {
-
-                            "X-Admin-Key":
-                                adminKey
-
-                        },
-
-                        body: formData
-
-                    }
-                );
-
-
-            const result =
-                await response.json();
-
-
-            if (
-                !response.ok ||
-                !result.success
-            ) {
-
-                throw new Error(
-                    result.message ||
-                    "Scheme publishing failed."
-                );
-
-            }
-
-
-            // -----------------------------
-            // Success
-            // -----------------------------
-
-            schemeStatus.textContent =
-                "Scheme published successfully!";
-
-
-            alert(
-                "Scheme published successfully!"
-            );
-
-
-            // Clear fields
-
-            schemeGrade.value = "";
-
-            schemeStream.value = "";
-
-            schemeSubject.innerHTML = `
-                <option value="">
-                    Select Subject
-                </option>
-            `;
-
-            schemeSubject.disabled =
-                true;
-
-            schemeStreamBox.style.display =
-                "none";
-
-            schemeStream.disabled =
-                true;
-
-            schemeTitle.value = "";
-
-            schemeUrl.value = "";
-
-
-        }
-        catch (error) {
-
-            console.error(
-                "Scheme Publish Error:",
-                error
-            );
-
-
-            schemeStatus.textContent =
-                "Scheme publish failed: " +
-                error.message;
-
-
-            alert(
-                "Scheme publish failed:\n\n" +
-                error.message
-            );
-
-        }
-        finally {
-
-            publishSchemeBtn.disabled =
-                false;
-
-        }
-
-    }
-);
 </script>
 
 </body>
