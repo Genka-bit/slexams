@@ -481,13 +481,21 @@
     </textarea>
 
 
-    <label>App Image URL</label>
+   <label>Main App Image</label>
 
-    <input
-        type="url"
-        id="appImage"
-        placeholder="https://example.com/app-image.jpg">
+<input
+    type="file"
+    id="appMainImage"
+    accept="image/*">
 
+
+<label>Preview Images</label>
+
+<input
+    type="file"
+    id="appPreviewImages"
+    accept="image/*"
+    multiple>
 
     <label>Download URL</label>
 
@@ -1977,9 +1985,14 @@ const appDescription =
     );
 
 
-const appImage =
+const appMainImage =
     document.getElementById(
-        "appImage"
+        "appMainImage"
+    );
+
+const appPreviewImages =
+    document.getElementById(
+        "appPreviewImages"
     );
 
 
@@ -2027,8 +2040,11 @@ publishAppBtn.addEventListener(
         const description =
             appDescription.value.trim();
 
-        const image =
-            appImage.value.trim();
+        const mainImage =
+    appMainImage.files[0];
+
+const previewImages =
+    appPreviewImages.files;
 
         const download =
             appDownload.value.trim();
@@ -2068,7 +2084,14 @@ publishAppBtn.addEventListener(
 
         }
 
+if (!mainImage) {
 
+    alert(
+        "Please select Main Image."
+    );
+
+    return;
+}
         if (!download) {
 
             alert(
@@ -2142,9 +2165,18 @@ publishAppBtn.addEventListener(
 
 
             formData.append(
-                "image",
-                image
-            );
+    "mainImage",
+    mainImage
+);
+
+for (let i = 0; i < previewImages.length; i++) {
+
+    formData.append(
+        "previewImages",
+        previewImages[i]
+    );
+
+}
 
 
             formData.append(
@@ -2225,7 +2257,9 @@ publishAppBtn.addEventListener(
 
             appDescription.value = "";
 
-            appImage.value = "";
+            appMainImage.value = "";
+
+appPreviewImages.value = "";
 
             appDownload.value = "";
 
