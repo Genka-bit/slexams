@@ -529,92 +529,63 @@ Follow Us
 
 <script type="module">
 
-import {
-
-    getDocument,
-    GlobalWorkerOptions
-
-}
-from
-"https://cdn.jsdelivr.net/npm/pdfjs-dist@5.4.149/build/pdf.mjs";
-
-
-
-GlobalWorkerOptions.workerSrc =
-"https://cdn.jsdelivr.net/npm/pdfjs-dist@5.4.149/build/pdf.worker.mjs";
-
-
-
-/* =========================
-   URL PARAMETERS
-   ========================= */
-
+/* =====================================================
+   SCHEME VIEW
+   ===================================================== */
 
 const params =
     new URLSearchParams(
         window.location.search
     );
 
-
 const level =
     params.get("level");
 
-
 const subject =
     params.get("subject");
-
 
 const grade =
     params.get("grade");
 
 
-
-/* =========================
+/* =====================================================
    ELEMENTS
-   ========================= */
-
+   ===================================================== */
 
 const schemeTitle =
     document.getElementById(
         "schemeTitle"
     );
 
-
 const pdfTitle =
     document.getElementById(
         "pdfTitle"
     );
-
 
 const pdfContainer =
     document.getElementById(
         "pdfContainer"
     );
 
-
 const downloadBtn =
     document.getElementById(
         "downloadBtn"
     );
-
 
 const openBtn =
     document.getElementById(
         "openBtn"
     );
 
-
 const prevBtn =
     document.getElementById(
         "prevBtn"
     );
 
-
 const nextBtn =
     document.getElementById(
         "nextBtn"
     );
-
 
 const pageInfo =
     document.getElementById(
@@ -622,382 +593,479 @@ const pageInfo =
     );
 
 
-
-/* =========================
+/* =====================================================
    VALIDATION
-   ========================= */
+   ===================================================== */
 
-
-if (
-    !subject ||
-    !grade
-) {
+if (!subject || !grade) {
 
     schemeTitle.textContent =
         "Scheme Not Found";
 
-
     pdfTitle.textContent =
         "Invalid Scheme";
 
-
     pdfContainer.innerHTML = `
-
         <div class="pdf-error">
-
             ❌ Scheme information is missing.
-
         </div>
-
     `;
 
-
     throw new Error(
-        "Missing subject or grade"
+        "Missing scheme information"
     );
-
 }
 
 
-
-/* =========================
-   SUBJECT FILE NAMES
-   ========================= */
-
-
-const subjectNames = {
-
-    /* =========================
-       Grade 1 – 5
-       ========================= */
-
-    "தமிழ்":
-        "tamil",
-
-    "கணிதம்":
-        "mathematics",
-
-    "சுற்றாடல்":
-        "environment",
-
-    "ஆங்கிலம்":
-        "english",
-
-    "இரண்டாம் மொழி":
-        "second-language",
-
-
-    /* =========================
-       Grade 6 – 11
-       ========================= */
-
-    "விஞ்ஞானம்":
-        "science",
-
-    "வரலாறு":
-        "history",
-
-    "புவியியல்":
-        "geography",
-
-    "குடியியல்":
-        "civics",
-
-    "சுகாதாரம்":
-        "health",
-
-    "சைவசமயம்":
-        "saivism",
-
-    "கத்தோலிக்கம்":
-        "catholicism",
-
-    "கிறிஸ்தவம்":
-        "christianity",
-
-    "இஸ்லாம்":
-        "islam",
-
-    "அழகியல்":
-        "aesthetics",
-
-    "சிங்களம்":
-        "sinhala",
-
-    "ICT":
-        "ict",
-
-    "PTS":
-        "pts",
-
-
-    /* =========================
-       A/L
-       ========================= */
-
-    "Combined Mathematics":
-        "combined-mathematics",
-
-    "Physics":
-        "physics",
-
-    "Chemistry":
-        "chemistry",
-
-    "Biology":
-        "biology",
-
-    "Agricultural Science":
-        "agricultural-science",
-
-    "Accounting":
-        "accounting",
-
-    "Business Studies":
-        "business-studies",
-
-    "Economics":
-        "economics",
-
-    "தமிழ்":
-        "tamil",
-
-    "அரசியல் விஞ்ஞானம்":
-        "political-science",
-
-    "இந்து சமயம்":
-        "hinduism",
-
-    "கத்தோலிக்கம்":
-        "catholicism",
-
-    "இந்து நாகரிகம்":
-        "hindu-civilization",
-
-    "கிறிஸ்தவ நாகரிகம்":
-        "christian-civilization",
-
-    "தர்க்கவியல்":
-        "logic",
-
-    "சித்திரம்":
-        "art",
-
-    "நடனம்":
-        "dance",
-
-    "இசை":
-        "music",
-
-    "நாடகம்":
-        "drama",
-
-    "Science for Technology":
-        "science-for-technology",
-
-    "Engineering Technology":
-        "engineering-technology",
-
-    "Bio Systems Technology":
-        "bio-systems-technology"
-
-};
-
-
-    
-
-
-
-let subjectFile =
-    subjectNames[subject];
-
-
-
-/* =========================
-   OTHER SUBJECTS
-   ========================= */
-
-
-if (!subjectFile) {
-
-    subjectFile =
-
-        subject
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, "-");
-
-}
-
-
-
-/* =========================
-   PDF PATH
-   ========================= */
-
-
-const pdfPath =
-
-    "pdf/schemes/grade-" +
-
-    grade +
-
-    "-" +
-
-    subjectFile +
-
-    ".pdf";
-
-
-
-/* =========================
-   PAGE TITLE
-   ========================= */
-
+/* =====================================================
+   TITLE
+   ===================================================== */
 
 schemeTitle.textContent =
-
     "📚 " +
-
     subject +
-
     " – Grade " +
-
     grade +
-
     " Scheme";
 
 
 pdfTitle.textContent =
-
     subject +
-
     " – Grade " +
-
     grade;
 
 
+/* =====================================================
+   SCHEMES JSON
+   ===================================================== */
 
-/* =========================
-   BUTTON LINKS
-   ========================= */
-
-
-downloadBtn.href =
-    pdfPath;
+const schemesJSON =
+    "assets/data/schemes.json";
 
 
-openBtn.href =
-    pdfPath;
+/* =====================================================
+   GOOGLE DRIVE URL CONVERTER
+   ===================================================== */
 
+function getDriveFileId(url) {
 
-
-/* =========================
-   PDF VARIABLES
-   ========================= */
-
-
-let pdf = null;
-
-let currentPage = 1;
-
-let totalPages = 0;
-
-
-
-/* =========================
-   LOAD PDF
-   ========================= */
-
-
-try {
-
-
-    pdf =
-        await getDocument(
-            pdfPath
-        ).promise;
-
-
-    totalPages =
-        pdf.numPages;
-
-
-    pageInfo.textContent =
-
-        "Page 1 / " +
-
-        totalPages;
-
-
-    prevBtn.disabled = true;
-
-
-    nextBtn.disabled =
-        totalPages <= 1;
-
-
-    await renderPage(
-        currentPage
-    );
-
-
-}
-
-
-catch (error) {
-
-
-    console.error(
-        "PDF loading error:",
-        error
-    );
-
-
-    pdfContainer.innerHTML = `
-
-        <div class="pdf-error">
-
-            ❌ PDF could not be loaded.
-
-            <br><br>
-
-            <a
-                href="${pdfPath}"
-                target="_blank"
-                rel="noopener">
-
-                📄 Open PDF directly
-
-            </a>
-
-        </div>
-
-    `;
-
-
-    pageInfo.textContent =
-        "PDF Error";
-
-
-}
-
-
-
-/* =========================
-   RENDER PAGE
-   ========================= */
-
-
-async function renderPage(
-    pageNumber
-) {
-
-
-    if (!pdf) {
-        return;
+    if (!url) {
+        return null;
     }
 
+    /*
+     * Example:
+     * https://drive.google.com/file/d/FILE_ID/view
+     */
+
+    const match =
+        url.match(
+            /\/file\/d\/([^/]+)/
+        );
+
+    if (match) {
+        return match[1];
+    }
+
+
+    /*
+     * Example:
+     * https://drive.google.com/open?id=FILE_ID
+     */
+
+    const openMatch =
+        url.match(
+            /[?&]id=([^&]+)/
+        );
+
+    if (openMatch) {
+        return openMatch[1];
+    }
+
+
+    return null;
+}
+
+
+/* =====================================================
+   LOAD SCHEME
+   ===================================================== */
+
+async function loadScheme() {
+
+    try {
+
+        pdfContainer.innerHTML = `
+            <div class="pdf-loading">
+                📚 Loading Scheme...
+            </div>
+        `;
+
+
+        const response =
+            await fetch(
+                schemesJSON + "?t=" +
+                Date.now()
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "schemes.json could not be loaded."
+            );
+
+        }
+
+
+        const database =
+            await response.json();
+
+
+        if (
+            !database.schemes ||
+            !Array.isArray(database.schemes)
+        ) {
+
+            throw new Error(
+                "Invalid schemes.json structure."
+            );
+
+        }
+
+
+        /* =========================================
+           FIND SCHEME
+           ========================================= */
+
+        const scheme =
+            database.schemes.find(
+                item =>
+
+                    String(item.grade) ===
+                    String(grade)
+
+                    &&
+
+                    item.subject ===
+                    subject
+            );
+
+
+        if (!scheme) {
+
+            throw new Error(
+                "Scheme not found for Grade " +
+                grade +
+                " - " +
+                subject
+            );
+
+        }
+
+
+        /* =========================================
+           UPDATE TITLE
+           ========================================= */
+
+        if (scheme.title) {
+
+            schemeTitle.textContent =
+                "📚 " +
+                scheme.title;
+
+            pdfTitle.textContent =
+                scheme.title;
+
+        }
+
+
+        /* =========================================
+           ORIGINAL URL
+           ========================================= */
+
+        const originalURL =
+            scheme.url;
+
+
+        if (!originalURL) {
+
+            throw new Error(
+                "Scheme PDF URL is missing."
+            );
+
+        }
+
+
+        /* =========================================
+           GOOGLE DRIVE
+           ========================================= */
+
+        const fileId =
+            getDriveFileId(
+                originalURL
+            );
+
+
+        if (fileId) {
+
+            /*
+             * Google Drive Preview
+             */
+
+            const previewURL =
+                "https://drive.google.com/file/d/" +
+                fileId +
+                "/preview";
+
+
+            /*
+             * Google Drive Download
+             */
+
+            const downloadURL =
+                "https://drive.google.com/uc?export=download&id=" +
+                fileId;
+
+
+            /*
+             * Open button
+             */
+
+            openBtn.href =
+                originalURL;
+
+
+            /*
+             * Download button
+             */
+
+            downloadBtn.href =
+                downloadURL;
+
+
+            /*
+             * Google Drive PDF Viewer
+             */
+
+            pdfContainer.innerHTML = `
+
+                <iframe
+
+                    src="${previewURL}"
+
+                    width="100%"
+
+                    height="700"
+
+                    style="
+                        border:none;
+                        border-radius:10px;
+                    "
+
+                    allow="autoplay">
+
+                </iframe>
+
+            `;
+
+
+            /*
+             * PDF.js controls are not needed
+             * for Google Drive viewer
+             */
+
+            prevBtn.style.display =
+                "none";
+
+            nextBtn.style.display =
+                "none";
+
+            pageInfo.style.display =
+                "none";
+
+
+            return;
+
+        }
+
+
+        /* =========================================
+           NORMAL PDF URL
+           ========================================= */
+
+        openBtn.href =
+            originalURL;
+
+        downloadBtn.href =
+            originalURL;
+
+
+        /*
+         * Try PDF.js for normal URL
+         */
+
+        try {
+
+            const pdf =
+                await getDocument(
+                    originalURL
+                ).promise;
+
+
+            const totalPages =
+                pdf.numPages;
+
+
+            let currentPage =
+                1;
+
+
+            pageInfo.textContent =
+                "Page 1 / " +
+                totalPages;
+
+
+            prevBtn.disabled =
+                true;
+
+            nextBtn.disabled =
+                totalPages <= 1;
+
+
+            await renderPage(
+                pdf,
+                currentPage,
+                totalPages
+            );
+
+
+            prevBtn.onclick =
+                async function () {
+
+                    if (
+                        currentPage <= 1
+                    ) {
+                        return;
+                    }
+
+                    currentPage--;
+
+                    await renderPage(
+                        pdf,
+                        currentPage,
+                        totalPages
+                    );
+
+                };
+
+
+            nextBtn.onclick =
+                async function () {
+
+                    if (
+                        currentPage >=
+                        totalPages
+                    ) {
+                        return;
+                    }
+
+                    currentPage++;
+
+                    await renderPage(
+                        pdf,
+                        currentPage,
+                        totalPages
+                    );
+
+                };
+
+        }
+
+        catch (pdfError) {
+
+            console.error(
+                "PDF.js error:",
+                pdfError
+            );
+
+
+            /*
+             * Fallback iframe
+             */
+
+            pdfContainer.innerHTML = `
+
+                <iframe
+
+                    src="${originalURL}"
+
+                    width="100%"
+
+                    height="700"
+
+                    style="
+                        border:none;
+                        border-radius:10px;
+                    ">
+
+                </iframe>
+
+            `;
+
+            prevBtn.style.display =
+                "none";
+
+            nextBtn.style.display =
+                "none";
+
+            pageInfo.style.display =
+                "none";
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Scheme loading error:",
+            error
+        );
+
+
+        pdfContainer.innerHTML = `
+
+            <div class="pdf-error">
+
+                ❌ ${error.message}
+
+                <br><br>
+
+                Please try again later.
+
+            </div>
+
+        `;
+
+
+        pdfTitle.textContent =
+            "Scheme Not Available";
+
+    }
+
+}
+
+
+/* =====================================================
+   PDF.JS PAGE RENDER
+   ===================================================== */
+
+async function renderPage(
+    pdf,
+    pageNumber,
+    totalPages
+) {
 
     pdfContainer.innerHTML = `
 
@@ -1020,16 +1088,15 @@ async function renderPage(
         pdfContainer.clientWidth;
 
 
-    const unscaledViewport =
+    const originalViewport =
         page.getViewport({
             scale: 1
         });
 
 
     const scale =
-
         containerWidth /
-        unscaledViewport.width;
+        originalViewport.width;
 
 
     const viewport =
@@ -1048,18 +1115,18 @@ async function renderPage(
         "pdf-page";
 
 
-    const context =
-        canvas.getContext(
-            "2d"
-        );
-
-
     canvas.width =
         viewport.width;
 
 
     canvas.height =
         viewport.height;
+
+
+    const context =
+        canvas.getContext(
+            "2d"
+        );
 
 
     pdfContainer.innerHTML = "";
@@ -1082,13 +1149,9 @@ async function renderPage(
 
 
     pageInfo.textContent =
-
         "Page " +
-
         pageNumber +
-
         " / " +
-
         totalPages;
 
 
@@ -1102,118 +1165,13 @@ async function renderPage(
 }
 
 
+/* =====================================================
+   START
+   ===================================================== */
 
-/* =========================
-   PREVIOUS
-   ========================= */
-
-
-prevBtn.addEventListener(
-    "click",
-    async function () {
-
-
-        if (
-            currentPage <= 1
-        ) {
-
-            return;
-
-        }
-
-
-        currentPage--;
-
-
-        await renderPage(
-            currentPage
-        );
-
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-
-    }
-);
-
-
-
-/* =========================
-   NEXT
-   ========================= */
-
-
-nextBtn.addEventListener(
-    "click",
-    async function () {
-
-
-        if (
-            currentPage >=
-            totalPages
-        ) {
-
-            return;
-
-        }
-
-
-        currentPage++;
-
-
-        await renderPage(
-            currentPage
-        );
-
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-
-    }
-);
-
-
-
-/* =========================
-   MOBILE RESIZE
-   ========================= */
-
-
-let resizeTimer;
-
-
-window.addEventListener(
-    "resize",
-    function () {
-
-
-        clearTimeout(
-            resizeTimer
-        );
-
-
-        resizeTimer =
-            setTimeout(
-                function () {
-
-                    renderPage(
-                        currentPage
-                    );
-
-                },
-                300
-            );
-
-    }
-);
-
+loadScheme();
 
 </script>
-
 
 </body>
 
