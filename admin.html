@@ -2048,12 +2048,6 @@ publishAppBtn.addEventListener(
         const description =
             appDescription.value.trim();
 
-        const mainImage =
-    appMainImage.files[0];
-
-const previewImages =
-    appPreviewImages.files;
-
         const download =
             appDownload.value.trim();
 
@@ -2067,9 +2061,27 @@ const previewImages =
             adminKeyInput.value.trim();
 
 
-        // -----------------------------
-        // Validation
-        // -----------------------------
+        // ----------------------------------
+        // MAIN IMAGE
+        // ----------------------------------
+
+        const mainImage =
+            appMainImage.files[0];
+
+
+        // ----------------------------------
+        // PREVIEW IMAGES
+        // ----------------------------------
+
+        const previewImages =
+            Array.from(
+                appPreviewImages.files
+            );
+
+
+        // ----------------------------------
+        // VALIDATION
+        // ----------------------------------
 
         if (!platform) {
 
@@ -2092,18 +2104,26 @@ const previewImages =
 
         }
 
-if (!mainImage) {
 
-    alert(
-        "Please select Main Image."
-    );
-
-    return;
-}
-        if (!download) {
+        if (!mainImage) {
 
             alert(
-                "Please enter Download URL."
+                "Please select Main App Image."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            !download &&
+            !playStore &&
+            !website
+        ) {
+
+            alert(
+                "Please enter at least one Download URL, Play Store URL or Website URL."
             );
 
             return;
@@ -2122,12 +2142,16 @@ if (!mainImage) {
         }
 
 
+        // ----------------------------------
+        // BUTTON
+        // ----------------------------------
+
         publishAppBtn.disabled =
             true;
 
 
         appStatus.textContent =
-            "Publishing App...";
+            "📤 Uploading App...";
 
 
         try {
@@ -2172,19 +2196,28 @@ if (!mainImage) {
             );
 
 
+            // Main image
+
             formData.append(
-    "mainImage",
-    mainImage
-);
+                "mainImage",
+                mainImage,
+                mainImage.name
+            );
 
-for (let i = 0; i < previewImages.length; i++) {
 
-    formData.append(
-        "previewImages",
-        previewImages[i]
-    );
+            // Preview images
 
-}
+            previewImages.forEach(
+                image => {
+
+                    formData.append(
+                        "previewImages",
+                        image,
+                        image.name
+                    );
+
+                }
+            );
 
 
             formData.append(
@@ -2205,6 +2238,10 @@ for (let i = 0; i < previewImages.length; i++) {
             );
 
 
+            // ----------------------------------
+            // SEND TO WORKER
+            // ----------------------------------
+
             const response =
                 await fetch(
                     WORKER_URL,
@@ -2219,7 +2256,8 @@ for (let i = 0; i < previewImages.length; i++) {
 
                         },
 
-                        body: formData
+                        body:
+                            formData
 
                     }
                 );
@@ -2242,6 +2280,10 @@ for (let i = 0; i < previewImages.length; i++) {
             }
 
 
+            // ----------------------------------
+            // SUCCESS
+            // ----------------------------------
+
             appStatus.textContent =
                 "✅ App published successfully!";
 
@@ -2251,9 +2293,9 @@ for (let i = 0; i < previewImages.length; i++) {
             );
 
 
-            // -----------------------------
-            // Clear fields
-            // -----------------------------
+            // ----------------------------------
+            // CLEAR
+            // ----------------------------------
 
             appPlatform.value = "";
 
@@ -2267,7 +2309,7 @@ for (let i = 0; i < previewImages.length; i++) {
 
             appMainImage.value = "";
 
-appPreviewImages.value = "";
+            appPreviewImages.value = "";
 
             appDownload.value = "";
 
