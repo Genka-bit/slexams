@@ -1,3 +1,12 @@
 {
-  "schemes": []
+  "schemes": [
+    {
+      "id": "11-கணிதம்-grade-11-கணிதம்-scheme",
+      "grade": "11",
+      "subject": "கணிதம்",
+      "title": "Grade 11 கணிதம் Scheme",
+      "url": "https://drive.google.com/file/d/1Q6AyySuhYV5kVrHNSzz-MncNgGnrosAU/view?usp=drivesdk",
+      "date": "2026-08-21"
+    }
+  ]
 }
