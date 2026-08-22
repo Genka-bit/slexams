@@ -580,88 +580,24 @@ function createAppCard(app) {
         "app-detail.html?id=" +
         encodeURIComponent(app.id);
 
-
-    /* =========================
-       FIND BEST APP IMAGE
-       ========================= */
-
-    const previewImages =
-        Array.isArray(app.previewImages)
-            ? app.previewImages
-            : [];
-
-
-    const firstPreview =
-        previewImages.length > 0
-            ? previewImages[0]
-            : "";
-
-
-    const imageUrl =
-        app.image ||
-        app.mainImage ||
-        firstPreview;
-
-
-    /* =========================
-       APP CARD
-       ========================= */
-
     card.innerHTML = `
 
-       <img
-    class="app-image"
-    src="${app.mainImage}"
-    alt="${app.name}"
-    loading="lazy"
-    onerror="this.style.display='none'"
->
+        <img
+            class="app-image"
+            src="${app.mainImage}"
+            alt="${app.name}"
+            loading="lazy"
+        >
 
         <h3 class="app-name">
-
             ${app.name}
-
         </h3>
 
         <p class="app-demo">
-
             ${app.demo || ""}
-
         </p>
 
     `;
-
-
-    /* =========================
-       IMAGE ERROR FALLBACK
-       ========================= */
-
-    const image =
-        card.querySelector(".app-image");
-
-
-    image.addEventListener(
-        "error",
-        function() {
-
-            if (
-                firstPreview &&
-                image.src !== firstPreview
-            ) {
-
-                image.src =
-                    firstPreview;
-
-            } else {
-
-                image.style.display =
-                    "none";
-
-            }
-
-        }
-    );
-
 
     return card;
 }
