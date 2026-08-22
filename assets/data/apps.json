@@ -1,30 +1,45 @@
 {
   "apps": [
     {
-  "id": "slexams",
-  "platform": "android",
-  "name": "SLExam App",
-  "image": "assets/images/apps/slexams.jpg",
-  "demo": "Sri Lankan educational resources.",
-  "description": "SLExam App மூலம் இலங்கை மாணவர்களுக்கான கல்வி வளங்களை எளிதாக அணுகலாம்.",
-  "version": "1.0",
-
-  "playStore": "https://play.google.com/store/apps/details?id=YOUR_PACKAGE_NAME",
-
-  "apk": "apps/android/slexams-app.apk",
-
-  "crack": "YOUR_CRACK_PAGE_LINK"
-},
-  {
-  "id": "my-windows-app",
-  "platform": "windows",
-  "name": "My Windows App",
-  "image": "assets/images/apps/my-windows-app.jpg",
-  "demo": "Windows கல்வி பயன்பாடு.",
-  "description": "இந்த application பற்றிய சிறிய விளக்கம்.",
-  "version": "1.0",
-  "website": "https://example.com",
-  "download": "apps/windows/my-windows-app.exe"
-}
+      "id": "android-test-education-app",
+      "platform": "android",
+      "name": "Test Education App",
+      "version": "1.0",
+      "mainImage": "assets/images/apps/android-test-education-app/main.png",
+      "previewImages": [
+        "assets/images/apps/android-test-education-app/preview-1.jpg",
+        "assets/images/apps/android-test-education-app/preview-2.jpg",
+        "assets/images/apps/android-test-education-app/preview-3.png",
+        "assets/images/apps/android-test-education-app/preview-4.jpg"
+      ],
+      "demo": "Test educational application",
+      "description": "This is a test app for SLExam Pro.",
+      "download": "https://drive.google.com/file/d/1suXMuMLmdsyd2SlxWKWfxt6k5vUfHiYE/view?usp=drivesdk",
+      "playStore": "",
+      "website": ""
+    },
+    {
+      "id": "slexams",
+      "platform": "android",
+      "name": "SLExam App",
+      "image": "assets/images/apps/slexams.jpg",
+      "demo": "Sri Lankan educational resources.",
+      "description": "SLExam App மூலம் இலங்கை மாணவர்களுக்கான கல்வி வளங்களை எளிதாக அணுகலாம்.",
+      "version": "1.0",
+      "playStore": "https://play.google.com/store/apps/details?id=YOUR_PACKAGE_NAME",
+      "apk": "apps/android/slexams-app.apk",
+      "crack": "YOUR_CRACK_PAGE_LINK"
+    },
+    {
+      "id": "my-windows-app",
+      "platform": "windows",
+      "name": "My Windows App",
+      "image": "assets/images/apps/my-windows-app.jpg",
+      "demo": "Windows கல்வி பயன்பாடு.",
+      "description": "இந்த application பற்றிய சிறிய விளக்கம்.",
+      "version": "1.0",
+      "website": "https://example.com",
+      "download": "apps/windows/my-windows-app.exe"
+    }
   ]
 }
