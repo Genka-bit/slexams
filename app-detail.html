@@ -347,6 +347,37 @@ Loading...
 
 </section>
 
+<!-- =========================
+     FULL SCREEN IMAGE VIEWER
+     ========================= -->
+
+<div id="imageViewer" class="image-viewer">
+
+    <span
+        id="imageViewerClose"
+        class="image-viewer-close">
+        ✕
+    </span>
+
+    <button
+        id="imageViewerPrev"
+        class="image-viewer-prev">
+        ❮
+    </button>
+
+    <img
+        id="imageViewerImage"
+        class="image-viewer-image"
+        src=""
+        alt="Preview">
+
+    <button
+        id="imageViewerNext"
+        class="image-viewer-next">
+        ❯
+    </button>
+
+</div>
 
 
 <!-- =========================
@@ -526,6 +557,11 @@ async function loadAppDetail() {
                     item.id === appId
             );
 
+window.currentAppPreviewImages =
+    Array.isArray(app.previewImages)
+    ? app.previewImages
+    : [];
+
 
         if (!app) {
 
@@ -673,7 +709,7 @@ async function loadAppDetail() {
     src="${image}"
     alt="${app.name} Preview"
     loading="lazy"
-    onclick="window.open('${image}', '_blank')">
+    onclick="openImageViewer(${JSON.stringify(image)})">
 
                                 `
                                 )
@@ -824,6 +860,399 @@ async function loadAppDetail() {
    ========================= */
 
 loadAppDetail();
+
+/* =========================
+   FULL SCREEN IMAGE VIEWER
+   ========================= */
+
+.image-viewer {
+
+    display: none;
+
+    position: fixed;
+
+    z-index: 9999;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.92);
+
+    align-items: center;
+    justify-content: center;
+
+}
+
+
+/* Main Viewer Image */
+
+.image-viewer-image {
+
+    max-width: 90%;
+    max-height: 85%;
+
+    object-fit: contain;
+
+    border-radius: 8px;
+
+}
+
+
+/* Close Button */
+
+.image-viewer-close {
+
+    position: absolute;
+
+    top: 20px;
+    right: 25px;
+
+    color: white;
+
+    font-size: 38px;
+
+    cursor: pointer;
+
+    z-index: 10001;
+
+}
+
+
+/* Previous / Next */
+
+.image-viewer-prev,
+.image-viewer-next {
+
+    position: absolute;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: white;
+
+    background: rgba(255,255,255,0.15);
+
+    border: none;
+
+    width: 50px;
+    height: 50px;
+
+    border-radius: 50%;
+
+    font-size: 28px;
+
+    cursor: pointer;
+
+}
+
+
+.image-viewer-prev {
+
+    left: 20px;
+
+}
+
+
+.image-viewer-next {
+
+    right: 20px;
+
+}
+
+
+.image-viewer-prev:hover,
+.image-viewer-next:hover {
+
+    background: rgba(255,255,255,0.30);
+
+}
+
+
+/* Mobile */
+
+@media (max-width:600px) {
+
+    .image-viewer-image {
+
+        max-width: 94%;
+        max-height: 80%;
+
+    }
+
+    .image-viewer-prev,
+    .image-viewer-next {
+
+        width: 42px;
+        height: 42px;
+
+        font-size: 22px;
+
+    }
+
+    .image-viewer-prev {
+
+        left: 8px;
+
+    }
+
+    .image-viewer-next {
+
+        right: 8px;
+
+    }
+
+}
+
+/* =========================
+   FULL SCREEN IMAGE VIEWER
+   ========================= */
+
+let viewerImages = [];
+let viewerIndex = 0;
+
+const imageViewer =
+    document.getElementById("imageViewer");
+
+const imageViewerImage =
+    document.getElementById("imageViewerImage");
+
+const imageViewerClose =
+    document.getElementById("imageViewerClose");
+
+const imageViewerPrev =
+    document.getElementById("imageViewerPrev");
+
+const imageViewerNext =
+    document.getElementById("imageViewerNext");
+
+
+/* =========================
+   OPEN VIEWER
+   ========================= */
+
+function openImageViewer(image) {
+
+    /*
+     * Get preview images from the
+     * currently loaded app
+     */
+
+    viewerImages =
+        Array.isArray(window.currentAppPreviewImages)
+        ? window.currentAppPreviewImages
+        : [image];
+
+
+    viewerIndex =
+        viewerImages.indexOf(image);
+
+
+    if (viewerIndex < 0) {
+
+        viewerIndex = 0;
+
+    }
+
+
+    imageViewerImage.src =
+        viewerImages[viewerIndex];
+
+
+    imageViewer.style.display =
+        "flex";
+
+
+    document.body.style.overflow =
+        "hidden";
+
+}
+
+
+/* =========================
+   CLOSE VIEWER
+   ========================= */
+
+function closeImageViewer() {
+
+    imageViewer.style.display =
+        "none";
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+/* =========================
+   SHOW IMAGE
+   ========================= */
+
+function showViewerImage(index) {
+
+    if (!viewerImages.length) {
+
+        return;
+
+    }
+
+
+    if (index < 0) {
+
+        index =
+            viewerImages.length - 1;
+
+    }
+
+
+    if (
+        index >=
+        viewerImages.length
+    ) {
+
+        index = 0;
+
+    }
+
+
+    viewerIndex = index;
+
+
+    imageViewerImage.src =
+        viewerImages[viewerIndex];
+
+}
+
+
+/* =========================
+   PREVIOUS
+   ========================= */
+
+imageViewerPrev.addEventListener(
+    "click",
+    function(event) {
+
+        event.stopPropagation();
+
+        showViewerImage(
+            viewerIndex - 1
+        );
+
+    }
+);
+
+
+/* =========================
+   NEXT
+   ========================= */
+
+imageViewerNext.addEventListener(
+    "click",
+    function(event) {
+
+        event.stopPropagation();
+
+        showViewerImage(
+            viewerIndex + 1
+        );
+
+    }
+);
+
+
+/* =========================
+   CLOSE BUTTON
+   ========================= */
+
+imageViewerClose.addEventListener(
+    "click",
+    function(event) {
+
+        event.stopPropagation();
+
+        closeImageViewer();
+
+    }
+);
+
+
+/* =========================
+   CLICK BACKGROUND TO CLOSE
+   ========================= */
+
+imageViewer.addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            event.target ===
+            imageViewer
+        ) {
+
+            closeImageViewer();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   KEYBOARD CONTROLS
+   ========================= */
+
+window.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            imageViewer.style.display !==
+            "flex"
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            event.key ===
+            "Escape"
+        ) {
+
+            closeImageViewer();
+
+        }
+
+
+        if (
+            event.key ===
+            "ArrowLeft"
+        ) {
+
+            showViewerImage(
+                viewerIndex - 1
+            );
+
+        }
+
+
+        if (
+            event.key ===
+            "ArrowRight"
+        ) {
+
+            showViewerImage(
+                viewerIndex + 1
+            );
+
+        }
+
+    }
+);
 
 </script>
 
