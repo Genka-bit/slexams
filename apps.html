@@ -189,17 +189,20 @@
 
 .app-image {
 
-    width: 80px;
+    width: 100px;
 
-    height: 80px;
+    height: 100px;
 
     object-fit: cover;
 
-    border-radius: 16px;
+    border-radius: 20px;
 
     display: block;
 
     margin-bottom: 12px;
+
+    background: #f1f3f5;
+
 }
 
 
@@ -577,11 +580,38 @@ function createAppCard(app) {
         "app-detail.html?id=" +
         encodeURIComponent(app.id);
 
+
+    /* =========================
+       FIND BEST APP IMAGE
+       ========================= */
+
+    const previewImages =
+        Array.isArray(app.previewImages)
+            ? app.previewImages
+            : [];
+
+
+    const firstPreview =
+        previewImages.length > 0
+            ? previewImages[0]
+            : "";
+
+
+    const imageUrl =
+        app.image ||
+        app.mainImage ||
+        firstPreview;
+
+
+    /* =========================
+       APP CARD
+       ========================= */
+
     card.innerHTML = `
 
         <img
             class="app-image"
-            src="${app.image}"
+            src="${imageUrl}"
             alt="${app.name}"
         >
 
@@ -598,6 +628,38 @@ function createAppCard(app) {
         </p>
 
     `;
+
+
+    /* =========================
+       IMAGE ERROR FALLBACK
+       ========================= */
+
+    const image =
+        card.querySelector(".app-image");
+
+
+    image.addEventListener(
+        "error",
+        function() {
+
+            if (
+                firstPreview &&
+                image.src !== firstPreview
+            ) {
+
+                image.src =
+                    firstPreview;
+
+            } else {
+
+                image.style.display =
+                    "none";
+
+            }
+
+        }
+    );
+
 
     return card;
 }
