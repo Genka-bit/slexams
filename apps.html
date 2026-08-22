@@ -609,11 +609,13 @@ function createAppCard(app) {
 
     card.innerHTML = `
 
-        <img
-            class="app-image"
-            src="${imageUrl}"
-            alt="${app.name}"
-        >
+       <img
+    class="app-image"
+    src="${app.mainImage}"
+    alt="${app.name}"
+    loading="lazy"
+    onerror="this.style.display='none'"
+>
 
         <h3 class="app-name">
 
