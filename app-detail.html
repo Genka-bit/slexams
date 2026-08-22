@@ -669,11 +669,11 @@ async function loadAppDetail() {
                                     image => `
 
                                     <img
-                                        class="app-preview-image"
-                                        src="${app.mainImage}"
-                                        alt="${app.name} Preview"
-                                        loading="lazy"
-                                        onclick="window.open('${image}', '_blank')">
+    class="app-preview-image"
+    src="${image}"
+    alt="${app.name} Preview"
+    loading="lazy"
+    onclick="window.open('${image}', '_blank')">
 
                                 `
                                 )
@@ -696,10 +696,10 @@ async function loadAppDetail() {
         container.innerHTML = `
 
             <img
-                class="app-detail-image"
-                src="${app.image || ""}"
-                alt="${app.name}"
-                onerror="this.style.display='none'">
+    class="app-detail-image"
+    src="${app.mainImage || ""}"
+    alt="${app.name}"
+    onerror="this.style.display='none'">
 
 
             <h1
