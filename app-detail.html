@@ -123,7 +123,7 @@
 
 }
 
-.apk-button {
+.download-button {
 
     background: #1976d2;
 
@@ -135,15 +135,112 @@
 
 }
 
-.windows-button {
-
-    background: #1976d2;
-
-}
-
 .back-button {
 
     background: #777;
+
+}
+
+
+/* =========================
+   PREVIEW GALLERY
+   ========================= */
+
+.app-preview-section {
+
+    margin-top: 30px;
+
+    text-align: left;
+
+}
+
+.app-preview-section h3 {
+
+    margin-bottom: 15px;
+
+}
+
+.app-preview-gallery {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(160px, 1fr)
+        );
+
+    gap: 15px;
+
+}
+
+.app-preview-image {
+
+    width: 100%;
+
+    height: 220px;
+
+    object-fit: cover;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.12);
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+}
+
+.app-preview-image:hover {
+
+    transform: scale(1.02);
+
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .app-detail-card {
+
+        padding: 18px;
+
+    }
+
+    .app-detail-image {
+
+        width: 120px;
+
+        height: 120px;
+
+    }
+
+    .app-detail-name {
+
+        font-size: 24px;
+
+    }
+
+    .app-preview-gallery {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 10px;
+
+    }
+
+    .app-preview-image {
+
+        height: 180px;
+
+    }
 
 }
 
@@ -154,6 +251,10 @@
 
 <body>
 
+
+<!-- =========================
+     HEADER
+     ========================= -->
 
 <header class="header">
 
@@ -192,6 +293,10 @@ Schemes
 Apps
 </a>
 
+<a href="search.html">
+🔎 Search
+</a>
+
 </nav>
 
 
@@ -206,6 +311,10 @@ Apps
 
 
 
+<!-- =========================
+     HERO
+     ========================= -->
+
 <section class="hero">
 
 <h1>
@@ -219,6 +328,10 @@ Application Information
 </section>
 
 
+
+<!-- =========================
+     APP DETAILS
+     ========================= -->
 
 <section class="app-detail-section">
 
@@ -235,6 +348,10 @@ Loading...
 </section>
 
 
+
+<!-- =========================
+     FOOTER
+     ========================= -->
 
 <footer class="footer">
 
@@ -324,7 +441,7 @@ async function loadAppDetail() {
 
 
     /* =========================
-       GET APP ID FROM URL
+       GET APP ID
        ========================= */
 
     const params =
@@ -337,7 +454,7 @@ async function loadAppDetail() {
 
 
     /* =========================
-       CHECK APP ID
+       CHECK ID
        ========================= */
 
     if (!appId) {
@@ -363,13 +480,14 @@ async function loadAppDetail() {
         `;
 
         return;
+
     }
 
 
     try {
 
         /* =========================
-           LOAD apps.json
+           LOAD APPS JSON
            ========================= */
 
         const response =
@@ -393,26 +511,21 @@ async function loadAppDetail() {
 
 
         const apps =
-            data.apps || [];
+            Array.isArray(data.apps)
+            ? data.apps
+            : [];
 
 
         /* =========================
-           FIND SELECTED APP
+           FIND APP
            ========================= */
 
         const app =
             apps.find(
-                function(item) {
-
-                    return item.id === appId;
-
-                }
+                item =>
+                    item.id === appId
             );
 
-
-        /* =========================
-           APP NOT FOUND
-           ========================= */
 
         if (!app) {
 
@@ -450,116 +563,128 @@ async function loadAppDetail() {
 
 
         /* =========================
-           ANDROID
+           PLAY STORE
            ========================= */
 
-        if (
-            app.platform ===
-            "android"
-        ) {
+        if (app.playStore) {
 
+            buttons += `
 
-            if (app.playStore) {
+                <a
+                    class="app-button play-button"
+                    href="${app.playStore}"
+                    target="_blank"
+                    rel="noopener noreferrer">
 
-                buttons += `
+                    ▶ Google Play
 
-                    <a
-                        class="app-button play-button"
-                        href="${app.playStore}"
-                        target="_blank"
-                        rel="noopener">
+                </a>
 
-                        ▶ Google Play Download
-
-                    </a>
-
-                `;
-
-            }
-
-
-            if (app.apk) {
-
-                buttons += `
-
-                    <a
-                        class="app-button apk-button"
-                        href="${app.apk}"
-                        download>
-
-                        📥 Direct APK Download
-
-                    </a>
-
-                `;
-
-            }
-if (app.crack) {
-
-    buttons += `
-
-        <a
-            class="app-button apk-button"
-            href="${app.crack}"
-            target="_blank"
-            rel="noopener">
-
-            🔓 Crack Download
-
-        </a>
-
-    `;
-
-}
+            `;
 
         }
 
 
         /* =========================
-           WINDOWS
+           DOWNLOAD
            ========================= */
 
+        if (app.download) {
+
+            buttons += `
+
+                <a
+                    class="app-button download-button"
+                    href="${app.download}"
+                    target="_blank"
+                    rel="noopener noreferrer">
+
+                    📥 Download App
+
+                </a>
+
+            `;
+
+        }
+
+
+        /* =========================
+           WEBSITE
+           ========================= */
+
+        if (app.website) {
+
+            buttons += `
+
+                <a
+                    class="app-button website-button"
+                    href="${app.website}"
+                    target="_blank"
+                    rel="noopener noreferrer">
+
+                    🌐 Official Website
+
+                </a>
+
+            `;
+
+        }
+
+
+        /* =========================
+           PREVIEW IMAGES
+           ========================= */
+
+        let previewGallery = "";
+
+
+        /*
+         * Worker / apps.json-ல்
+         * previewImages array இருந்தால்
+         * அதை display செய்வோம்.
+         */
+
         if (
-            app.platform ===
-            "windows"
+            Array.isArray(
+                app.previewImages
+            ) &&
+            app.previewImages.length > 0
         ) {
 
+            previewGallery = `
 
-            if (app.website) {
+                <div
+                    class="app-preview-section">
 
-                buttons += `
+                    <h3>
+                        📸 App Preview
+                    </h3>
 
-                    <a
-                        class="app-button website-button"
-                        href="${app.website}"
-                        target="_blank"
-                        rel="noopener">
+                    <div
+                        class="app-preview-gallery">
 
-                        🌐 Original Website
+                        ${
+                            app.previewImages
+                                .map(
+                                    image => `
 
-                    </a>
+                                    <img
+                                        class="app-preview-image"
+                                        src="${image}"
+                                        alt="${app.name} Preview"
+                                        loading="lazy"
+                                        onclick="window.open('${image}', '_blank')">
 
-                `;
+                                `
+                                )
+                                .join("")
+                        }
 
-            }
+                    </div>
 
+                </div>
 
-            if (app.download) {
-
-                buttons += `
-
-                    <a
-                        class="app-button windows-button"
-                        href="${app.download}"
-                        download>
-
-                        💻 Official Download
-
-                    </a>
-
-                `;
-
-            }
+            `;
 
         }
 
@@ -572,8 +697,9 @@ if (app.crack) {
 
             <img
                 class="app-detail-image"
-                src="${app.image}"
-                alt="${app.name}">
+                src="${app.image || ""}"
+                alt="${app.name}"
+                onerror="this.style.display='none'">
 
 
             <h1
@@ -593,10 +719,9 @@ if (app.crack) {
 
                 ${
                     app.platform === "android"
-                    ? "Android"
-                    : "Windows"
+                    ? "🤖 Android"
+                    : "🪟 Windows"
                 }
-
 
                 <br><br>
 
@@ -617,21 +742,23 @@ if (app.crack) {
                 class="app-detail-description">
 
                 <h3>
-                    About this App
+                    📝 About this App
                 </h3>
-
 
                 <p>
 
                     ${
                         app.description ||
                         app.demo ||
-                        ""
+                        "No description available."
                     }
 
                 </p>
 
             </div>
+
+
+            ${previewGallery}
 
 
             ${buttons}
