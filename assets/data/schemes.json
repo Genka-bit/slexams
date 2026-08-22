@@ -1,6 +1,14 @@
 {
   "schemes": [
     {
+      "id": "6-கணிதம்-grade-6-கணிதம்-scheme",
+      "grade": "6",
+      "subject": "கணிதம்",
+      "title": "Grade 6 கணிதம் Scheme",
+      "url": "https://drive.google.com/file/d/1tGPY_gRaSjZQXqW5fq8Yc3ZspyV5Mpak/view?usp=drivesdk",
+      "date": "2026-08-22"
+    },
+    {
       "id": "11-கணிதம்-grade-11-கணிதம்-scheme",
       "grade": "11",
       "subject": "கணிதம்",
