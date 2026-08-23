@@ -876,8 +876,27 @@ window.currentAppPreviewImages =
    START
    ========================= */
 
-loadAppDetail();
+<script>
+console.log("APP DETAIL: CALLING FUNCTION");
 
+loadAppDetail()
+    .then(() => {
+        console.log("APP DETAIL: FUNCTION COMPLETED");
+    })
+    .catch((error) => {
+        console.error("APP DETAIL ERROR:", error);
+
+        const container =
+            document.getElementById("appDetail");
+
+        if (container) {
+            container.innerHTML = `
+                <h2>App Loading Error</h2>
+                <p>${error.message}</p>
+            `;
+        }
+    });
+</script>
 /* =========================
    FULL SCREEN IMAGE VIEWER
    ========================= */
