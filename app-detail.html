@@ -335,13 +335,11 @@ Application Information
 
 <section class="app-detail-section">
 
-<div
-    id="appDetail"
-    class="app-detail-card">
+<div id="appDetail" class="app-detail-card">
 
-<p>
-Loading...
-</p>
+    <p id="loadingText">
+        Loading...
+    </p>
 
 </div>
 
@@ -459,6 +457,15 @@ Contact
 </footer>
 
 
+
+<script src="assets/js/app.js"></script>
+
+<script>
+console.log("APP DETAIL SCRIPT STARTED");
+
+document.getElementById("loadingText").textContent =
+    "JavaScript வேலை செய்கிறது...";
+</script>
 
 
 
