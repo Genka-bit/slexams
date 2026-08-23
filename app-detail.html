@@ -460,7 +460,7 @@ Contact
 
 
 
-<!-- <script src="assets/js/app.js"></script> -->
+
 
 
 <script>
@@ -709,7 +709,7 @@ window.currentAppPreviewImages =
     src="${image}"
     alt="${app.name} Preview"
     loading="lazy"
-    onclick="openImageViewer(${JSON.stringify(image)})">
+    onclick="window.open('${image}', '_blank')">
 
                                 `
                                 )
