@@ -475,13 +475,13 @@ async function loadAppDetail() {
        GET APP ID
        ========================= */
 
-    const params =
-        new URLSearchParams(
-            window.location.search
-        );
+    const appParams =
+    new URLSearchParams(
+        window.location.search
+    );
 
-    const appId =
-        params.get("id");
+const appId =
+    appParams.get("id");
 
 
     /* =========================
