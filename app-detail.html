@@ -474,6 +474,16 @@ document.getElementById("loadingText").textContent =
 
 async function loadAppDetail() {
 
+console.log("loadAppDetail STARTED");
+
+const testParams =
+    new URLSearchParams(window.location.search);
+
+const testAppId =
+    testParams.get("id");
+
+console.log("APP ID:", testAppId);
+
     const container =
         document.getElementById("appDetail");
 
