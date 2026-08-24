@@ -633,7 +633,7 @@ async function loadAppDetail() {
                                         src="${image}"
                                         alt="${app.name} Preview"
                                         loading="lazy"
-                                        onclick="openImageViewer(${JSON.stringify(image)})">
+                                        data-preview="${image}">
 
                                     `
                                 )
@@ -769,79 +769,25 @@ async function loadAppDetail() {
    ========================= */
 
 // ======================================
-// FULL SCREEN IMAGE VIEWER
+// APP IMAGE CLICK
 // ======================================
 
-function openImageViewer(image) {
+document.addEventListener("click", function (event) {
 
-    const viewer =
-        document.getElementById("imageViewer");
+    const image =
+        event.target.closest(".app-preview-image");
 
-    const viewerImage =
-        document.getElementById("imageViewerImage");
+    if (!image) return;
 
-    if (!viewer || !viewerImage) {
+    const src =
+        image.getAttribute("data-preview");
 
-        console.error(
-            "Image Viewer elements not found."
-        );
+    if (!src) return;
 
-        return;
-    }
+    // TEST
+    alert("Image clicked!");
 
-    viewerImage.src = image;
-
-    if (!viewer.open) {
-
-        viewer.showModal();
-
-    }
-
-}
-
-
-// ======================================
-// CLOSE VIEWER
-// ======================================
-
-function closeImageViewer() {
-
-    const viewer =
-        document.getElementById("imageViewer");
-
-    if (viewer && viewer.open) {
-
-        viewer.close();
-
-    }
-
-}
-
-
-// ======================================
-// VIEWER BUTTONS
-// ======================================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        const close =
-            document.getElementById(
-                "imageViewerClose"
-            );
-
-        if (close) {
-
-            close.addEventListener(
-                "click",
-                closeImageViewer
-            );
-
-        }
-
-    }
-);
+});
 
 loadAppDetail();
 
