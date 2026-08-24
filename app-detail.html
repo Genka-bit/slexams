@@ -468,54 +468,31 @@ document.getElementById("loadingText").textContent =
 </script>
 
 
-
-
 <script>
-
 async function loadAppDetail() {
-
-console.log("loadAppDetail STARTED");
-
-const testParams =
-    new URLSearchParams(window.location.search);
-
-const testAppId =
-    testParams.get("id");
-
-console.log("APP ID:", testAppId);
 
     const container =
         document.getElementById("appDetail");
 
+    if (!container) {
+        return;
+    }
 
-    /* =========================
-       GET APP ID
-       ========================= */
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
 
-    const appParams =
-    new URLSearchParams(
-        window.location.search
-    );
+    const appId =
+        params.get("id");
 
-const appId =
-    appParams.get("id");
-
-
-    /* =========================
-       CHECK ID
-       ========================= */
+    console.log("APP ID:", appId);
 
     if (!appId) {
 
         container.innerHTML = `
-
-            <h2>
-                App Not Found
-            </h2>
-
-            <p>
-                No application was selected.
-            </p>
+            <h2>App Not Found</h2>
+            <p>No application was selected.</p>
 
             <a
                 class="app-button back-button"
@@ -524,19 +501,12 @@ const appId =
                 ← Back to Apps
 
             </a>
-
         `;
 
         return;
-
     }
 
-
     try {
-
-        /* =========================
-           LOAD APPS JSON
-           ========================= */
 
         const response =
             await fetch(
@@ -544,53 +514,32 @@ const appId =
                 Date.now()
             );
 
-
         if (!response.ok) {
-
             throw new Error(
-                "Apps data could not be loaded."
+                "apps.json could not be loaded."
             );
-
         }
-
 
         const data =
             await response.json();
-
 
         const apps =
             Array.isArray(data.apps)
             ? data.apps
             : [];
 
-
-        /* =========================
-           FIND APP
-           ========================= */
-
         const app =
             apps.find(
-                item =>
-                    item.id === appId
+                item => item.id === appId
             );
-
-window.currentAppPreviewImages =
-    Array.isArray(app.previewImages)
-    ? app.previewImages
-    : [];
-
 
         if (!app) {
 
             container.innerHTML = `
-
-                <h2>
-                    App Not Found
-                </h2>
+                <h2>App Not Found</h2>
 
                 <p>
-                    The requested application
-                    could not be found.
+                    ID: ${appId}
                 </p>
 
                 <a
@@ -600,13 +549,10 @@ window.currentAppPreviewImages =
                     ← Back to Apps
 
                 </a>
-
             `;
 
             return;
-
         }
-
 
         /* =========================
            BUTTONS
@@ -614,15 +560,9 @@ window.currentAppPreviewImages =
 
         let buttons = "";
 
-
-        /* =========================
-           PLAY STORE
-           ========================= */
-
         if (app.playStore) {
 
             buttons += `
-
                 <a
                     class="app-button play-button"
                     href="${app.playStore}"
@@ -632,20 +572,12 @@ window.currentAppPreviewImages =
                     ▶ Google Play
 
                 </a>
-
             `;
-
         }
-
-
-        /* =========================
-           DOWNLOAD
-           ========================= */
 
         if (app.download) {
 
             buttons += `
-
                 <a
                     class="app-button download-button"
                     href="${app.download}"
@@ -655,20 +587,12 @@ window.currentAppPreviewImages =
                     📥 Download App
 
                 </a>
-
             `;
-
         }
-
-
-        /* =========================
-           WEBSITE
-           ========================= */
 
         if (app.website) {
 
             buttons += `
-
                 <a
                     class="app-button website-button"
                     href="${app.website}"
@@ -678,43 +602,30 @@ window.currentAppPreviewImages =
                     🌐 Official Website
 
                 </a>
-
             `;
-
         }
 
 
         /* =========================
-           PREVIEW IMAGES
+           PREVIEW GALLERY
            ========================= */
 
         let previewGallery = "";
 
-
-        /*
-         * Worker / apps.json-ல்
-         * previewImages array இருந்தால்
-         * அதை display செய்வோம்.
-         */
-
         if (
-            Array.isArray(
-                app.previewImages
-            ) &&
+            Array.isArray(app.previewImages) &&
             app.previewImages.length > 0
         ) {
 
             previewGallery = `
 
-                <div
-                    class="app-preview-section">
+                <div class="app-preview-section">
 
                     <h3>
                         📸 App Preview
                     </h3>
 
-                    <div
-                        class="app-preview-gallery">
+                    <div class="app-preview-gallery">
 
                         ${
                             app.previewImages
@@ -722,13 +633,13 @@ window.currentAppPreviewImages =
                                     image => `
 
                                     <img
-    class="app-preview-image"
-    src="${image}"
-    alt="${app.name} Preview"
-    loading="lazy"
-    onclick="window.open('${image}', '_blank')">
+                                        class="app-preview-image"
+                                        src="${image}"
+                                        alt="${app.name} Preview"
+                                        loading="lazy"
+                                        onclick="window.open('${image}', '_blank')">
 
-                                `
+                                    `
                                 )
                                 .join("")
                         }
@@ -736,35 +647,31 @@ window.currentAppPreviewImages =
                     </div>
 
                 </div>
-
             `;
-
         }
 
 
         /* =========================
-           DISPLAY APP
+           DISPLAY
            ========================= */
 
         container.innerHTML = `
 
             <img
-    class="app-detail-image"
-    src="${app.mainImage || ""}"
-    alt="${app.name}"
-    onerror="this.style.display='none'">
+                class="app-detail-image"
+                src="${app.mainImage || ""}"
+                alt="${app.name}"
+                onerror="this.style.display='none'">
 
 
-            <h1
-                class="app-detail-name">
+            <h1 class="app-detail-name">
 
                 ${app.name}
 
             </h1>
 
 
-            <div
-                class="app-info">
+            <div class="app-info">
 
                 <strong>
                     Platform:
@@ -778,7 +685,6 @@ window.currentAppPreviewImages =
 
                 <br><br>
 
-
                 <strong>
                     Version:
                 </strong>
@@ -791,8 +697,7 @@ window.currentAppPreviewImages =
             </div>
 
 
-            <div
-                class="app-detail-description">
+            <div class="app-detail-description">
 
                 <h3>
                     📝 About this App
@@ -827,25 +732,18 @@ window.currentAppPreviewImages =
 
         `;
 
-
-        /* =========================
-           PAGE TITLE
-           ========================= */
-
         document.title =
             app.name +
             " | SLExam Pro";
-
 
     }
 
     catch (error) {
 
         console.error(
-            "App detail error:",
+            "APP DETAIL ERROR:",
             error
         );
-
 
         container.innerHTML = `
 
@@ -854,7 +752,7 @@ window.currentAppPreviewImages =
             </h2>
 
             <p>
-                Apps data could not be loaded.
+                ${error.message}
             </p>
 
             <a
@@ -866,187 +764,17 @@ window.currentAppPreviewImages =
             </a>
 
         `;
-
     }
-
 }
 
 
 /* =========================
-   START
+   DIRECT CALL
    ========================= */
 
-<script>
-console.log("APP DETAIL: CALLING FUNCTION");
-
-loadAppDetail()
-    .then(() => {
-        console.log("APP DETAIL: FUNCTION COMPLETED");
-    })
-    .catch((error) => {
-        console.error("APP DETAIL ERROR:", error);
-
-        const container =
-            document.getElementById("appDetail");
-
-        if (container) {
-            container.innerHTML = `
-                <h2>App Loading Error</h2>
-                <p>${error.message}</p>
-            `;
-        }
-    });
-</script>
-/* =========================
-   FULL SCREEN IMAGE VIEWER
-   ========================= */
-
-.image-viewer {
-
-    display: none;
-
-    position: fixed;
-
-    z-index: 9999;
-
-    left: 0;
-    top: 0;
-
-    width: 100%;
-    height: 100%;
-
-    background: rgba(0, 0, 0, 0.92);
-
-    align-items: center;
-    justify-content: center;
-
-}
-
-
-/* Main Viewer Image */
-
-.image-viewer-image {
-
-    max-width: 90%;
-    max-height: 85%;
-
-    object-fit: contain;
-
-    border-radius: 8px;
-
-}
-
-
-/* Close Button */
-
-.image-viewer-close {
-
-    position: absolute;
-
-    top: 20px;
-    right: 25px;
-
-    color: white;
-
-    font-size: 38px;
-
-    cursor: pointer;
-
-    z-index: 10001;
-
-}
-
-
-/* Previous / Next */
-
-.image-viewer-prev,
-.image-viewer-next {
-
-    position: absolute;
-
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    color: white;
-
-    background: rgba(255,255,255,0.15);
-
-    border: none;
-
-    width: 50px;
-    height: 50px;
-
-    border-radius: 50%;
-
-    font-size: 28px;
-
-    cursor: pointer;
-
-}
-
-
-.image-viewer-prev {
-
-    left: 20px;
-
-}
-
-
-.image-viewer-next {
-
-    right: 20px;
-
-}
-
-
-.image-viewer-prev:hover,
-.image-viewer-next:hover {
-
-    background: rgba(255,255,255,0.30);
-
-}
-
-
-/* Mobile */
-
-@media (max-width:600px) {
-
-    .image-viewer-image {
-
-        max-width: 94%;
-        max-height: 80%;
-
-    }
-
-    .image-viewer-prev,
-    .image-viewer-next {
-
-        width: 42px;
-        height: 42px;
-
-        font-size: 22px;
-
-    }
-
-    .image-viewer-prev {
-
-        left: 8px;
-
-    }
-
-    .image-viewer-next {
-
-        right: 8px;
-
-    }
-
-}
-
-
+loadAppDetail();
 
 </script>
-
 
 </body>
 
