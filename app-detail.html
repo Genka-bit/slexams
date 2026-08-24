@@ -349,7 +349,7 @@ Application Information
      FULL SCREEN IMAGE VIEWER
      ========================= -->
 
-<div id="imageViewer" class="image-viewer">
+<dialog id="imageViewer" class="image-viewer">
 
     <span
         id="imageViewerClose"
@@ -631,7 +631,7 @@ async function loadAppDetail() {
                                         src="${image}"
                                         alt="${app.name} Preview"
                                         loading="lazy"
-                                        onclick="window.open('${image}', '_blank')">
+                                        onclick="openImageViewer(${JSON.stringify(image)})">
 
                                     `
                                 )
@@ -765,7 +765,280 @@ async function loadAppDetail() {
 /* =========================
    DIRECT CALL
    ========================= */
+/* =========================
+   FULL SCREEN IMAGE VIEWER
+   ========================= */
 
+let viewerImages = [];
+let viewerIndex = 0;
+
+const imageViewer =
+    document.getElementById("imageViewer");
+
+const imageViewerImage =
+    document.getElementById("imageViewerImage");
+
+const imageViewerClose =
+    document.getElementById("imageViewerClose");
+
+const imageViewerPrev =
+    document.getElementById("imageViewerPrev");
+
+const imageViewerNext =
+    document.getElementById("imageViewerNext");
+
+
+/* =========================
+   OPEN VIEWER
+   ========================= */
+
+function openImageViewer(image) {
+
+    /*
+     * Get all preview images
+     */
+
+    viewerImages =
+        Array.from(
+            document.querySelectorAll(
+                ".app-preview-image"
+            )
+        )
+        .map(
+            img => img.src
+        );
+
+
+    /*
+     * Find clicked image
+     */
+
+    viewerIndex =
+        viewerImages.indexOf(
+            new URL(image, window.location.href).href
+        );
+
+
+    /*
+     * Safety check
+     */
+
+    if (viewerIndex < 0) {
+
+        viewerIndex = 0;
+
+    }
+
+
+    /*
+     * Show image
+     */
+
+    updateViewer();
+
+
+    /*
+     * Open fullscreen viewer
+     */
+
+    if (
+        imageViewer &&
+        typeof imageViewer.showModal ===
+        "function"
+    ) {
+
+        imageViewer.showModal();
+
+    }
+
+}
+
+
+/* =========================
+   UPDATE VIEWER
+   ========================= */
+
+function updateViewer() {
+
+    if (
+        !imageViewerImage ||
+        viewerImages.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    imageViewerImage.src =
+        viewerImages[viewerIndex];
+
+
+    /*
+     * Hide Previous button
+     * when first image
+     */
+
+    if (imageViewerPrev) {
+
+        imageViewerPrev.style.display =
+            viewerImages.length > 1
+                ? "block"
+                : "none";
+
+    }
+
+
+    /*
+     * Hide Next button
+     * when last image
+     */
+
+    if (imageViewerNext) {
+
+        imageViewerNext.style.display =
+            viewerImages.length > 1
+                ? "block"
+                : "none";
+
+    }
+
+}
+
+
+/* =========================
+   CLOSE
+   ========================= */
+
+if (imageViewerClose) {
+
+    imageViewerClose.addEventListener(
+        "click",
+        function() {
+
+            imageViewer.close();
+
+        }
+    );
+
+}
+
+
+/* =========================
+   PREVIOUS
+   ========================= */
+
+if (imageViewerPrev) {
+
+    imageViewerPrev.addEventListener(
+        "click",
+        function(event) {
+
+            event.stopPropagation();
+
+            if (
+                viewerImages.length === 0
+            ) {
+
+                return;
+
+            }
+
+
+            viewerIndex =
+                (
+                    viewerIndex -
+                    1 +
+                    viewerImages.length
+                ) %
+                viewerImages.length;
+
+
+            updateViewer();
+
+        }
+    );
+
+}
+
+
+/* =========================
+   NEXT
+   ========================= */
+
+if (imageViewerNext) {
+
+    imageViewerNext.addEventListener(
+        "click",
+        function(event) {
+
+            event.stopPropagation();
+
+            if (
+                viewerImages.length === 0
+            ) {
+
+                return;
+
+            }
+
+
+            viewerIndex =
+                (
+                    viewerIndex +
+                    1
+                ) %
+                viewerImages.length;
+
+
+            updateViewer();
+
+        }
+    );
+
+}
+
+
+/* =========================
+   KEYBOARD
+   ========================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            !imageViewer ||
+            !imageViewer.open
+        ) {
+
+            return;
+
+        }
+
+
+        if (event.key === "ArrowLeft") {
+
+            imageViewerPrev.click();
+
+        }
+
+
+        if (event.key === "ArrowRight") {
+
+            imageViewerNext.click();
+
+        }
+
+
+        if (event.key === "Escape") {
+
+            imageViewer.close();
+
+        }
+
+    }
+);
 loadAppDetail();
 
 </script>
