@@ -1,6 +1,25 @@
 {
   "apps": [
     {
+      "id": "android-desmos-graphing-calculator",
+      "platform": "android",
+      "name": "Desmos Graphing Calculator",
+      "version": "4",
+      "mainImage": "assets/images/apps/android-desmos-graphing-calculator/main.jpg",
+      "previewImages": [
+        "assets/images/apps/android-desmos-graphing-calculator/preview-1.webp",
+        "assets/images/apps/android-desmos-graphing-calculator/preview-2.webp",
+        "assets/images/apps/android-desmos-graphing-calculator/preview-3.webp",
+        "assets/images/apps/android-desmos-graphing-calculator/preview-4.webp",
+        "assets/images/apps/android-desmos-graphing-calculator/preview-5.webp"
+      ],
+      "demo": "Graph app Interactive Graphs, Tables, Statistics மற்றும் Scientific Calculation வசதிகளுடன் மாணவர்களுக்கு மிகவும் பயனுள்ளது",
+      "description": "Desmos Graphing Calculator – கணிதத்தை காட்சிப்படுத்தி கற்க உதவும் சிறந்த கருவி\r\nDesmos Graphing Calculator என்பது மாணவர்கள், ஆசிரியர்கள் மற்றும் கணித ஆர்வலர்களுக்குப் பயன்படும் சக்திவாய்ந்த மற்றும் இலவச Graphing Calculator செயலியாகும். கணித சமன்பாடுகள், Functions மற்றும் பல்வேறு வகையான Graphs-ஐ வேகமாகவும் தெளிவாகவும் உருவாக்கி ஆராய முடியும். �\r\nGoogle Play\r\nஇந்த செயலியின் மூலம் Cartesian, Polar மற்றும் Parametric Graphs உருவாக்கலாம். Linear Equations, Parabolas, Functions, Derivatives போன்ற பல்வேறு கணிதக் கருத்துகளை Graph மூலம் காட்சிப்படுத்தி புரிந்துகொள்ள முடியும். �\r\nGoogle Play\r\n⭐ முக்கியமான வசதிகள்\r\n📈 Graphing – சமன்பாடுகள் மற்றும் Functions-ஐ Graph ஆக வரையலாம்.\r\n🎚️ Sliders – Function-இன் values-ஐ மாற்றி Graph-ல் ஏற்படும் மாற்றங்களை Interactive முறையில் காணலாம்.\r\n📊 Tables – Data-வை உள்ளிட்டு Table மற்றும் Graph உருவாக்கலாம்.\r\n📐 Statistics – Data-விற்கான Best-fit lines, parabolas போன்றவற்றை கண்டறியலாம்.\r\n🔍 Zoom & Graph Navigation – Graph-ஐ Zoom செய்து தேவையான பகுதியைத் துல்லியமாகப் பார்க்கலாம்.\r\n📍 Points of Interest – Maximum, Minimum, Intersection மற்றும் Coordinates போன்ற முக்கிய புள்ளிகளை எளிதாகக் கண்டறியலாம்.\r\n🧮 Scientific Calculation – Square roots, logarithms, absolute values உள்ளிட்ட கணக்குகளைச் செய்யலாம்.\r\n📉 Inequalities – Cartesian மற்றும் Polar inequalities-ஐ Graph ஆகக் காட்டலாம்.\r\n💾 Save & Share – உருவாக்கிய Graph-களை சேமித்து பகிர முடியும்.\r\n🌐 Offline பயன்பாடு – Internet connection இல்லாமலும் Calculator-ஐ பயன்படுத்த முடியும்.",
+      "download": "",
+      "playStore": "https://play.google.com/store/apps/details?id=com.desmos.calculator",
+      "website": ""
+    },
+    {
       "id": "android-test-education-app",
       "platform": "android",
       "name": "Test Education App",
