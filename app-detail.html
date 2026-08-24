@@ -765,280 +765,82 @@ async function loadAppDetail() {
 /* =========================
    DIRECT CALL
    ========================= */
-/* =========================
-   FULL SCREEN IMAGE VIEWER
-   ========================= */
 
-let viewerImages = [];
-let viewerIndex = 0;
-
-const imageViewer =
-    document.getElementById("imageViewer");
-
-const imageViewerImage =
-    document.getElementById("imageViewerImage");
-
-const imageViewerClose =
-    document.getElementById("imageViewerClose");
-
-const imageViewerPrev =
-    document.getElementById("imageViewerPrev");
-
-const imageViewerNext =
-    document.getElementById("imageViewerNext");
-
-
-/* =========================
-   OPEN VIEWER
-   ========================= */
+// ======================================
+// FULL SCREEN IMAGE VIEWER
+// ======================================
 
 function openImageViewer(image) {
 
-    /*
-     * Get all preview images
-     */
+    const viewer =
+        document.getElementById("imageViewer");
 
-    viewerImages =
-        Array.from(
-            document.querySelectorAll(
-                ".app-preview-image"
-            )
-        )
-        .map(
-            img => img.src
+    const viewerImage =
+        document.getElementById("imageViewerImage");
+
+    if (!viewer || !viewerImage) {
+
+        console.error(
+            "Image Viewer elements not found."
         );
-
-
-    /*
-     * Find clicked image
-     */
-
-    viewerIndex =
-        viewerImages.indexOf(
-            new URL(image, window.location.href).href
-        );
-
-
-    /*
-     * Safety check
-     */
-
-    if (viewerIndex < 0) {
-
-        viewerIndex = 0;
-
-    }
-
-
-    /*
-     * Show image
-     */
-
-    updateViewer();
-
-
-    /*
-     * Open fullscreen viewer
-     */
-
-    if (
-        imageViewer &&
-        typeof imageViewer.showModal ===
-        "function"
-    ) {
-
-        imageViewer.showModal();
-
-    }
-
-}
-
-
-/* =========================
-   UPDATE VIEWER
-   ========================= */
-
-function updateViewer() {
-
-    if (
-        !imageViewerImage ||
-        viewerImages.length === 0
-    ) {
 
         return;
-
     }
 
+    viewerImage.src = image;
 
-    imageViewerImage.src =
-        viewerImages[viewerIndex];
+    if (!viewer.open) {
 
-
-    /*
-     * Hide Previous button
-     * when first image
-     */
-
-    if (imageViewerPrev) {
-
-        imageViewerPrev.style.display =
-            viewerImages.length > 1
-                ? "block"
-                : "none";
-
-    }
-
-
-    /*
-     * Hide Next button
-     * when last image
-     */
-
-    if (imageViewerNext) {
-
-        imageViewerNext.style.display =
-            viewerImages.length > 1
-                ? "block"
-                : "none";
+        viewer.showModal();
 
     }
 
 }
 
 
-/* =========================
-   CLOSE
-   ========================= */
+// ======================================
+// CLOSE VIEWER
+// ======================================
 
-if (imageViewerClose) {
+function closeImageViewer() {
 
-    imageViewerClose.addEventListener(
-        "click",
-        function() {
+    const viewer =
+        document.getElementById("imageViewer");
 
-            imageViewer.close();
+    if (viewer && viewer.open) {
 
-        }
-    );
+        viewer.close();
 
-}
-
-
-/* =========================
-   PREVIOUS
-   ========================= */
-
-if (imageViewerPrev) {
-
-    imageViewerPrev.addEventListener(
-        "click",
-        function(event) {
-
-            event.stopPropagation();
-
-            if (
-                viewerImages.length === 0
-            ) {
-
-                return;
-
-            }
-
-
-            viewerIndex =
-                (
-                    viewerIndex -
-                    1 +
-                    viewerImages.length
-                ) %
-                viewerImages.length;
-
-
-            updateViewer();
-
-        }
-    );
+    }
 
 }
 
 
-/* =========================
-   NEXT
-   ========================= */
-
-if (imageViewerNext) {
-
-    imageViewerNext.addEventListener(
-        "click",
-        function(event) {
-
-            event.stopPropagation();
-
-            if (
-                viewerImages.length === 0
-            ) {
-
-                return;
-
-            }
-
-
-            viewerIndex =
-                (
-                    viewerIndex +
-                    1
-                ) %
-                viewerImages.length;
-
-
-            updateViewer();
-
-        }
-    );
-
-}
-
-
-/* =========================
-   KEYBOARD
-   ========================= */
+// ======================================
+// VIEWER BUTTONS
+// ======================================
 
 document.addEventListener(
-    "keydown",
-    function(event) {
+    "DOMContentLoaded",
+    () => {
 
-        if (
-            !imageViewer ||
-            !imageViewer.open
-        ) {
+        const close =
+            document.getElementById(
+                "imageViewerClose"
+            );
 
-            return;
+        if (close) {
 
-        }
-
-
-        if (event.key === "ArrowLeft") {
-
-            imageViewerPrev.click();
-
-        }
-
-
-        if (event.key === "ArrowRight") {
-
-            imageViewerNext.click();
-
-        }
-
-
-        if (event.key === "Escape") {
-
-            imageViewer.close();
+            close.addEventListener(
+                "click",
+                closeImageViewer
+            );
 
         }
 
     }
 );
+
 loadAppDetail();
 
 </script>
