@@ -785,7 +785,31 @@ document.addEventListener("click", function (event) {
     if (!src) return;
 
     // TEST
-    alert("Image clicked!");
+    const viewer =
+    document.getElementById("imageViewer");
+
+const viewerImage =
+    document.getElementById("imageViewerImage");
+
+if (!viewer) {
+
+    alert("imageViewer கிடைக்கவில்லை!");
+
+    return;
+
+}
+
+if (!viewerImage) {
+
+    alert("imageViewerImage கிடைக்கவில்லை!");
+
+    return;
+
+}
+
+viewerImage.src = src;
+
+viewer.showModal();
 
 });
 
