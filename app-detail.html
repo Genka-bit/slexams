@@ -807,9 +807,13 @@ if (!viewerImage) {
 
 }
 
-viewerImage.src = src;
+currentPreviewIndex =
+    getPreviewImages().indexOf(image);
+
+showPreview(currentPreviewIndex);
 
 viewer.showModal();
+
 // ======================================
 // IMAGE VIEWER CONTROLS
 // ======================================
@@ -832,6 +836,83 @@ viewerClose.addEventListener(
 
     }
 );
+
+// ======================================
+// PREVIOUS / NEXT
+// ======================================
+
+let currentPreviewIndex = 0;
+
+function getPreviewImages() {
+
+    return Array.from(
+        document.querySelectorAll(".app-preview-image")
+    );
+
+}
+
+
+function showPreview(index) {
+
+    const images =
+        getPreviewImages();
+
+    if (images.length === 0) return;
+
+    if (index < 0) {
+        index = images.length - 1;
+    }
+
+    if (index >= images.length) {
+        index = 0;
+    }
+
+    currentPreviewIndex = index;
+
+    const image =
+        images[currentPreviewIndex];
+
+    const src =
+        image.getAttribute("data-preview");
+
+    if (!src) return;
+
+    viewerImage.src = src;
+
+}
+
+
+// ======================================
+// NEXT
+// ======================================
+
+viewerNext.addEventListener(
+    "click",
+    function () {
+
+        showPreview(
+            currentPreviewIndex + 1
+        );
+
+    }
+);
+
+
+// ======================================
+// PREVIOUS
+// ======================================
+
+viewerPrev.addEventListener(
+    "click",
+    function () {
+
+        showPreview(
+            currentPreviewIndex - 1
+        );
+
+    }
+);
+
 
 });
 
