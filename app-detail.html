@@ -810,6 +810,28 @@ if (!viewerImage) {
 viewerImage.src = src;
 
 viewer.showModal();
+// ======================================
+// IMAGE VIEWER CONTROLS
+// ======================================
+
+const viewerClose =
+    document.getElementById("imageViewerClose");
+
+const viewerPrev =
+    document.getElementById("imageViewerPrev");
+
+const viewerNext =
+    document.getElementById("imageViewerNext");
+
+
+viewerClose.addEventListener(
+    "click",
+    function () {
+
+        viewer.close();
+
+    }
+);
 
 });
 
