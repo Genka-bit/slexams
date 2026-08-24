@@ -200,6 +200,176 @@
 
 }
 
+/* =========================
+   FULL SCREEN IMAGE VIEWER
+   ========================= */
+
+#imageViewer {
+    width: 100vw;
+    height: 100vh;
+
+    max-width: none;
+    max-height: none;
+
+    margin: 0;
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#imageViewer::backdrop {
+    background: rgba(0, 0, 0, 0.92);
+}
+
+.image-viewer-image {
+    max-width: 90vw;
+    max-height: 85vh;
+
+    width: auto;
+    height: auto;
+
+    object-fit: contain;
+
+    border-radius: 8px;
+
+    display: block;
+}
+
+
+/* =========================
+   CLOSE BUTTON
+   ========================= */
+
+.image-viewer-close {
+
+    position: fixed;
+
+    top: 20px;
+    right: 20px;
+
+    width: 50px;
+    height: 50px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.18);
+
+    color: white;
+
+    font-size: 25px;
+
+    cursor: pointer;
+
+    z-index: 10;
+}
+
+
+/* =========================
+   PREVIOUS / NEXT
+   ========================= */
+
+.image-viewer-prev,
+.image-viewer-next {
+
+    position: fixed;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 55px;
+    height: 65px;
+
+    border: none;
+    border-radius: 12px;
+
+    background: rgba(255,255,255,0.18);
+
+    color: white;
+
+    font-size: 32px;
+
+    cursor: pointer;
+
+    z-index: 10;
+}
+
+.image-viewer-prev {
+    left: 20px;
+}
+
+.image-viewer-next {
+    right: 20px;
+}
+
+
+/* =========================
+   HOVER
+   ========================= */
+
+.image-viewer-close:hover,
+.image-viewer-prev:hover,
+.image-viewer-next:hover {
+
+    background: rgba(255,255,255,0.32);
+
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .image-viewer-image {
+
+        max-width: 94vw;
+        max-height: 78vh;
+
+        border-radius: 5px;
+
+    }
+
+    .image-viewer-close {
+
+        top: 12px;
+        right: 12px;
+
+        width: 45px;
+        height: 45px;
+
+        font-size: 22px;
+
+    }
+
+    .image-viewer-prev,
+    .image-viewer-next {
+
+        width: 42px;
+        height: 55px;
+
+        font-size: 26px;
+
+        background: rgba(255,255,255,0.20);
+
+    }
+
+    .image-viewer-prev {
+        left: 8px;
+    }
+
+    .image-viewer-next {
+        right: 8px;
+    }
+
+}
 
 /* =========================
    MOBILE
