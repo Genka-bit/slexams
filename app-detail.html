@@ -946,73 +946,22 @@ async function loadAppDetail() {
 // APP IMAGE CLICK
 // ======================================
 
-document.addEventListener("click", function (event) {
+/* ======================================
+   APP IMAGE VIEWER
+   ====================================== */
 
-    const image =
-        event.target.closest(".app-preview-image");
-
-    if (!image) return;
-
-    const src =
-        image.getAttribute("data-preview");
-
-    if (!src) return;
-
-    // TEST
-    const viewer =
-    document.getElementById("imageViewer");
-
-const viewerImage =
-    document.getElementById("imageViewerImage");
-
-if (!viewer) {
-
-    alert("imageViewer கிடைக்கவில்லை!");
-
-    return;
-
-}
-
-if (!viewerImage) {
-
-    alert("imageViewerImage கிடைக்கவில்லை!");
-
-    return;
-
-}
-
-viewerImage.src = src;
-
-viewer.showModal();
-
-// ======================================
-// IMAGE VIEWER CONTROLS
-// ======================================
-
-const viewerClose =
-    document.getElementById("imageViewerClose");
-
-const viewerPrev =
-    document.getElementById("imageViewerPrev");
-
-const viewerNext =
-    document.getElementById("imageViewerNext");
-
-
-viewerClose.addEventListener(
-    "click",
-    function () {
-
-        viewer.close();
-
-    }
-);
-
-// ======================================
-// PREVIOUS / NEXT
-// ======================================
+const viewer = document.getElementById("imageViewer");
+const viewerImage = document.getElementById("imageViewerImage");
+const viewerClose = document.getElementById("imageViewerClose");
+const viewerPrev = document.getElementById("imageViewerPrev");
+const viewerNext = document.getElementById("imageViewerNext");
 
 let currentPreviewIndex = 0;
+
+
+/* ======================================
+   GET ALL PREVIEW IMAGES
+   ====================================== */
 
 function getPreviewImages() {
 
@@ -1023,12 +972,17 @@ function getPreviewImages() {
 }
 
 
+/* ======================================
+   SHOW IMAGE
+   ====================================== */
+
 function showPreview(index) {
 
-    const images =
-        getPreviewImages();
+    const images = getPreviewImages();
 
-    if (images.length === 0) return;
+    if (images.length === 0) {
+        return;
+    }
 
     if (index < 0) {
         index = images.length - 1;
@@ -1040,22 +994,64 @@ function showPreview(index) {
 
     currentPreviewIndex = index;
 
-    const image =
-        images[currentPreviewIndex];
+    const image = images[currentPreviewIndex];
 
     const src =
         image.getAttribute("data-preview");
 
-    if (!src) return;
+    if (!src) {
+        return;
+    }
 
     viewerImage.src = src;
 
 }
 
 
-// ======================================
-// NEXT
-// ======================================
+/* ======================================
+   OPEN VIEWER
+   ====================================== */
+
+document.addEventListener("click", function (event) {
+
+    const image =
+        event.target.closest(".app-preview-image");
+
+    if (!image) {
+        return;
+    }
+
+    const images = getPreviewImages();
+
+    currentPreviewIndex =
+        images.indexOf(image);
+
+    showPreview(currentPreviewIndex);
+
+    viewer.showModal();
+
+});
+
+
+/* ======================================
+   CLOSE
+   ====================================== */
+
+viewerClose.addEventListener(
+    "click",
+    function () {
+
+        viewer.close();
+
+        viewerImage.src = "";
+
+    }
+);
+
+
+/* ======================================
+   NEXT
+   ====================================== */
 
 viewerNext.addEventListener(
     "click",
@@ -1069,9 +1065,9 @@ viewerNext.addEventListener(
 );
 
 
-// ======================================
-// PREVIOUS
-// ======================================
+/* ======================================
+   PREVIOUS
+   ====================================== */
 
 viewerPrev.addEventListener(
     "click",
@@ -1082,6 +1078,128 @@ viewerPrev.addEventListener(
         );
 
     }
+);
+
+
+/* ======================================
+   ESC KEY
+   ====================================== */
+
+viewer.addEventListener(
+    "cancel",
+    function () {
+
+        viewerImage.src = "";
+
+    }
+);
+
+
+/* ======================================
+   CLOSE WHEN CLICKING BACKDROP
+   ====================================== */
+
+viewer.addEventListener(
+    "click",
+    function (event) {
+
+        if (event.target === viewer) {
+
+            viewer.close();
+
+            viewerImage.src = "";
+
+        }
+
+    }
+);
+
+
+/* ======================================
+   MOBILE SWIPE
+   ====================================== */
+
+let touchStartX = 0;
+let touchStartY = 0;
+
+viewerImage.addEventListener(
+    "touchstart",
+    function (event) {
+
+        const touch =
+            event.touches[0];
+
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+
+    },
+    { passive: true }
+);
+
+
+viewerImage.addEventListener(
+    "touchend",
+    function (event) {
+
+        const touch =
+            event.changedTouches[0];
+
+        const touchEndX =
+            touch.clientX;
+
+        const touchEndY =
+            touch.clientY;
+
+        const diffX =
+            touchEndX - touchStartX;
+
+        const diffY =
+            touchEndY - touchStartY;
+
+        /*
+         * Ignore small movements
+         */
+
+        if (Math.abs(diffX) < 50) {
+            return;
+        }
+
+        /*
+         * Ignore mostly vertical swipes
+         */
+
+        if (Math.abs(diffY) > Math.abs(diffX)) {
+            return;
+        }
+
+        /*
+         * Swipe LEFT
+         * → Next image
+         */
+
+        if (diffX < 0) {
+
+            showPreview(
+                currentPreviewIndex + 1
+            );
+
+        }
+
+        /*
+         * Swipe RIGHT
+         * → Previous image
+         */
+
+        else {
+
+            showPreview(
+                currentPreviewIndex - 1
+            );
+
+        }
+
+    },
+    { passive: true }
 );
     
 });
