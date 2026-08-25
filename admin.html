@@ -551,12 +551,17 @@
     <h2>🗑️ Paper Manager</h2>
 
     <p>
-        ஏற்கனவே website-ல் பதிவிட்ட Paper-களை இங்கிருந்து Delete செய்யலாம்.
+        ஏற்கனவே பதிவிட்ட Papers-ஐ இங்கிருந்து Delete செய்யலாம்.
     </p>
 
-    <label>Grade</label>
 
-    <select id="deletePaperGrade">
+    <!-- GRADE -->
+
+    <label>
+        Grade
+    </label>
+
+    <select id="deleteGrade">
 
         <option value="">
             Select Grade
@@ -579,58 +584,96 @@
     </select>
 
 
-    <label>Subject</label>
+    <!-- STREAM -->
 
-    <input
-        type="text"
-        id="deletePaperSubject"
-        placeholder="Eg: Mathematics">
+    <div
+        id="deleteStreamBox"
+        style="display:none;">
+
+        <label>
+            Stream
+        </label>
+
+        <select id="deleteStream">
+
+            <option value="">
+                Select Stream
+            </option>
+
+            <option value="Science">
+                Science
+            </option>
+
+            <option value="Commerce">
+                Commerce
+            </option>
+
+            <option value="Arts">
+                Arts
+            </option>
+
+            <option value="Technology">
+                Technology
+            </option>
+
+        </select>
+
+    </div>
 
 
-    <label>Term</label>
+    <!-- SUBJECT -->
 
-    <select id="deletePaperTerm">
+    <label>
+        Subject
+    </label>
+
+    <select
+        id="deleteSubject"
+        disabled>
 
         <option value="">
-            Select Term
-        </option>
-
-        <option value="1">
-            Term 1
-        </option>
-
-        <option value="2">
-            Term 2
-        </option>
-
-        <option value="3">
-            Term 3
+            Select Subject
         </option>
 
     </select>
 
 
-    <label>PDF Path</label>
+    <!-- TERM -->
 
-    <input
-        type="text"
-        id="deletePaperPath"
-        placeholder="assets/pdf/.../paper.pdf">
+    <label>
+        Term
+    </label>
+
+    <select
+        id="deleteTerm"
+        disabled>
+
+        <option value="">
+            Select Term
+        </option>
+
+    </select>
 
 
-    <button
-        type="button"
-        id="deletePaperBtn">
+    <!-- PAPERS -->
 
-        🗑️ Delete Paper
+    <div
+        id="deletePaperList"
+        style="margin-top:20px;">
 
-    </button>
+        <p>
+            Grade, Subject and Term
+            select செய்யுங்கள்.
+        </p>
 
+    </div>
+
+
+    <!-- STATUS -->
 
     <p id="deletePaperStatus"></p>
 
 </div>
-
 </main>
 
 
@@ -2442,29 +2485,34 @@ publishAppBtn.addEventListener(
 // PAPER DELETE MANAGER
 // ======================================
 
-const deletePaperGrade =
+const deleteGrade =
     document.getElementById(
-        "deletePaperGrade"
+        "deleteGrade"
     );
 
-const deletePaperSubject =
+const deleteStreamBox =
     document.getElementById(
-        "deletePaperSubject"
+        "deleteStreamBox"
     );
 
-const deletePaperTerm =
+const deleteStream =
     document.getElementById(
-        "deletePaperTerm"
+        "deleteStream"
     );
 
-const deletePaperPath =
+const deleteSubject =
     document.getElementById(
-        "deletePaperPath"
+        "deleteSubject"
     );
 
-const deletePaperBtn =
+const deleteTerm =
     document.getElementById(
-        "deletePaperBtn"
+        "deleteTerm"
+    );
+
+const deletePaperList =
+    document.getElementById(
+        "deletePaperList"
     );
 
 const deletePaperStatus =
@@ -2474,276 +2522,891 @@ const deletePaperStatus =
 
 
 // ======================================
-// DELETE PAPER
+// DATABASE
 // ======================================
 
-deletePaperBtn.addEventListener(
-    "click",
-    async function () {
-
-        const grade =
-            deletePaperGrade.value.trim();
-
-        const subject =
-            deletePaperSubject.value.trim();
-
-        const term =
-            deletePaperTerm.value.trim();
-
-        const pdfPath =
-            deletePaperPath.value.trim();
-
-        const adminKey =
-            adminKeyInput.value.trim();
+let deletePaperDatabase = null;
 
 
-        // ==================================
-        // VALIDATION
-        // ==================================
+// ======================================
+// LOAD GRADE JSON
+// ======================================
 
-        if (!grade) {
+async function loadDeleteGradeData() {
 
-            alert(
-                "Please select Grade."
-            );
+    const grade =
+        deleteGrade.value;
 
-            return;
-        }
+    if (!grade) {
 
+        deletePaperDatabase =
+            null;
 
-        if (!subject) {
+        deleteSubject.innerHTML = `
+            <option value="">
+                Select Subject
+            </option>
+        `;
 
-            alert(
-                "Please enter Subject."
-            );
-
-            return;
-        }
-
-
-        if (!term) {
-
-            alert(
-                "Please select Term."
-            );
-
-            return;
-        }
-
-
-        if (!pdfPath) {
-
-            alert(
-                "Please enter PDF Path."
-            );
-
-            return;
-        }
-
-
-        if (!adminKey) {
-
-            alert(
-                "Please enter Admin Key."
-            );
-
-            return;
-        }
-
-
-        // ==================================
-        // CONFIRMATION
-        // ==================================
-
-        const confirmed =
-            confirm(
-                "⚠️ Are you sure you want to delete this paper?\n\n" +
-                "Grade: " + grade + "\n" +
-                "Subject: " + subject + "\n" +
-                "Term: " + term + "\n\n" +
-                "PDF:\n" + pdfPath +
-                "\n\nThis action cannot be undone."
-            );
-
-
-        if (!confirmed) {
-
-            return;
-
-        }
-
-
-        // ==================================
-        // BUTTON STATE
-        // ==================================
-
-        deletePaperBtn.disabled =
+        deleteSubject.disabled =
             true;
 
-        deletePaperStatus.textContent =
-            "Deleting paper...";
+        deleteTerm.innerHTML = `
+            <option value="">
+                Select Term
+            </option>
+        `;
+
+        deleteTerm.disabled =
+            true;
+
+        deletePaperList.innerHTML = `
+            <p>
+                Grade select செய்யுங்கள்.
+            </p>
+        `;
+
+        return;
+    }
 
 
-        try {
-
-            // ==================================
-            // FORM DATA
-            // ==================================
-
-            const formData =
-                new FormData();
+    deletePaperList.innerHTML = `
+        <p>
+            Loading subjects...
+        </p>
+    `;
 
 
-            formData.append(
-                "type",
-                "deletePaper"
+    try {
+
+        const response =
+            await fetch(
+                "https://raw.githubusercontent.com/Genka-bit/slexams/main/assets/data/grade" +
+                grade +
+                ".json?v=" +
+                Date.now()
             );
 
 
-            formData.append(
-                "grade",
-                grade
+        if (!response.ok) {
+
+            throw new Error(
+                "Grade JSON could not be loaded."
             );
 
+        }
 
-            formData.append(
-                "subject",
-                subject
+
+        deletePaperDatabase =
+            await response.json();
+
+
+        // ==================================
+        // STREAM GRADES
+        // ==================================
+
+        if (
+            deletePaperDatabase.streamSubjects
+        ) {
+
+            deleteStreamBox.style.display =
+                "block";
+
+            deleteStream.value = "";
+
+            deleteSubject.innerHTML = `
+                <option value="">
+                    Select Stream first
+                </option>
+            `;
+
+            deleteSubject.disabled =
+                true;
+
+            deleteTerm.innerHTML = `
+                <option value="">
+                    Select Term
+                </option>
+            `;
+
+            deleteTerm.disabled =
+                true;
+
+            deletePaperList.innerHTML = `
+                <p>
+                    Stream select செய்யுங்கள்.
+                </p>
+            `;
+
+            return;
+
+        }
+
+
+        // ==================================
+        // NORMAL GRADES
+        // ==================================
+
+        deleteStreamBox.style.display =
+            "none";
+
+        deleteStream.value = "";
+
+        loadDeleteSubjects();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Paper Manager Error:",
+            error
+        );
+
+        deletePaperList.innerHTML = `
+            <p>
+                ❌ ${error.message}
+            </p>
+        `;
+
+    }
+
+}
+
+
+// ======================================
+// LOAD SUBJECTS
+// ======================================
+
+function loadDeleteSubjects() {
+
+    if (!deletePaperDatabase) {
+        return;
+    }
+
+
+    let subjects = {};
+
+
+    // ==================================
+    // NORMAL GRADE
+    // ==================================
+
+    if (
+        deletePaperDatabase.subjects
+    ) {
+
+        subjects =
+            deletePaperDatabase.subjects;
+
+    }
+
+
+    // ==================================
+    // STREAM GRADE
+    // ==================================
+
+    if (
+        deletePaperDatabase.streamSubjects
+    ) {
+
+        const stream =
+            deleteStream.value;
+
+        if (!stream) {
+
+            deleteSubject.innerHTML = `
+                <option value="">
+                    Select Stream first
+                </option>
+            `;
+
+            deleteSubject.disabled =
+                true;
+
+            return;
+
+        }
+
+
+        subjects =
+            deletePaperDatabase
+                .streamSubjects[stream] ||
+            {};
+
+    }
+
+
+    // ==================================
+    // SUBJECT LIST
+    // ==================================
+
+    const subjectNames =
+        Object.keys(subjects);
+
+
+    deleteSubject.innerHTML = `
+        <option value="">
+            Select Subject
+        </option>
+    `;
+
+
+    subjectNames.forEach(
+        function (subject) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                subject;
+
+            option.textContent =
+                subject;
+
+            deleteSubject.appendChild(
+                option
             );
 
+        }
+    );
 
-            formData.append(
-                "term",
-                term
+
+    deleteSubject.disabled =
+        subjectNames.length === 0;
+
+
+    deleteTerm.innerHTML = `
+        <option value="">
+            Select Term
+        </option>
+    `;
+
+    deleteTerm.disabled =
+        true;
+
+
+    deletePaperList.innerHTML = `
+        <p>
+            Subject select செய்யுங்கள்.
+        </p>
+    `;
+
+}
+
+
+// ======================================
+// LOAD TERMS
+// ======================================
+
+function loadDeleteTerms() {
+
+    const subject =
+        deleteSubject.value;
+
+
+    if (!subject) {
+
+        deleteTerm.innerHTML = `
+            <option value="">
+                Select Term
+            </option>
+        `;
+
+        deleteTerm.disabled =
+            true;
+
+        deletePaperList.innerHTML = `
+            <p>
+                Subject select செய்யுங்கள்.
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    let subjectData = {};
+
+
+    // ==================================
+    // NORMAL
+    // ==================================
+
+    if (
+        deletePaperDatabase.subjects
+    ) {
+
+        subjectData =
+            deletePaperDatabase
+                .subjects[subject] ||
+            {};
+
+    }
+
+
+    // ==================================
+    // STREAM
+    // ==================================
+
+    if (
+        deletePaperDatabase.streamSubjects
+    ) {
+
+        const stream =
+            deleteStream.value;
+
+        subjectData =
+            deletePaperDatabase
+                .streamSubjects?.[stream]?.[subject] ||
+            {};
+
+    }
+
+
+    const terms =
+        Object.keys(subjectData);
+
+
+    deleteTerm.innerHTML = `
+        <option value="">
+            Select Term
+        </option>
+    `;
+
+
+    terms.forEach(
+        function (term) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                term;
+
+            option.textContent =
+                "Term " + term;
+
+            deleteTerm.appendChild(
+                option
             );
 
-
-            formData.append(
-                "pdfPath",
-                pdfPath
-            );
+        }
+    );
 
 
-            // ==================================
-            // STREAM
-            // ==================================
-
-            /*
-             * Grade 12 / 13 may need Stream.
-             *
-             * We don't have a stream field
-             * in the current Paper Manager yet,
-             * so send empty value.
-             */
-
-            formData.append(
-                "stream",
-                ""
-            );
+    deleteTerm.disabled =
+        terms.length === 0;
 
 
-            // ==================================
-            // SEND TO WORKER
-            // ==================================
+    deletePaperList.innerHTML = `
+        <p>
+            Term select செய்யுங்கள்.
+        </p>
+    `;
 
-            const response =
-                await fetch(
-                    WORKER_URL,
-                    {
-                        method: "POST",
+}
 
-                        headers: {
 
-                            "X-Admin-Key":
-                                adminKey
+// ======================================
+// LOAD PAPERS
+// ======================================
 
-                        },
+function loadDeletePapers() {
 
-                        body:
-                            formData
+    const subject =
+        deleteSubject.value;
+
+    const term =
+        deleteTerm.value;
+
+
+    if (
+        !subject ||
+        !term ||
+        !deletePaperDatabase
+    ) {
+
+        return;
+
+    }
+
+
+    let papers = [];
+
+
+    // ==================================
+    // NORMAL
+    // ==================================
+
+    if (
+        deletePaperDatabase.subjects
+    ) {
+
+        papers =
+            deletePaperDatabase
+                .subjects?.[subject]?.[term] ||
+            [];
+
+    }
+
+
+    // ==================================
+    // STREAM
+    // ==================================
+
+    if (
+        deletePaperDatabase.streamSubjects
+    ) {
+
+        const stream =
+            deleteStream.value;
+
+        papers =
+            deletePaperDatabase
+                .streamSubjects?.[stream]?.[subject]?.[term] ||
+            [];
+
+    }
+
+
+    // ==================================
+    // NO PAPERS
+    // ==================================
+
+    if (!Array.isArray(papers) ||
+        papers.length === 0) {
+
+        deletePaperList.innerHTML = `
+            <div
+                style="
+                    padding:15px;
+                    background:#f5f5f5;
+                    border-radius:10px;
+                ">
+
+                <strong>
+                    No Papers Found
+                </strong>
+
+                <p>
+                    இந்த Term-ல் Paper இல்லை.
+                </p>
+
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    // ==================================
+    // PAPER LIST
+    // ==================================
+
+    deletePaperList.innerHTML = `
+        <h3>
+            📄 Existing Papers
+        </h3>
+    `;
+
+
+    papers.forEach(
+        function (paper, index) {
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.style.display =
+                "flex";
+
+            row.style.alignItems =
+                "center";
+
+            row.style.justifyContent =
+                "space-between";
+
+            row.style.gap =
+                "10px";
+
+            row.style.padding =
+                "12px";
+
+            row.style.marginBottom =
+                "10px";
+
+            row.style.background =
+                "#f5f7fa";
+
+            row.style.borderRadius =
+                "10px";
+
+
+            const title =
+                document.createElement(
+                    "div"
+                );
+
+
+            title.innerHTML = `
+                📄 <strong>
+                    ${
+                        escapeDeleteText(
+                            paper.title ||
+                            ("Paper " + (index + 1))
+                        )
                     }
+                </strong>
+            `;
+
+
+            const button =
+                document.createElement(
+                    "button"
                 );
 
 
-            // ==================================
-            // RESPONSE
-            // ==================================
+            button.type =
+                "button";
 
-            const result =
-                await response.json();
-
-
-            if (
-                !response.ok ||
-                !result.success
-            ) {
-
-                throw new Error(
-                    result.message ||
-                    "Paper deletion failed."
-                );
-
-            }
+            button.textContent =
+                "🗑️ Delete";
 
 
-            // ==================================
-            // SUCCESS
-            // ==================================
+            button.style.background =
+                "#d32f2f";
 
-            deletePaperStatus.textContent =
-                "Paper deleted successfully!";
+            button.style.color =
+                "white";
+
+            button.style.border =
+                "none";
+
+            button.style.borderRadius =
+                "8px";
+
+            button.style.padding =
+                "10px 14px";
+
+            button.style.cursor =
+                "pointer";
 
 
-            alert(
-                "✅ Paper deleted successfully!"
+            button.addEventListener(
+                "click",
+                function () {
+
+                    deleteSelectedPaper(
+                        paper
+                    );
+
+                }
             );
 
 
-            // ==================================
-            // CLEAR
-            // ==================================
+            row.appendChild(
+                title
+            );
 
-            deletePaperGrade.value =
-                "";
-
-            deletePaperSubject.value =
-                "";
-
-            deletePaperTerm.value =
-                "";
-
-            deletePaperPath.value =
-                "";
-
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "Paper Delete Error:",
-                error
+            row.appendChild(
+                button
             );
 
 
-            deletePaperStatus.textContent =
-                "Paper deletion failed: " +
-                error.message;
+            deletePaperList.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
 
 
-            alert(
-                "❌ Paper deletion failed:\n\n" +
-                error.message
+// ======================================
+// DELETE SELECTED PAPER
+// ======================================
+
+async function deleteSelectedPaper(
+    paper
+) {
+const subject =
+    deleteSubject.value;
+
+const term =
+    deleteTerm.value;
+    if (!paper || !paper.pdf) {
+
+        alert(
+            "❌ PDF path கிடைக்கவில்லை."
+        );
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            "⚠️ இந்த Paper-ஐ Delete செய்ய விரும்புகிறீர்களா?\n\n" +
+            "Paper: " +
+            (paper.title || "Untitled") +
+            "\n\n" +
+            "இந்த action-ஐ undo செய்ய முடியாது."
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const adminKey =
+        adminKeyInput.value.trim();
+
+
+    if (!adminKey) {
+
+        alert(
+            "Please enter Admin Key."
+        );
+
+        return;
+
+    }
+
+
+    deletePaperStatus.textContent =
+        "Deleting paper...";
+
+
+    try {
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "type",
+            "deletePaper"
+        );
+
+
+        formData.append(
+            "grade",
+            deleteGrade.value
+        );
+
+
+        // ==================================
+        // IMPORTANT
+        // Worker expects "pdf"
+        // ==================================
+
+        formData.append(
+            "pdf",
+            paper.pdf
+        );
+
+
+        const response =
+            await fetch(
+                WORKER_URL,
+                {
+                    method: "POST",
+
+                    headers: {
+
+                        "X-Admin-Key":
+                            adminKey
+
+                    },
+
+                    body:
+                        formData
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !result.success
+        ) {
+// ==================================
+// REFRESH PAPER LIST
+// ==================================
+
+await loadDeleteGradeData();
+
+loadDeleteSubjects();
+
+deleteSubject.value =
+    subject;
+
+loadDeleteTerms();
+
+deleteTerm.value =
+    term;
+
+loadDeletePapers();
+            throw new Error(
+                result.message ||
+                "Paper deletion failed."
             );
 
         }
 
-        finally {
 
-            deletePaperBtn.disabled =
-                false;
+        deletePaperStatus.textContent =
+            "✅ Paper deleted successfully!";
+
+
+        alert(
+            "✅ Paper deleted successfully!"
+        );
+
+
+        // ==================================
+        // REFRESH PAPER LIST
+        // ==================================
+
+        await loadDeleteGradeData();
+
+
+        if (
+            deletePaperDatabase &&
+            deleteSubject.value
+        ) {
+
+            loadDeleteSubjects();
+
+            deleteSubject.value =
+                subject;
 
         }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Paper Delete Error:",
+            error
+        );
+
+
+        deletePaperStatus.textContent =
+            "❌ " +
+            error.message;
+
+
+        alert(
+            "❌ Paper deletion failed:\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+// ======================================
+// ESCAPE HTML
+// ======================================
+
+function escapeDeleteText(
+    value
+) {
+
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+// ======================================
+// GRADE CHANGE
+// ======================================
+
+deleteGrade.addEventListener(
+    "change",
+    async function () {
+
+        await loadDeleteGradeData();
+
+    }
+);
+
+
+// ======================================
+// STREAM CHANGE
+// ======================================
+
+deleteStream.addEventListener(
+    "change",
+    function () {
+
+        loadDeleteSubjects();
+
+    }
+);
+
+
+// ======================================
+// SUBJECT CHANGE
+// ======================================
+
+deleteSubject.addEventListener(
+    "change",
+    function () {
+
+        loadDeleteTerms();
+
+    }
+);
+
+
+// ======================================
+// TERM CHANGE
+// ======================================
+
+deleteTerm.addEventListener(
+    "change",
+    function () {
+
+        loadDeletePapers();
 
     }
 );
