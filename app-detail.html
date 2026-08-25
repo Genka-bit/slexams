@@ -217,9 +217,13 @@
     border: none;
     background: transparent;
 
-    display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Viewer OPEN ஆனபோது மட்டும் flex ஆக இருக்க வேண்டும் */
+#imageViewer[open] {
+    display: flex;
 }
 
 #imageViewer::backdrop {
