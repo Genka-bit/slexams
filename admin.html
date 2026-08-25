@@ -542,7 +542,94 @@
 
 </div>
 
+<!-- ======================================
+     PAPER DELETE MANAGER
+====================================== -->
 
+<div class="admin-card">
+
+    <h2>🗑️ Paper Manager</h2>
+
+    <p>
+        ஏற்கனவே website-ல் பதிவிட்ட Paper-களை இங்கிருந்து Delete செய்யலாம்.
+    </p>
+
+    <label>Grade</label>
+
+    <select id="deletePaperGrade">
+
+        <option value="">
+            Select Grade
+        </option>
+
+        <option value="1">Grade 1</option>
+        <option value="2">Grade 2</option>
+        <option value="3">Grade 3</option>
+        <option value="4">Grade 4</option>
+        <option value="5">Grade 5</option>
+        <option value="6">Grade 6</option>
+        <option value="7">Grade 7</option>
+        <option value="8">Grade 8</option>
+        <option value="9">Grade 9</option>
+        <option value="10">Grade 10</option>
+        <option value="11">Grade 11</option>
+        <option value="12">Grade 12</option>
+        <option value="13">Grade 13</option>
+
+    </select>
+
+
+    <label>Subject</label>
+
+    <input
+        type="text"
+        id="deletePaperSubject"
+        placeholder="Eg: Mathematics">
+
+
+    <label>Term</label>
+
+    <select id="deletePaperTerm">
+
+        <option value="">
+            Select Term
+        </option>
+
+        <option value="1">
+            Term 1
+        </option>
+
+        <option value="2">
+            Term 2
+        </option>
+
+        <option value="3">
+            Term 3
+        </option>
+
+    </select>
+
+
+    <label>PDF Path</label>
+
+    <input
+        type="text"
+        id="deletePaperPath"
+        placeholder="assets/pdf/.../paper.pdf">
+
+
+    <button
+        type="button"
+        id="deletePaperBtn">
+
+        🗑️ Delete Paper
+
+    </button>
+
+
+    <p id="deletePaperStatus"></p>
+
+</div>
 
 </main>
 
@@ -2349,7 +2436,319 @@ publishAppBtn.addEventListener(
 );
 
 </script>
+<script>
 
+// ======================================
+// PAPER DELETE MANAGER
+// ======================================
+
+const deletePaperGrade =
+    document.getElementById(
+        "deletePaperGrade"
+    );
+
+const deletePaperSubject =
+    document.getElementById(
+        "deletePaperSubject"
+    );
+
+const deletePaperTerm =
+    document.getElementById(
+        "deletePaperTerm"
+    );
+
+const deletePaperPath =
+    document.getElementById(
+        "deletePaperPath"
+    );
+
+const deletePaperBtn =
+    document.getElementById(
+        "deletePaperBtn"
+    );
+
+const deletePaperStatus =
+    document.getElementById(
+        "deletePaperStatus"
+    );
+
+
+// ======================================
+// DELETE PAPER
+// ======================================
+
+deletePaperBtn.addEventListener(
+    "click",
+    async function () {
+
+        const grade =
+            deletePaperGrade.value.trim();
+
+        const subject =
+            deletePaperSubject.value.trim();
+
+        const term =
+            deletePaperTerm.value.trim();
+
+        const pdfPath =
+            deletePaperPath.value.trim();
+
+        const adminKey =
+            adminKeyInput.value.trim();
+
+
+        // ==================================
+        // VALIDATION
+        // ==================================
+
+        if (!grade) {
+
+            alert(
+                "Please select Grade."
+            );
+
+            return;
+        }
+
+
+        if (!subject) {
+
+            alert(
+                "Please enter Subject."
+            );
+
+            return;
+        }
+
+
+        if (!term) {
+
+            alert(
+                "Please select Term."
+            );
+
+            return;
+        }
+
+
+        if (!pdfPath) {
+
+            alert(
+                "Please enter PDF Path."
+            );
+
+            return;
+        }
+
+
+        if (!adminKey) {
+
+            alert(
+                "Please enter Admin Key."
+            );
+
+            return;
+        }
+
+
+        // ==================================
+        // CONFIRMATION
+        // ==================================
+
+        const confirmed =
+            confirm(
+                "⚠️ Are you sure you want to delete this paper?\n\n" +
+                "Grade: " + grade + "\n" +
+                "Subject: " + subject + "\n" +
+                "Term: " + term + "\n\n" +
+                "PDF:\n" + pdfPath +
+                "\n\nThis action cannot be undone."
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        // ==================================
+        // BUTTON STATE
+        // ==================================
+
+        deletePaperBtn.disabled =
+            true;
+
+        deletePaperStatus.textContent =
+            "Deleting paper...";
+
+
+        try {
+
+            // ==================================
+            // FORM DATA
+            // ==================================
+
+            const formData =
+                new FormData();
+
+
+            formData.append(
+                "type",
+                "deletePaper"
+            );
+
+
+            formData.append(
+                "grade",
+                grade
+            );
+
+
+            formData.append(
+                "subject",
+                subject
+            );
+
+
+            formData.append(
+                "term",
+                term
+            );
+
+
+            formData.append(
+                "pdfPath",
+                pdfPath
+            );
+
+
+            // ==================================
+            // STREAM
+            // ==================================
+
+            /*
+             * Grade 12 / 13 may need Stream.
+             *
+             * We don't have a stream field
+             * in the current Paper Manager yet,
+             * so send empty value.
+             */
+
+            formData.append(
+                "stream",
+                ""
+            );
+
+
+            // ==================================
+            // SEND TO WORKER
+            // ==================================
+
+            const response =
+                await fetch(
+                    WORKER_URL,
+                    {
+                        method: "POST",
+
+                        headers: {
+
+                            "X-Admin-Key":
+                                adminKey
+
+                        },
+
+                        body:
+                            formData
+                    }
+                );
+
+
+            // ==================================
+            // RESPONSE
+            // ==================================
+
+            const result =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !result.success
+            ) {
+
+                throw new Error(
+                    result.message ||
+                    "Paper deletion failed."
+                );
+
+            }
+
+
+            // ==================================
+            // SUCCESS
+            // ==================================
+
+            deletePaperStatus.textContent =
+                "Paper deleted successfully!";
+
+
+            alert(
+                "✅ Paper deleted successfully!"
+            );
+
+
+            // ==================================
+            // CLEAR
+            // ==================================
+
+            deletePaperGrade.value =
+                "";
+
+            deletePaperSubject.value =
+                "";
+
+            deletePaperTerm.value =
+                "";
+
+            deletePaperPath.value =
+                "";
+
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Paper Delete Error:",
+                error
+            );
+
+
+            deletePaperStatus.textContent =
+                "Paper deletion failed: " +
+                error.message;
+
+
+            alert(
+                "❌ Paper deletion failed:\n\n" +
+                error.message
+            );
+
+        }
+
+        finally {
+
+            deletePaperBtn.disabled =
+                false;
+
+        }
+
+    }
+);
+
+</script>
 </body>
 
 </html>
