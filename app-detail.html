@@ -417,7 +417,68 @@
     }
 
 }
+/* =========================
+   IMAGE COUNTER
+   ========================= */
 
+.image-viewer-counter {
+
+    position: fixed;
+
+    bottom: 20px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    padding: 8px 16px;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    color: white;
+
+    border-radius: 20px;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    z-index: 10;
+
+    backdrop-filter: blur(5px);
+
+}
+
+
+/* =========================
+   IMAGE ANIMATION
+   ========================= */
+
+.image-viewer-image {
+
+    transition:
+        opacity 0.18s ease,
+        transform 0.18s ease;
+
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .image-viewer-counter {
+
+        bottom: 15px;
+
+        font-size: 14px;
+
+        padding: 7px 14px;
+
+    }
+
+}
 </style>
 
 </head>
@@ -544,6 +605,10 @@ Application Information
         class="image-viewer-image"
         src=""
         alt="Preview">
+
+<div id="imageViewerCounter" class="image-viewer-counter">
+    1 / 1
+</div>
 
     <button
         id="imageViewerNext"
@@ -955,6 +1020,8 @@ const viewerImage = document.getElementById("imageViewerImage");
 const viewerClose = document.getElementById("imageViewerClose");
 const viewerPrev = document.getElementById("imageViewerPrev");
 const viewerNext = document.getElementById("imageViewerNext");
+const viewerCounter =
+    document.getElementById("imageViewerCounter");
 
 let currentPreviewIndex = 0;
 
@@ -1004,7 +1071,14 @@ function showPreview(index) {
     }
 
     viewerImage.src = src;
+if (viewerCounter) {
 
+    viewerCounter.textContent =
+        (currentPreviewIndex + 1) +
+        " / " +
+        images.length;
+
+}
 }
 
 
