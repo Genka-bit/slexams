@@ -543,3 +543,152 @@ border-top:1px solid rgba(255,255,255,.3);
 text-align:center;
 font-size:14px;
 }
+/* ==================================
+   NEWS DELETE
+   ================================== */
+
+.delete-news-card {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 15px;
+
+    margin-bottom: 12px;
+
+    background: #ffffff;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.08);
+
+}
+
+.delete-news-info {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    min-width: 0;
+
+}
+
+.delete-news-info h3 {
+
+    margin: 0 0 6px;
+
+    font-size: 17px;
+
+}
+
+.delete-news-info p {
+
+    margin: 0;
+
+    color: #777;
+
+    font-size: 14px;
+
+}
+
+.delete-news-image {
+
+    width: 75px;
+
+    height: 55px;
+
+    object-fit: cover;
+
+    border-radius: 8px;
+
+    flex-shrink: 0;
+
+}
+
+.delete-news-button {
+
+    border: none;
+
+    background: #d32f2f;
+
+    color: white;
+
+    padding: 10px 15px;
+
+    border-radius: 8px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    flex-shrink: 0;
+
+}
+
+.delete-news-button:hover {
+
+    background: #b71c1c;
+
+}
+
+.no-news,
+.delete-error {
+
+    padding: 20px;
+
+    text-align: center;
+
+    background: #f5f5f5;
+
+    border-radius: 10px;
+
+}
+
+
+@media (max-width: 600px) {
+
+    .delete-news-card {
+
+        align-items: flex-start;
+
+    }
+
+    .delete-news-info {
+
+        flex: 1;
+
+    }
+
+    .delete-news-info h3 {
+
+        font-size: 15px;
+
+    }
+
+    .delete-news-image {
+
+        width: 60px;
+
+        height: 45px;
+
+    }
+
+    .delete-news-button {
+
+        padding: 9px 11px;
+
+        font-size: 13px;
+
+    }
+
+}
