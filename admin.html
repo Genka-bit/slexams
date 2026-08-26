@@ -692,7 +692,76 @@
     <p id="appStatus"></p>
 
 </div>
+<!-- ======================================
+     APP DELETE MANAGER
+====================================== -->
 
+<div class="admin-card">
+
+    <button
+        type="button"
+        id="appDeleteToggle"
+        style="
+            width:100%;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            border:none;
+            background:none;
+            font-size:20px;
+            font-weight:bold;
+            cursor:pointer;
+            padding:5px 0;
+        ">
+
+        <span>🗑️ Delete Educational Apps</span>
+
+        <span id="appDeleteArrow">▼</span>
+
+    </button>
+
+
+    <div
+        id="appDeleteContent"
+        style="display:none; margin-top:20px;">
+
+        <label>
+            Platform
+        </label>
+
+        <select id="deleteAppPlatform">
+
+            <option value="">
+                Select Platform
+            </option>
+
+            <option value="android">
+                🤖 Android
+            </option>
+
+            <option value="windows">
+                🪟 Windows
+            </option>
+
+        </select>
+
+
+        <div
+            id="deleteAppList"
+            style="margin-top:20px;">
+
+            <p>
+                Platform select செய்யுங்கள்.
+            </p>
+
+        </div>
+
+
+        <p id="deleteAppStatus"></p>
+
+    </div>
+
+</div>
 <!-- ======================================
      PAPER DELETE MANAGER
 ====================================== -->
@@ -4833,7 +4902,671 @@ function escapeDeleteText(value) {
             "&#039;"
         );
 
-}           
+} 
+ <script>
+
+// ======================================
+// APP DELETE MANAGER
+// ======================================
+
+const appDeleteToggle =
+    document.getElementById(
+        "appDeleteToggle"
+    );
+
+const appDeleteContent =
+    document.getElementById(
+        "appDeleteContent"
+    );
+
+const appDeleteArrow =
+    document.getElementById(
+        "appDeleteArrow"
+    );
+
+const deleteAppPlatform =
+    document.getElementById(
+        "deleteAppPlatform"
+    );
+
+const deleteAppList =
+    document.getElementById(
+        "deleteAppList"
+    );
+
+const deleteAppStatus =
+    document.getElementById(
+        "deleteAppStatus"
+    );
+
+
+// ======================================
+// TOGGLE
+// ======================================
+
+let appDeleteOpen = false;
+
+appDeleteToggle.addEventListener(
+    "click",
+    function () {
+
+        appDeleteOpen =
+            !appDeleteOpen;
+
+
+        if (appDeleteOpen) {
+
+            appDeleteContent.style.display =
+                "block";
+
+            appDeleteArrow.textContent =
+                "▲";
+
+        }
+        else {
+
+            appDeleteContent.style.display =
+                "none";
+
+            appDeleteArrow.textContent =
+                "▼";
+
+        }
+
+    }
+);
+
+
+// ======================================
+// APP DATABASE
+// ======================================
+
+let deleteAppDatabase = [];
+
+
+// ======================================
+// LOAD APPS
+// ======================================
+
+async function loadDeleteApps() {
+
+    deleteAppList.innerHTML = `
+        <p>
+            Loading Apps...
+        </p>
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                "assets/data/apps.json?v=" +
+                Date.now()
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "apps.json could not be loaded."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        deleteAppDatabase =
+            Array.isArray(data.apps)
+                ? data.apps
+                : [];
+
+
+        loadDeleteAppList();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "App Delete Load Error:",
+            error
+        );
+
+
+        deleteAppList.innerHTML = `
+            <div class="delete-error">
+
+                ❌ Unable to load Apps.
+
+                <br>
+
+                <small>
+                    ${escapeDeleteAppHTML(
+                        error.message
+                    )}
+                </small>
+
+            </div>
+        `;
+
+    }
+
+}
+
+
+// ======================================
+// LOAD APP LIST
+// ======================================
+
+function loadDeleteAppList() {
+
+    const platform =
+        deleteAppPlatform.value;
+
+
+    if (!platform) {
+
+        deleteAppList.innerHTML = `
+            <p>
+                Platform select செய்யுங்கள்.
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    const apps =
+        deleteAppDatabase.filter(
+            app =>
+                app.platform === platform
+        );
+
+
+    // ==================================
+    // NO APPS
+    // ==================================
+
+    if (apps.length === 0) {
+
+        deleteAppList.innerHTML = `
+            <div class="no-news">
+
+                <p>
+                    📱 இந்த Platform-ல் App இல்லை.
+                </p>
+
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    // ==================================
+    // APP LIST
+    // ==================================
+
+    deleteAppList.innerHTML = `
+        <h3>
+            📱 Existing Apps
+        </h3>
+    `;
+
+
+    apps.forEach(
+        function (app) {
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.style.display =
+                "flex";
+
+            row.style.alignItems =
+                "center";
+
+            row.style.justifyContent =
+                "space-between";
+
+            row.style.gap =
+                "15px";
+
+            row.style.padding =
+                "15px";
+
+            row.style.marginBottom =
+                "12px";
+
+            row.style.background =
+                "#ffffff";
+
+            row.style.borderRadius =
+                "12px";
+
+            row.style.boxShadow =
+                "0 3px 12px rgba(0,0,0,0.08)";
+
+
+            // ==================================
+            // APP INFO
+            // ==================================
+
+            const info =
+                document.createElement(
+                    "div"
+                );
+
+
+            info.style.display =
+                "flex";
+
+            info.style.alignItems =
+                "center";
+
+            info.style.gap =
+                "12px";
+
+            info.style.minWidth =
+                "0";
+
+
+            // ==================================
+            // IMAGE
+            // ==================================
+
+            const imagePath =
+                app.mainImage ||
+                app.image ||
+                "";
+
+
+            if (imagePath) {
+
+                const image =
+                    document.createElement(
+                        "img"
+                    );
+
+
+                image.src =
+                    imagePath;
+
+                image.alt =
+                    app.name || "App";
+
+                image.style.width =
+                    "65px";
+
+                image.style.height =
+                    "65px";
+
+                image.style.objectFit =
+                    "cover";
+
+                image.style.borderRadius =
+                    "10px";
+
+                image.style.flexShrink =
+                    "0";
+
+
+                image.onerror =
+                    function () {
+
+                        this.style.display =
+                            "none";
+
+                    };
+
+
+                info.appendChild(
+                    image
+                );
+
+            }
+
+
+            // ==================================
+            // TEXT
+            // ==================================
+
+            const text =
+                document.createElement(
+                    "div"
+                );
+
+
+            text.innerHTML = `
+
+                <strong>
+
+                    📱 ${
+                        escapeDeleteAppHTML(
+                            app.name ||
+                            "Untitled App"
+                        )
+                    }
+
+                </strong>
+
+                <br>
+
+                <small>
+
+                    Platform:
+                    ${
+                        escapeDeleteAppHTML(
+                            app.platform ||
+                            ""
+                        )
+                    }
+
+                    <br>
+
+                    Version:
+                    ${
+                        escapeDeleteAppHTML(
+                            app.version ||
+                            ""
+                        )
+                    }
+
+                </small>
+
+            `;
+
+
+            info.appendChild(
+                text
+            );
+
+
+            // ==================================
+            // DELETE BUTTON
+            // ==================================
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.type =
+                "button";
+
+            button.textContent =
+                "🗑️ Delete";
+
+
+            button.style.background =
+                "#d32f2f";
+
+            button.style.color =
+                "white";
+
+            button.style.border =
+                "none";
+
+            button.style.borderRadius =
+                "8px";
+
+            button.style.padding =
+                "10px 14px";
+
+            button.style.cursor =
+                "pointer";
+
+            button.style.flexShrink =
+                "0";
+
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    deleteSelectedApp(
+                        app
+                    );
+
+                }
+            );
+
+
+            row.appendChild(
+                info
+            );
+
+            row.appendChild(
+                button
+            );
+
+
+            deleteAppList.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+// ======================================
+// DELETE SELECTED APP
+// ======================================
+
+async function deleteSelectedApp(
+    app
+) {
+
+    if (!app || !app.id) {
+
+        alert(
+            "❌ App ID கிடைக்கவில்லை."
+        );
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            "⚠️ இந்த App-ஐ Delete செய்யவா?\n\n" +
+            "App: " +
+            (app.name || "Untitled App") +
+            "\n\n" +
+            "இந்த action-ஐ undo செய்ய முடியாது."
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    // ==================================
+    // ADMIN KEY
+    // ==================================
+
+    const adminKey =
+        adminKeyInput.value.trim();
+
+
+    if (!adminKey) {
+
+        alert(
+            "Please enter Admin Key."
+        );
+
+        return;
+
+    }
+
+
+    deleteAppStatus.textContent =
+        "Deleting App...";
+
+
+    try {
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "type",
+            "deleteApp"
+        );
+
+
+        formData.append(
+            "id",
+            app.id
+        );
+
+
+        const response =
+            await fetch(
+                WORKER_URL,
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "X-Admin-Key":
+                            adminKey
+
+                    },
+
+                    body:
+                        formData
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !result.success
+        ) {
+
+            throw new Error(
+                result.message ||
+                "App deletion failed."
+            );
+
+        }
+
+
+        // ==================================
+        // SUCCESS
+        // ==================================
+
+        deleteAppStatus.textContent =
+            "✅ App deleted successfully!";
+
+
+        alert(
+            "✅ App deleted successfully!"
+        );
+
+
+        // ==================================
+        // REFRESH
+        // ==================================
+
+        await loadDeleteApps();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "App Delete Error:",
+            error
+        );
+
+
+        deleteAppStatus.textContent =
+            "❌ " +
+            error.message;
+
+
+        alert(
+            "❌ App deletion failed:\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+// ======================================
+// PLATFORM CHANGE
+// ======================================
+
+deleteAppPlatform.addEventListener(
+    "change",
+    function () {
+
+        loadDeleteApps();
+
+    }
+);
+
+
+// ======================================
+// HTML ESCAPE
+// ======================================
+
+function escapeDeleteAppHTML(
+    value
+) {
+
+    return String(value || "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+</script>           
 </script>
 </body>
 
