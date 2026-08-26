@@ -4912,96 +4912,111 @@ function escapeDeleteText(value) {
 } 
  <script>
 
-// ======================================
+// ======================================================
 // APP DELETE MANAGER
-// ======================================
+// ======================================================
 
 const appDeleteToggle =
-    document.getElementById(
-        "appDeleteToggle"
-    );
-
-const appDeleteContent =
-    document.getElementById(
-        "appDeleteContent"
-    );
+    document.getElementById("appDeleteToggle");
 
 const appDeleteArrow =
-    document.getElementById(
-        "appDeleteArrow"
-    );
+    document.getElementById("appDeleteArrow");
+
+const appDeleteContent =
+    document.getElementById("appDeleteContent");
 
 const deleteAppPlatform =
-    document.getElementById(
-        "deleteAppPlatform"
-    );
+    document.getElementById("deleteAppPlatform");
 
 const deleteAppList =
-    document.getElementById(
-        "deleteAppList"
-    );
-
-const deleteAppStatus =
-    document.getElementById(
-        "deleteAppStatus"
-    );
+    document.getElementById("deleteAppList");
 
 
-// ======================================
-// TOGGLE
-// ======================================
+// ======================================================
+// SHOW / HIDE APP DELETE
+// ======================================================
 
-let appDeleteOpen = false;
+if (appDeleteToggle) {
 
-appDeleteToggle.addEventListener(
-    "click",
-    function () {
+    appDeleteToggle.addEventListener(
+        "click",
+        async function () {
 
-        appDeleteOpen =
-            !appDeleteOpen;
+            if (
+                appDeleteContent.style.display ===
+                "none"
+            ) {
 
+                appDeleteContent.style.display =
+                    "block";
 
-        if (appDeleteOpen) {
+                appDeleteArrow.textContent =
+                    "▲";
 
-            appDeleteContent.style.display =
-                "block";
+                await loadDeleteApps();
 
-            appDeleteArrow.textContent =
-                "▲";
+            }
 
-        }
-        else {
+            else {
 
-            appDeleteContent.style.display =
-                "none";
+                appDeleteContent.style.display =
+                    "none";
 
-            appDeleteArrow.textContent =
-                "▼";
+                appDeleteArrow.textContent =
+                    "▼";
+
+            }
 
         }
+    );
 
-    }
-);
-
-
-// ======================================
-// APP DATABASE
-// ======================================
-
-let deleteAppDatabase = [];
+}
 
 
-// ======================================
+// ======================================================
+// PLATFORM CHANGE
+// ======================================================
+
+if (deleteAppPlatform) {
+
+    deleteAppPlatform.addEventListener(
+        "change",
+        function () {
+
+            loadDeleteApps();
+
+        }
+    );
+
+}
+
+
+// ======================================================
 // LOAD APPS
-// ======================================
+// ======================================================
 
 async function loadDeleteApps() {
 
-    deleteAppList.innerHTML = `
-        <p>
-            Loading Apps...
-        </p>
-    `;
+    if (!deleteAppList) {
+        return;
+    }
+
+    const platform =
+        deleteAppPlatform.value;
+
+
+    if (!platform) {
+
+        deleteAppList.innerHTML =
+            "<p>Platform select செய்யுங்கள்.</p>";
+
+        return;
+
+    }
+
+
+    deleteAppList.innerHTML =
+        "<p>Loading Apps...</p>";
 
 
     try {
@@ -5026,38 +5041,132 @@ async function loadDeleteApps() {
             await response.json();
 
 
-        deleteAppDatabase =
+        const apps =
             Array.isArray(data.apps)
                 ? data.apps
                 : [];
 
 
-        loadDeleteAppList();
+        const filteredApps =
+            apps.filter(
+                app =>
+                    app.platform === platform
+            );
+
+
+        // --------------------------------------
+        // NO APPS
+        // --------------------------------------
+
+        if (
+            filteredApps.length === 0
+        ) {
+
+            deleteAppList.innerHTML = `
+
+                <div>
+                    <p>
+                        📱 இந்த Platform-ல் App இல்லை.
+                    </p>
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        // --------------------------------------
+        // APP LIST
+        // --------------------------------------
+
+        deleteAppList.innerHTML =
+            filteredApps.map(
+                app => `
+
+                <div
+                    style="
+                        display:flex;
+                        justify-content:space-between;
+                        align-items:center;
+                        gap:10px;
+                        padding:12px;
+                        margin-bottom:10px;
+                        border:1px solid #ddd;
+                        border-radius:8px;
+                        background:#fff;
+                    "
+                >
+
+                    <div>
+
+                        <strong>
+                            📱 ${
+                                escapeDeleteHTML(
+                                    app.name
+                                )
+                            }
+                        </strong>
+
+                        <br>
+
+                        <small>
+                            Version:
+                            ${
+                                escapeDeleteHTML(
+                                    app.version || ""
+                                )
+                            }
+                        </small>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        onclick="deleteAppItem('${app.id}')"
+                        style="
+                            background:#dc3545;
+                            color:white;
+                            border:none;
+                            padding:8px 12px;
+                            border-radius:6px;
+                            cursor:pointer;
+                        "
+                    >
+                        🗑️ Delete
+                    </button>
+
+                </div>
+
+                `
+            ).join("");
 
     }
 
     catch (error) {
 
         console.error(
-            "App Delete Load Error:",
+            "APP DELETE LOAD ERROR:",
             error
         );
 
 
         deleteAppList.innerHTML = `
-            <div class="delete-error">
 
+            <p style="color:red;">
                 ❌ Unable to load Apps.
+            </p>
 
-                <br>
-
-                <small>
-                    ${escapeDeleteAppHTML(
+            <small>
+                ${
+                    escapeDeleteHTML(
                         error.message
-                    )}
-                </small>
+                    )
+                }
+            </small>
 
-            </div>
         `;
 
     }
@@ -5065,369 +5174,96 @@ async function loadDeleteApps() {
 }
 
 
-// ======================================
-// LOAD APP LIST
-// ======================================
+// ======================================================
+// DELETE APP
+// ======================================================
 
-function loadDeleteAppList() {
+async function deleteAppItem(id) {
 
-    const platform =
-        deleteAppPlatform.value;
+    try {
 
-
-    if (!platform) {
-
-        deleteAppList.innerHTML = `
-            <p>
-                Platform select செய்யுங்கள்.
-            </p>
-        `;
-
-        return;
-
-    }
-
-
-    const apps =
-        deleteAppDatabase.filter(
-            app =>
-                app.platform === platform
-        );
-
-
-    // ==================================
-    // NO APPS
-    // ==================================
-
-    if (apps.length === 0) {
-
-        deleteAppList.innerHTML = `
-            <div class="no-news">
-
-                <p>
-                    📱 இந்த Platform-ல் App இல்லை.
-                </p>
-
-            </div>
-        `;
-
-        return;
-
-    }
-
-
-    // ==================================
-    // APP LIST
-    // ==================================
-
-    deleteAppList.innerHTML = `
-        <h3>
-            📱 Existing Apps
-        </h3>
-    `;
-
-
-    apps.forEach(
-        function (app) {
-
-            const row =
-                document.createElement(
-                    "div"
-                );
-
-
-            row.style.display =
-                "flex";
-
-            row.style.alignItems =
-                "center";
-
-            row.style.justifyContent =
-                "space-between";
-
-            row.style.gap =
-                "15px";
-
-            row.style.padding =
-                "15px";
-
-            row.style.marginBottom =
-                "12px";
-
-            row.style.background =
-                "#ffffff";
-
-            row.style.borderRadius =
-                "12px";
-
-            row.style.boxShadow =
-                "0 3px 12px rgba(0,0,0,0.08)";
-
-
-            // ==================================
-            // APP INFO
-            // ==================================
-
-            const info =
-                document.createElement(
-                    "div"
-                );
-
-
-            info.style.display =
-                "flex";
-
-            info.style.alignItems =
-                "center";
-
-            info.style.gap =
-                "12px";
-
-            info.style.minWidth =
-                "0";
-
-
-            // ==================================
-            // IMAGE
-            // ==================================
-
-            const imagePath =
-                app.mainImage ||
-                app.image ||
-                "";
-
-
-            if (imagePath) {
-
-                const image =
-                    document.createElement(
-                        "img"
-                    );
-
-
-                image.src =
-                    imagePath;
-
-                image.alt =
-                    app.name || "App";
-
-                image.style.width =
-                    "65px";
-
-                image.style.height =
-                    "65px";
-
-                image.style.objectFit =
-                    "cover";
-
-                image.style.borderRadius =
-                    "10px";
-
-                image.style.flexShrink =
-                    "0";
-
-
-                image.onerror =
-                    function () {
-
-                        this.style.display =
-                            "none";
-
-                    };
-
-
-                info.appendChild(
-                    image
-                );
-
-            }
-
-
-            // ==================================
-            // TEXT
-            // ==================================
-
-            const text =
-                document.createElement(
-                    "div"
-                );
-
-
-            text.innerHTML = `
-
-                <strong>
-
-                    📱 ${
-                        escapeDeleteAppHTML(
-                            app.name ||
-                            "Untitled App"
-                        )
-                    }
-
-                </strong>
-
-                <br>
-
-                <small>
-
-                    Platform:
-                    ${
-                        escapeDeleteAppHTML(
-                            app.platform ||
-                            ""
-                        )
-                    }
-
-                    <br>
-
-                    Version:
-                    ${
-                        escapeDeleteAppHTML(
-                            app.version ||
-                            ""
-                        )
-                    }
-
-                </small>
-
-            `;
-
-
-            info.appendChild(
-                text
+        const response =
+            await fetch(
+                "assets/data/apps.json?v=" +
+                Date.now()
             );
 
 
-            // ==================================
-            // DELETE BUTTON
-            // ==================================
+        if (!response.ok) {
 
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-
-            button.type =
-                "button";
-
-            button.textContent =
-                "🗑️ Delete";
-
-
-            button.style.background =
-                "#d32f2f";
-
-            button.style.color =
-                "white";
-
-            button.style.border =
-                "none";
-
-            button.style.borderRadius =
-                "8px";
-
-            button.style.padding =
-                "10px 14px";
-
-            button.style.cursor =
-                "pointer";
-
-            button.style.flexShrink =
-                "0";
-
-
-            button.addEventListener(
-                "click",
-                function () {
-
-                    deleteSelectedApp(
-                        app
-                    );
-
-                }
-            );
-
-
-            row.appendChild(
-                info
-            );
-
-            row.appendChild(
-                button
-            );
-
-
-            deleteAppList.appendChild(
-                row
+            throw new Error(
+                "Unable to load apps."
             );
 
         }
-    );
-
-}
 
 
-// ======================================
-// DELETE SELECTED APP
-// ======================================
-
-async function deleteSelectedApp(
-    app
-) {
-
-    if (!app || !app.id) {
-
-        alert(
-            "❌ App ID கிடைக்கவில்லை."
-        );
-
-        return;
-
-    }
+        const data =
+            await response.json();
 
 
-    const confirmed =
-        confirm(
-            "⚠️ இந்த App-ஐ Delete செய்யவா?\n\n" +
-            "App: " +
-            (app.name || "Untitled App") +
-            "\n\n" +
-            "இந்த action-ஐ undo செய்ய முடியாது."
-        );
+        const apps =
+            Array.isArray(data.apps)
+                ? data.apps
+                : [];
 
 
-    if (!confirmed) {
-
-        return;
-
-    }
-
-
-    // ==================================
-    // ADMIN KEY
-    // ==================================
-
-    const adminKey =
-        adminKeyInput.value.trim();
+        const app =
+            apps.find(
+                item =>
+                    item.id === id
+            );
 
 
-    if (!adminKey) {
+        if (!app) {
 
-        alert(
-            "Please enter Admin Key."
-        );
+            alert(
+                "App not found."
+            );
 
-        return;
+            return;
 
-    }
-
-
-    deleteAppStatus.textContent =
-        "Deleting App...";
+        }
 
 
-    try {
+        // --------------------------------------
+        // CONFIRM
+        // --------------------------------------
+
+        const confirmed =
+            confirm(
+                "இந்த App-ஐ Delete செய்யவா?\n\n" +
+                app.name
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        // --------------------------------------
+        // ADMIN KEY
+        // --------------------------------------
+
+        const adminKey =
+            prompt(
+                "Admin Key உள்ளிடவும்:"
+            );
+
+
+        if (!adminKey) {
+
+            return;
+
+        }
+
+
+        // --------------------------------------
+        // FORM DATA
+        // --------------------------------------
 
         const formData =
             new FormData();
@@ -5445,134 +5281,81 @@ async function deleteSelectedApp(
         );
 
 
-        const response =
-            await fetch(
-                WORKER_URL,
-                {
+        // --------------------------------------
+        // SEND TO WORKER
+        // --------------------------------------
 
+        const deleteResponse =
+            await fetch(
+                "https://slexams-upload.genkaweb.workers.dev",
+                {
                     method: "POST",
 
                     headers: {
-
                         "X-Admin-Key":
                             adminKey
-
                     },
 
                     body:
                         formData
-
                 }
             );
 
 
         const result =
-            await response.json();
+            await deleteResponse.json();
 
+
+        // --------------------------------------
+        // SUCCESS
+        // --------------------------------------
 
         if (
-            !response.ok ||
-            !result.success
+            deleteResponse.ok &&
+            result.success
         ) {
 
-            throw new Error(
-                result.message ||
-                "App deletion failed."
+            alert(
+                "✅ App deleted successfully!"
             );
+
+
+            // Refresh current platform list
+
+            await loadDeleteApps();
 
         }
 
+        else {
 
-        // ==================================
-        // SUCCESS
-        // ==================================
+            alert(
+                "❌ Delete failed:\n\n" +
+                (
+                    result.message ||
+                    "Unknown error."
+                )
+            );
 
-        deleteAppStatus.textContent =
-            "✅ App deleted successfully!";
-
-
-        alert(
-            "✅ App deleted successfully!"
-        );
-
-
-        // ==================================
-        // REFRESH
-        // ==================================
-
-        await loadDeleteApps();
+        }
 
     }
 
     catch (error) {
 
         console.error(
-            "App Delete Error:",
+            "APP DELETE ERROR:",
             error
         );
 
 
-        deleteAppStatus.textContent =
-            "❌ " +
-            error.message;
-
-
         alert(
-            "❌ App deletion failed:\n\n" +
+            "❌ Error:\n\n" +
             error.message
         );
 
     }
 
 }
-
-
-// ======================================
-// PLATFORM CHANGE
-// ======================================
-
-deleteAppPlatform.addEventListener(
-    "change",
-    function () {
-
-        loadDeleteApps();
-
-    }
-);
-
-
-// ======================================
-// HTML ESCAPE
-// ======================================
-
-function escapeDeleteAppHTML(
-    value
-) {
-
-    return String(value || "")
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-}
-
 </script>           
 </script>
 </body>
