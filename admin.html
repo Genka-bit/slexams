@@ -4782,9 +4782,9 @@ async function deleteSelectedScheme(
 
 deleteSchemeGrade.addEventListener(
     "change",
-    function () {
+    async function () {
 
-        loadDeleteSchemeSubjects();
+        await loadDeleteSchemes();
 
     }
 );
