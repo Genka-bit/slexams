@@ -692,42 +692,47 @@
     <p id="appStatus"></p>
 
 </div>
+
 <!-- ======================================
      APP DELETE MANAGER
 ====================================== -->
 
 <div class="admin-card">
 
-    <button
-        type="button"
+    <h2
         id="appDeleteToggle"
         style="
-            width:100%;
+            cursor:pointer;
             display:flex;
             justify-content:space-between;
             align-items:center;
-            border:none;
-            background:none;
-            font-size:20px;
-            font-weight:bold;
-            cursor:pointer;
-            padding:5px 0;
-        ">
+            margin:0;
+        "
+    >
 
-        <span>🗑️ Delete Educational Apps</span>
+        <span>
+            🗑️ Delete Educational Apps
+        </span>
 
-        <span id="appDeleteArrow">▼</span>
+        <span id="appDeleteArrow">
+            ▼
+        </span>
 
-    </button>
+    </h2>
 
 
     <div
         id="appDeleteContent"
-        style="display:none; margin-top:20px;">
+        style="
+            display:none;
+            margin-top:20px;
+        "
+    >
 
         <label>
             Platform
         </label>
+
 
         <select id="deleteAppPlatform">
 
@@ -748,7 +753,8 @@
 
         <div
             id="deleteAppList"
-            style="margin-top:20px;">
+            style="margin-top:20px;"
+        >
 
             <p>
                 Platform select செய்யுங்கள்.
@@ -762,6 +768,7 @@
     </div>
 
 </div>
+
 <!-- ======================================
      PAPER DELETE MANAGER
 ====================================== -->
