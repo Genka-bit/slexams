@@ -442,7 +442,137 @@
     <p id="schemeStatus"></p>
 
 </div>
+<!-- ======================================
+     SCHEME DELETE MANAGER
+====================================== -->
 
+<div class="admin-card">
+
+    <h2
+        id="schemeDeleteToggle"
+        style="cursor:pointer;">
+
+        📚 Scheme
+
+        <span id="schemeDeleteArrow">
+            ▼
+        </span>
+
+    </h2>
+
+
+    <div
+        id="schemeDeleteContent"
+        style="display:none;">
+
+        <p>
+            ஏற்கனவே பதிவிட்ட Scheme-களை
+            இங்கிருந்து Delete செய்யலாம்.
+        </p>
+
+
+        <!-- GRADE -->
+
+        <label>
+            Grade
+        </label>
+
+        <select id="deleteSchemeGrade">
+
+            <option value="">
+                Select Grade
+            </option>
+
+            <option value="1">Grade 1</option>
+            <option value="2">Grade 2</option>
+            <option value="3">Grade 3</option>
+            <option value="4">Grade 4</option>
+            <option value="5">Grade 5</option>
+            <option value="6">Grade 6</option>
+            <option value="7">Grade 7</option>
+            <option value="8">Grade 8</option>
+            <option value="9">Grade 9</option>
+            <option value="10">Grade 10</option>
+            <option value="11">Grade 11</option>
+            <option value="12">Grade 12</option>
+            <option value="13">Grade 13</option>
+
+        </select>
+
+
+        <!-- STREAM -->
+
+        <div
+            id="deleteSchemeStreamBox"
+            style="display:none;">
+
+            <label>
+                Stream
+            </label>
+
+            <select id="deleteSchemeStream">
+
+                <option value="">
+                    Select Stream
+                </option>
+
+                <option value="Science">
+                    Science
+                </option>
+
+                <option value="Commerce">
+                    Commerce
+                </option>
+
+                <option value="Arts">
+                    Arts
+                </option>
+
+                <option value="Technology">
+                    Technology
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- SUBJECT -->
+
+        <label>
+            Subject
+        </label>
+
+        <select
+            id="deleteSchemeSubject"
+            disabled>
+
+            <option value="">
+                Select Subject
+            </option>
+
+        </select>
+
+
+        <!-- SCHEME LIST -->
+
+        <div
+            id="deleteSchemeList"
+            style="margin-top:20px;">
+
+            <p>
+                Grade மற்றும் Subject
+                select செய்யுங்கள்.
+            </p>
+
+        </div>
+
+
+        <p id="deleteSchemeStatus"></p>
+
+    </div>
+
+</div>
  <!-- ======================================
      APP MANAGER
 ====================================== -->
@@ -3985,6 +4115,724 @@ newsDeleteToggle.addEventListener(
 
     }
 );
+ // ======================================
+// SCHEME DELETE MANAGER
+// ======================================
+
+const deleteSchemeGrade =
+    document.getElementById(
+        "deleteSchemeGrade"
+    );
+
+const deleteSchemeStreamBox =
+    document.getElementById(
+        "deleteSchemeStreamBox"
+    );
+
+const deleteSchemeStream =
+    document.getElementById(
+        "deleteSchemeStream"
+    );
+
+const deleteSchemeSubject =
+    document.getElementById(
+        "deleteSchemeSubject"
+    );
+
+const deleteSchemeList =
+    document.getElementById(
+        "deleteSchemeList"
+    );
+
+const deleteSchemeStatus =
+    document.getElementById(
+        "deleteSchemeStatus"
+    );
+
+
+// ======================================
+// SCHEME TOGGLE
+// ======================================
+
+const schemeDeleteToggle =
+    document.getElementById(
+        "schemeDeleteToggle"
+    );
+
+const schemeDeleteContent =
+    document.getElementById(
+        "schemeDeleteContent"
+    );
+
+const schemeDeleteArrow =
+    document.getElementById(
+        "schemeDeleteArrow"
+    );
+
+
+let schemeDeleteOpen = false;
+
+
+schemeDeleteToggle.addEventListener(
+    "click",
+    function () {
+
+        schemeDeleteOpen =
+            !schemeDeleteOpen;
+
+
+        if (schemeDeleteOpen) {
+
+            schemeDeleteContent.style.display =
+                "block";
+
+            schemeDeleteArrow.textContent =
+                "▲";
+
+        }
+        else {
+
+            schemeDeleteContent.style.display =
+                "none";
+
+            schemeDeleteArrow.textContent =
+                "▼";
+
+        }
+
+    }
+);
+
+
+// ======================================
+// SCHEME DATABASE
+// ======================================
+
+let deleteSchemeDatabase = [];
+
+
+// ======================================
+// LOAD SCHEMES
+// ======================================
+
+async function loadDeleteSchemes() {
+
+    deleteSchemeList.innerHTML = `
+        <p>
+            Loading Schemes...
+        </p>
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                "assets/data/schemes.json?v=" +
+                Date.now()
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "schemes.json could not be loaded."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        deleteSchemeDatabase =
+            Array.isArray(data.schemes)
+                ? data.schemes
+                : [];
+
+
+        loadDeleteSchemeSubjects();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Scheme Delete Load Error:",
+            error
+        );
+
+
+        deleteSchemeList.innerHTML = `
+            <div class="delete-error">
+
+                ❌ ${escapeDeleteText(
+                    error.message
+                )}
+
+            </div>
+        `;
+
+    }
+
+}
+
+
+// ======================================
+// LOAD SUBJECTS
+// ======================================
+
+function loadDeleteSchemeSubjects() {
+
+    const grade =
+        deleteSchemeGrade.value;
+
+
+    deleteSchemeSubject.innerHTML = `
+        <option value="">
+            Select Subject
+        </option>
+    `;
+
+
+    deleteSchemeSubject.disabled =
+        true;
+
+
+    deleteSchemeList.innerHTML = `
+        <p>
+            Subject select செய்யுங்கள்.
+        </p>
+    `;
+
+
+    if (!grade) {
+
+        return;
+
+    }
+
+
+    // ==================================
+    // GET SUBJECTS FOR SELECTED GRADE
+    // ==================================
+
+    const subjects =
+        [
+            ...new Set(
+                deleteSchemeDatabase
+                    .filter(
+                        scheme =>
+                            scheme.grade === grade
+                    )
+                    .map(
+                        scheme =>
+                            scheme.subject
+                    )
+            )
+        ];
+
+
+    subjects.forEach(
+        function (subject) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                subject;
+
+
+            option.textContent =
+                subject;
+
+
+            deleteSchemeSubject.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    deleteSchemeSubject.disabled =
+        subjects.length === 0;
+
+
+    if (subjects.length === 0) {
+
+        deleteSchemeList.innerHTML = `
+            <div class="no-news">
+
+                <p>
+                    📚 இந்த Grade-ல் Scheme இல்லை.
+                </p>
+
+            </div>
+        `;
+
+    }
+
+}
+
+
+// ======================================
+// LOAD SCHEMES FOR SUBJECT
+// ======================================
+
+function loadDeleteSchemeList() {
+
+    const grade =
+        deleteSchemeGrade.value;
+
+    const subject =
+        deleteSchemeSubject.value;
+
+
+    if (!grade || !subject) {
+
+        deleteSchemeList.innerHTML = `
+            <p>
+                Subject select செய்யுங்கள்.
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    const schemes =
+        deleteSchemeDatabase.filter(
+            scheme =>
+                scheme.grade === grade &&
+                scheme.subject === subject
+        );
+
+
+    // ==================================
+    // NO SCHEMES
+    // ==================================
+
+    if (schemes.length === 0) {
+
+        deleteSchemeList.innerHTML = `
+            <div class="no-news">
+
+                <p>
+                    📚 இந்த Subject-ல் Scheme இல்லை.
+                </p>
+
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    // ==================================
+    // LIST
+    // ==================================
+
+    deleteSchemeList.innerHTML = `
+        <h3>
+            📚 Existing Schemes
+        </h3>
+    `;
+
+
+    schemes.forEach(
+        function (scheme) {
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.style.display =
+                "flex";
+
+            row.style.alignItems =
+                "center";
+
+            row.style.justifyContent =
+                "space-between";
+
+            row.style.gap =
+                "15px";
+
+            row.style.padding =
+                "15px";
+
+            row.style.marginBottom =
+                "12px";
+
+            row.style.background =
+                "#ffffff";
+
+            row.style.borderRadius =
+                "12px";
+
+            row.style.boxShadow =
+                "0 3px 12px rgba(0,0,0,0.08)";
+
+
+            // ==================================
+            // INFO
+            // ==================================
+
+            const info =
+                document.createElement(
+                    "div"
+                );
+
+
+            info.style.minWidth =
+                "0";
+
+
+            info.innerHTML = `
+
+                <strong>
+
+                    📚 ${escapeDeleteText(
+                        scheme.title ||
+                        "Untitled Scheme"
+                    )}
+
+                </strong>
+
+                <br>
+
+                <small>
+
+                    Grade ${escapeDeleteText(
+                        scheme.grade
+                    )}
+
+                    -
+
+                    ${escapeDeleteText(
+                        scheme.subject
+                    )}
+
+                    <br>
+
+                    📅 ${escapeDeleteText(
+                        scheme.date || ""
+                    )}
+
+                </small>
+
+            `;
+
+
+            // ==================================
+            // DELETE BUTTON
+            // ==================================
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.type =
+                "button";
+
+
+            button.textContent =
+                "🗑️ Delete";
+
+
+            button.style.background =
+                "#d32f2f";
+
+            button.style.color =
+                "white";
+
+            button.style.border =
+                "none";
+
+            button.style.borderRadius =
+                "8px";
+
+            button.style.padding =
+                "10px 14px";
+
+            button.style.cursor =
+                "pointer";
+
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    deleteSelectedScheme(
+                        scheme
+                    );
+
+                }
+            );
+
+
+            row.appendChild(
+                info
+            );
+
+            row.appendChild(
+                button
+            );
+
+
+            deleteSchemeList.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+// ======================================
+// DELETE SELECTED SCHEME
+// ======================================
+
+async function deleteSelectedScheme(
+    scheme
+) {
+
+    if (!scheme || !scheme.id) {
+
+        alert(
+            "❌ Scheme ID கிடைக்கவில்லை."
+        );
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            "⚠️ இந்த Scheme-ஐ Delete செய்யவா?\n\n" +
+            "Scheme: " +
+            (scheme.title || "Untitled") +
+            "\n\n" +
+            "இந்த action-ஐ undo செய்ய முடியாது."
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    // ==================================
+    // ADMIN KEY
+    // ==================================
+
+    const adminKey =
+        adminKeyInput.value.trim();
+
+
+    if (!adminKey) {
+
+        alert(
+            "Please enter Admin Key."
+        );
+
+        return;
+
+    }
+
+
+    deleteSchemeStatus.textContent =
+        "Deleting Scheme...";
+
+
+    try {
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "type",
+            "deleteScheme"
+        );
+
+
+        formData.append(
+            "id",
+            scheme.id
+        );
+
+
+        const response =
+            await fetch(
+                SCHEME_WORKER_URL,
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "X-Admin-Key":
+                            adminKey
+
+                    },
+
+                    body:
+                        formData
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !result.success
+        ) {
+
+            throw new Error(
+                result.message ||
+                "Scheme deletion failed."
+            );
+
+        }
+
+
+        // ==================================
+        // SUCCESS
+        // ==================================
+
+        deleteSchemeStatus.textContent =
+            "✅ Scheme deleted successfully!";
+
+
+        alert(
+            "✅ Scheme deleted successfully!"
+        );
+
+
+        // ==================================
+        // REFRESH DATABASE
+        // ==================================
+
+        await loadDeleteSchemes();
+
+
+        // Restore selected Grade
+
+        deleteSchemeGrade.value =
+            scheme.grade;
+
+
+        loadDeleteSchemeSubjects();
+
+
+        // Restore selected Subject
+
+        deleteSchemeSubject.value =
+            scheme.subject;
+
+
+        loadDeleteSchemeList();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Scheme Delete Error:",
+            error
+        );
+
+
+        deleteSchemeStatus.textContent =
+            "❌ " +
+            error.message;
+
+
+        alert(
+            "❌ Scheme deletion failed:\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+// ======================================
+// GRADE CHANGE
+// ======================================
+
+deleteSchemeGrade.addEventListener(
+    "change",
+    function () {
+
+        loadDeleteSchemeSubjects();
+
+    }
+);
+
+
+// ======================================
+// SUBJECT CHANGE
+// ======================================
+
+deleteSchemeSubject.addEventListener(
+    "change",
+    function () {
+
+        loadDeleteSchemeList();
+
+    }
+);
+
+
+// ======================================
+// HTML ESCAPE
+// ======================================
+
+function escapeDeleteText(value) {
+
+    return String(value || "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}           
 </script>
 </body>
 
