@@ -674,6 +674,21 @@
     <p id="deletePaperStatus"></p>
 
 </div>
+      <!-- ==================================
+     NEWS DELETE
+     ================================== -->
+
+<section class="delete-section">
+
+    <h2>📰 Delete News</h2>
+
+    <div id="deleteNewsList">
+
+        <p>Loading News...</p>
+
+    </div>
+
+</section>
 </main>
 
 
@@ -3410,6 +3425,390 @@ deleteTerm.addEventListener(
 
     }
 );
+
+</script>
+      <script>
+
+/* ==================================
+   NEWS DELETE
+   ================================== */
+
+const deleteNewsList =
+    document.getElementById("deleteNewsList");
+
+
+/* ==================================
+   LOAD NEWS
+   ================================== */
+
+async function loadDeleteNews() {
+
+    if (!deleteNewsList) {
+        return;
+    }
+
+    deleteNewsList.innerHTML =
+        "<p>Loading News...</p>";
+
+    try {
+
+        const response =
+            await fetch(
+                "assets/data/news.json?v=" +
+                Date.now()
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "news.json could not be loaded."
+            );
+
+        }
+
+        const data =
+            await response.json();
+
+        const news =
+            Array.isArray(data.news)
+                ? data.news
+                : [];
+
+
+        /* ==========================
+           NO NEWS
+           ========================== */
+
+        if (news.length === 0) {
+
+            deleteNewsList.innerHTML = `
+                <div class="no-news">
+                    <p>📰 No news available.</p>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        /* ==========================
+           NEWS LIST
+           ========================== */
+
+        deleteNewsList.innerHTML =
+            news.map(
+                (item, index) => `
+
+                <div
+                    class="delete-news-card"
+                    data-index="${index}">
+
+                    <div class="delete-news-info">
+
+                        ${
+                            item.image
+                            ? `
+                            <img
+                                src="${item.image}"
+                                class="delete-news-image"
+                                alt="News Image"
+                                onerror="this.style.display='none'">
+                            `
+                            : ""
+                        }
+
+                        <div>
+
+                            <h3>
+                                ${escapeDeleteHTML(
+                                    item.title
+                                )}
+                            </h3>
+
+                            <p>
+                                📅 ${
+                                    escapeDeleteHTML(
+                                        item.date || ""
+                                    )
+                                }
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="delete-news-button"
+                        onclick="deleteNewsItem(${index})">
+
+                        🗑️ Delete
+
+                    </button>
+
+                </div>
+
+                `
+            ).join("");
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "NEWS DELETE LOAD ERROR:",
+            error
+        );
+
+        deleteNewsList.innerHTML = `
+
+            <div class="delete-error">
+
+                <p>
+                    ❌ Unable to load news.
+                </p>
+
+                <small>
+                    ${escapeDeleteHTML(
+                        error.message
+                    )}
+                </small>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* ==================================
+   DELETE NEWS
+   ================================== */
+
+async function deleteNewsItem(index) {
+
+    try {
+
+        /* ==========================
+           GET NEWS
+           ========================== */
+
+        const response =
+            await fetch(
+                "assets/data/news.json?v=" +
+                Date.now()
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load news."
+            );
+
+        }
+
+        const data =
+            await response.json();
+
+        const news =
+            Array.isArray(data.news)
+                ? data.news
+                : [];
+
+
+        const item =
+            news[index];
+
+
+        if (!item) {
+
+            alert(
+                "News item not found."
+            );
+
+            return;
+
+        }
+
+
+        /* ==========================
+           CONFIRM
+           ========================== */
+
+        const confirmed =
+            confirm(
+                "இந்த News-ஐ Delete செய்யவா?\n\n" +
+                item.title
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        /* ==========================
+           ADMIN KEY
+           ========================== */
+
+        const adminKey =
+            prompt(
+                "Admin Key உள்ளிடவும்:"
+            );
+
+
+        if (!adminKey) {
+
+            return;
+
+        }
+
+
+        /* ==========================
+           FORM DATA
+           ========================== */
+
+        const formData =
+            new FormData();
+
+        formData.append(
+            "type",
+            "deleteNews"
+        );
+
+        formData.append(
+            "title",
+            item.title
+        );
+
+        formData.append(
+            "date",
+            item.date || ""
+        );
+
+        formData.append(
+            "image",
+            item.image || ""
+        );
+
+
+        /* ==========================
+           SEND REQUEST
+           ========================== */
+
+        const deleteResponse =
+            await fetch(
+                "https://slexams-upload.genkaweb.workers.dev",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "X-Admin-Key":
+                            adminKey
+                    },
+
+                    body:
+                        formData
+                }
+            );
+
+
+        const result =
+            await deleteResponse.json();
+
+
+        /* ==========================
+           SUCCESS
+           ========================== */
+
+        if (
+            deleteResponse.ok &&
+            result.success
+        ) {
+
+            alert(
+                "✅ News deleted successfully!"
+            );
+
+
+            /* Refresh list */
+
+            loadDeleteNews();
+
+        }
+
+        else {
+
+            alert(
+                "❌ Delete failed:\n\n" +
+                (
+                    result.message ||
+                    "Unknown error."
+                )
+            );
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "NEWS DELETE ERROR:",
+            error
+        );
+
+        alert(
+            "❌ Error:\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* ==================================
+   HTML ESCAPE
+   ================================== */
+
+function escapeDeleteHTML(value) {
+
+    return String(value || "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* ==================================
+   INITIAL LOAD
+   ================================== */
+
+loadDeleteNews();
 
 </script>
 </body>
