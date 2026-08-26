@@ -3933,32 +3933,31 @@ function escapeDeleteHTML(value) {
    ================================== */
 
 const newsDeleteToggle =
-    document.getElementById(
-        "newsDeleteToggle"
-    );
+    document.getElementById("newsDeleteToggle");
 
 const newsDeleteContent =
-    document.getElementById(
-        "newsDeleteContent"
-    );
+    document.getElementById("newsDeleteContent");
 
 const newsDeleteArrow =
-    document.getElementById(
-        "newsDeleteArrow"
-    );
+    document.getElementById("newsDeleteArrow");
+
+
+let newsDeleteOpen = false;
 
 
 newsDeleteToggle.addEventListener(
     "click",
     function () {
 
-        const isHidden =
-            newsDeleteContent.style.display === "none";
+        newsDeleteOpen =
+            !newsDeleteOpen;
 
 
-        if (isHidden) {
+        if (newsDeleteOpen) {
 
-            /* SHOW NEWS */
+            // ==========================
+            // SHOW
+            // ==========================
 
             newsDeleteContent.style.display =
                 "block";
@@ -3966,15 +3965,15 @@ newsDeleteToggle.addEventListener(
             newsDeleteArrow.textContent =
                 "▲";
 
-
-            /* LOAD NEWS ONLY WHEN OPENED */
-
+            // Load News
             loadDeleteNews();
 
         }
         else {
 
-            /* HIDE NEWS */
+            // ==========================
+            // HIDE
+            // ==========================
 
             newsDeleteContent.style.display =
                 "none";
@@ -3986,7 +3985,6 @@ newsDeleteToggle.addEventListener(
 
     }
 );
-
 </script>
 </body>
 
