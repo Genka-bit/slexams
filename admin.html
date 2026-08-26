@@ -283,6 +283,27 @@
 
 <p id="newsStatus"></p>
 
+
+<!-- ======================================
+     NEWS LIST / DELETE
+====================================== -->
+
+<button
+    type="button"
+    id="toggleNewsListBtn"
+    style="margin-top:10px;">
+
+    📰 View / Manage News
+
+</button>
+
+
+<div
+    id="newsDeleteList"
+    style="display:none; margin-top:20px;">
+
+</div>
+
 </div>
 
 
@@ -689,6 +710,41 @@
     </div>
 
 </section>
+      <!-- ======================================
+     NEWS DELETE MANAGER
+====================================== -->
+
+<div class="admin-card">
+
+    <h2
+        id="newsDeleteToggle"
+        style="cursor:pointer;">
+        📰 News
+        <span id="newsDeleteArrow">▼</span>
+    </h2>
+
+
+    <div
+        id="newsDeleteContent"
+        style="display:none;">
+
+        <p>
+            ஏற்கனவே பதிவிட்ட News-களை இங்கிருந்து Delete செய்யலாம்.
+        </p>
+
+        <div id="deleteNewsList">
+
+            <p>
+                News list பார்க்க News-ஐ click செய்யுங்கள்.
+            </p>
+
+        </div>
+
+        <p id="deleteNewsStatus"></p>
+
+    </div>
+
+</div>
 </main>
 
 
@@ -1564,7 +1620,75 @@ false;
 }
 
 });
+// ======================================
+// NEWS VIEW / MANAGE
+// ======================================
 
+const toggleNewsListBtn =
+    document.getElementById(
+        "toggleNewsListBtn"
+    );
+
+const newsDeleteList =
+    document.getElementById(
+        "newsDeleteList"
+    );
+
+
+// ======================================
+// SHOW / HIDE NEWS LIST
+// ======================================
+
+toggleNewsListBtn.addEventListener(
+    "click",
+    async function () {
+
+        // ----------------------------------
+        // HIDE
+        // ----------------------------------
+
+        if (
+            newsDeleteList.style.display ===
+            "block"
+        ) {
+
+            newsDeleteList.style.display =
+                "none";
+
+            toggleNewsListBtn.textContent =
+                "📰 View / Manage News";
+
+            return;
+
+        }
+
+
+        // ----------------------------------
+        // SHOW
+        // ----------------------------------
+
+        newsDeleteList.style.display =
+            "block";
+
+        toggleNewsListBtn.textContent =
+            "🔽 Hide News List";
+
+
+        newsDeleteList.innerHTML = `
+            <p>
+                Loading News...
+            </p>
+        `;
+
+
+        // ----------------------------------
+        // LOAD NEWS
+        // ----------------------------------
+
+        await loadNewsDeleteList();
+
+    }
+);
 
 // ======================================
 // SCHEME MANAGER
@@ -3805,10 +3929,63 @@ function escapeDeleteHTML(value) {
 
 
 /* ==================================
-   INITIAL LOAD
+   NEWS TOGGLE
    ================================== */
 
-loadDeleteNews();
+const newsDeleteToggle =
+    document.getElementById(
+        "newsDeleteToggle"
+    );
+
+const newsDeleteContent =
+    document.getElementById(
+        "newsDeleteContent"
+    );
+
+const newsDeleteArrow =
+    document.getElementById(
+        "newsDeleteArrow"
+    );
+
+
+newsDeleteToggle.addEventListener(
+    "click",
+    function () {
+
+        const isHidden =
+            newsDeleteContent.style.display === "none";
+
+
+        if (isHidden) {
+
+            /* SHOW NEWS */
+
+            newsDeleteContent.style.display =
+                "block";
+
+            newsDeleteArrow.textContent =
+                "▲";
+
+
+            /* LOAD NEWS ONLY WHEN OPENED */
+
+            loadDeleteNews();
+
+        }
+        else {
+
+            /* HIDE NEWS */
+
+            newsDeleteContent.style.display =
+                "none";
+
+            newsDeleteArrow.textContent =
+                "▼";
+
+        }
+
+    }
+);
 
 </script>
 </body>
