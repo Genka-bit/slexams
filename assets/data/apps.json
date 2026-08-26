@@ -20,24 +20,6 @@
       "website": ""
     },
     {
-      "id": "android-test-education-app",
-      "platform": "android",
-      "name": "Test Education App",
-      "version": "1.0",
-      "mainImage": "assets/images/apps/android-test-education-app/main.png",
-      "previewImages": [
-        "assets/images/apps/android-test-education-app/preview-1.jpg",
-        "assets/images/apps/android-test-education-app/preview-2.jpg",
-        "assets/images/apps/android-test-education-app/preview-3.png",
-        "assets/images/apps/android-test-education-app/preview-4.jpg"
-      ],
-      "demo": "Test educational application",
-      "description": "This is a test app for SLExam Pro.",
-      "download": "https://drive.google.com/file/d/1suXMuMLmdsyd2SlxWKWfxt6k5vUfHiYE/view?usp=drivesdk",
-      "playStore": "",
-      "website": ""
-    },
-    {
       "id": "slexams",
       "platform": "android",
       "name": "SLExam App",
