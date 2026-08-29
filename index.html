@@ -1,322 +1,1036 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>SLExam Pro | Sri Lanka Exam Papers</title>
 
-<link rel="stylesheet" href="assets/css/style.css">
+<link
+    rel="stylesheet"
+    href="assets/css/style.css"
+>
+
+<style>
+
+/* ======================================
+   HOME PAGE NEW LAYOUT
+   ====================================== */
+
+.home-main {
+    padding-bottom: 40px;
+}
+
+/* ======================================
+   WELCOME
+   ====================================== */
+
+.welcome-section {
+    text-align: center;
+    padding: 35px 15px 20px;
+}
+
+.welcome-section h1 {
+    margin: 0;
+    color: #1769d1;
+    font-size: 32px;
+}
+
+.welcome-section p {
+    margin-top: 8px;
+    color: #666;
+}
+
+
+/* ======================================
+   CHOOSE GRADE
+   ====================================== */
+
+.home-grades {
+    padding: 10px 15px 25px;
+}
+
+.home-section-title {
+    text-align: center;
+    color: #1769d1;
+    margin-bottom: 20px;
+    font-size: 26px;
+}
+
+.home-grade-grid {
+    max-width: 850px;
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 12px;
+}
+
+.home-grade-card {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 58px;
+
+    background: #ffffff;
+
+    color: #1769d1;
+
+    text-decoration: none;
+
+    font-weight: 700;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.08);
+
+    transition: 0.2s;
+}
+
+.home-grade-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 18px
+        rgba(0,0,0,0.12);
+}
+
+
+/* ======================================
+   ADVERTISEMENT
+   ====================================== */
+
+.home-ad {
+
+    max-width: 850px;
+
+    min-height: 90px;
+
+    margin: 15px auto 25px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #f5f5f5;
+
+    border: 1px dashed #cccccc;
+
+    border-radius: 12px;
+
+    color: #999;
+
+    font-size: 14px;
+}
+
+
+/* ======================================
+   RECENTLY ADDED
+   ====================================== */
+
+.recent-section {
+
+    max-width: 850px;
+
+    margin: 25px auto;
+
+    padding: 0 15px;
+}
+
+.recent-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.recent-item {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 15px 18px;
+
+    background: #ffffff;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.07);
+
+    text-decoration: none;
+
+    color: #222;
+}
+
+.recent-item-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+.recent-icon {
+
+    font-size: 24px;
+}
+
+.recent-title {
+
+    font-weight: 700;
+}
+
+.recent-meta {
+
+    margin-top: 3px;
+
+    color: #777;
+
+    font-size: 13px;
+}
+
+.recent-arrow {
+
+    font-size: 22px;
+
+    color: #1769d1;
+}
+
+
+/* ======================================
+   MENU RECENT
+   ====================================== */
+
+.menu-recent-grid {
+
+    max-width: 1100px;
+
+    margin: 30px auto;
+
+    padding: 0 15px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 18px;
+}
+
+.menu-recent-card {
+
+    background: #ffffff;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    box-shadow:
+        0 3px 14px
+        rgba(0,0,0,0.08);
+}
+
+.menu-recent-card h3 {
+
+    margin-top: 0;
+
+    color: #1769d1;
+
+    font-size: 19px;
+}
+
+.menu-recent-card .recent-small {
+
+    padding: 10px 0;
+
+    border-bottom:
+        1px solid #eeeeee;
+
+    font-size: 14px;
+}
+
+.menu-recent-card .recent-small:last-child {
+
+    border-bottom: none;
+}
+
+.view-all {
+
+    display: inline-block;
+
+    margin-top: 12px;
+
+    color: #1769d1;
+
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+
+/* ======================================
+   FEATURES
+   ====================================== */
+
+.home-features {
+
+    max-width: 1100px;
+
+    margin: 40px auto;
+
+    padding: 0 15px;
+}
+
+.feature-home-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+}
+
+.feature-home-card {
+
+    background: #ffffff;
+
+    text-align: center;
+
+    padding: 20px 12px;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.07);
+}
+
+.feature-home-card .icon {
+
+    font-size: 30px;
+}
+
+.feature-home-card h3 {
+
+    color: #1769d1;
+
+    margin: 10px 0 5px;
+}
+
+.feature-home-card p {
+
+    color: #666;
+
+    font-size: 14px;
+}
+
+
+/* ======================================
+   MOBILE
+   ====================================== */
+
+@media (max-width: 700px) {
+
+    .welcome-section {
+
+        padding-top: 25px;
+    }
+
+    .welcome-section h1 {
+
+        font-size: 27px;
+    }
+
+    .home-grade-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 10px;
+    }
+
+    .home-grade-card {
+
+        min-height: 52px;
+
+        font-size: 14px;
+    }
+
+    .menu-recent-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+    .feature-home-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+</style>
 
 </head>
 
+
 <body>
 
-<!-- Header -->
+
+<!-- ======================================
+     HEADER
+     ====================================== -->
 
 <header class="header">
-<button id="menuBtn" class="menu-btn">
-☰
-</button>
+
+    <button
+        id="menuBtn"
+        class="menu-btn"
+    >
+        ☰
+    </button>
+
     <div class="logo">
-        <h1>SLExam <span>Pro</span></h1>
+
+        <h1>
+            SLExam
+            <span>Pro</span>
+        </h1>
+
     </div>
 
+
     <nav class="navbar">
-        <a href="index.html">Home</a>
-        <a href="news.html">Education News</a>
-        <a href="scheme.html">Schemes</a>
-        <a href="apps.html">Apps</a>
-        <a href="about.html">About</a>
+
+        <a href="index.html">
+            Home
+        </a>
+
+        <a href="news.html">
+            Education News
+        </a>
+
+        <a href="scheme.html">
+            Schemes
+        </a>
+
+        <a href="apps.html">
+            Apps
+        </a>
+
+        <a href="about.html">
+            About
+        </a>
+
     </nav>
-    <button id="darkModeBtn" class="dark-btn">
-🌙
+
+
+    <button
+        id="darkModeBtn"
+        class="dark-btn"
+    >
+        🌙
     </button>
 
 </header>
 
-<!-- Hero -->
 
-<section class="hero">
 
-    <h1>Sri Lanka Exam Papers</h1>
+<main class="home-main">
+
+
+<!-- ======================================
+     WELCOME
+     ====================================== -->
+
+<section class="welcome-section">
+
+    <h1>
+        Sri Lanka Exam Papers
+    </h1>
 
     <p>
-        Download Grade 1 - Grade 13 School Exam Papers Free
+        Free School Exam Papers
+        from Grade 1 to Grade 13
     </p>
 
-    <div class="search-box">
+</section>
 
-    <input
-        type="text"
-        id="searchInput"
-        placeholder="Search Grade (e.g. Grade 10)">
 
-    <button id="searchBtn">
-        🔍 Search
-    </button>
+
+<!-- ======================================
+     CHOOSE YOUR GRADE
+     ====================================== -->
+
+<section class="home-grades">
+
+    <h2 class="home-section-title">
+        Choose Your Grade
+    </h2>
+
+
+    <div class="home-grade-grid">
+
+
+        <a
+            class="home-grade-card"
+            href="grade.html?grade=1"
+        >
+            Grade 1
+        </a>
+
+
+        <a
+            class="home-grade-card"
+            href="grade.html?grade=2"
+        >
+            Grade 2
+        </a>
+
+
+        <a
+            class="home-grade-card"
+            href="grade.html?grade=3"
+        >
+            Grade 3
+        </a>
+
+
+        <a
+            class="home-grade-card"
+            href="grade.html?grade=4"
+        >
+            Grade 4
+        </a>
+
+
+        <a
+            class="home-grade-card"
+            href="grade.html?grade=5"
+        >
+            Grade 5
+        </a>
+
+
+        <a
+            class="home-grade-card"
+            href="grade.html?grade=6"
+        >
+            Grade 6
+        </a>
+
+
+        <a
+            class="home-grade-card"
+            href="grade.html?grade=7"
+        >
+            Grade 7
+        </a>
+
+
+        <a
+            class="home-grade-card"
+            href="grade.html?grade=8"
+        >
+            Grade 8
+        </a>
+
+
+        <a
+            class="home-grade-card"
+            href="grade.html?grade=9"
+        >
+            Grade 9
+        </a>
+
+
+        <a
+            class="home-grade-card"
+            href="grade.html?grade=10"
+        >
+            Grade 10
+        </a>
+
+
+        <a
+            class="home-grade-card"
+            href="grade.html?grade=11"
+        >
+            Grade 11
+        </a>
+
+
+        <a
+            class="home-grade-card"
+            href="grade.html?grade=12"
+        >
+            Grade 12 (A/L)
+        </a>
+
+
+        <a
+            class="home-grade-card"
+            href="grade.html?grade=13"
+        >
+            Grade 13 (A/L)
+        </a>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ======================================
+     ADVERTISEMENT 1
+     ====================================== -->
+
+<div class="home-ad">
+
+    Advertisement
 
 </div>
 
-</section>
-<!-- Image Slider -->
 
-<section class="slider">
 
-    <div class="slides">
+<!-- ======================================
+     RECENTLY ADDED PAPERS
+     ====================================== -->
 
-        <div class="slide active">
-            <h2>📚 Download Free Exam Papers</h2>
-            <p>Grade 1 - Grade 13</p>
+<section class="recent-section">
+
+    <h2 class="home-section-title">
+        📄 Recently Added Papers
+    </h2>
+
+
+    <div
+        id="recentPapers"
+        class="recent-list"
+    >
+
+        <div class="recent-item">
+
+            <div class="recent-item-left">
+
+                <div class="recent-icon">
+                    📄
+                </div>
+
+                <div>
+
+                    <div class="recent-title">
+                        Recently Added Papers
+                    </div>
+
+                    <div class="recent-meta">
+                        Latest exam papers will appear here
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="recent-arrow">
+                →
+            </div>
+
         </div>
 
-        <div class="slide">
-            <h2>🎓 Welcome to SLExam Pro</h2>
-            <p>Sri Lanka Educational Resources</p>
+    </div>
+
+</section>
+
+
+
+<!-- ======================================
+     ADVERTISEMENT 2
+     ====================================== -->
+
+<div class="home-ad">
+
+    Advertisement
+
+</div>
+
+
+
+<!-- ======================================
+     NEWS / SCHEME / APPS RECENT
+     ====================================== -->
+
+<section class="menu-recent-grid">
+
+
+    <!-- NEWS -->
+
+    <div class="menu-recent-card">
+
+        <h3>
+            📰 Recent Education News
+        </h3>
+
+
+        <div
+            id="recentNews"
+        >
+
+            <div class="recent-small">
+                Latest education news
+                will appear here.
+            </div>
+
+            <div class="recent-small">
+                Stay updated with
+                education news.
+            </div>
+
+            <div class="recent-small">
+                New updates will be
+                added automatically.
+            </div>
+
         </div>
 
-        <div class="slide">
-            <h2>📰 Latest Education News</h2>
-            <p>Stay Updated Every Day</p>
+
+        <a
+            class="view-all"
+            href="news.html"
+        >
+            View All News →
+        </a>
+
+    </div>
+
+
+
+    <!-- SCHEMES -->
+
+    <div class="menu-recent-card">
+
+        <h3>
+            📚 Recent Schemes
+        </h3>
+
+
+        <div
+            id="recentSchemes"
+        >
+
+            <div class="recent-small">
+                Latest marking schemes
+                will appear here.
+            </div>
+
+            <div class="recent-small">
+                New schemes will be
+                added automatically.
+            </div>
+
+            <div class="recent-small">
+                Find useful schemes
+                for your papers.
+            </div>
+
         </div>
 
-        <div class="slide">
-            <h2>📱 Mobile Friendly</h2>
-            <p>Access Anywhere, Anytime</p>
+
+        <a
+            class="view-all"
+            href="scheme.html"
+        >
+            View All Schemes →
+        </a>
+
+    </div>
+
+
+
+    <!-- APPS -->
+
+    <div class="menu-recent-card">
+
+        <h3>
+            📱 Recent Education Apps
+        </h3>
+
+
+        <div
+            id="recentApps"
+        >
+
+            <div class="recent-small">
+                Latest education apps
+                will appear here.
+            </div>
+
+            <div class="recent-small">
+                New apps will be
+                added automatically.
+            </div>
+
+            <div class="recent-small">
+                Useful learning apps
+                for students.
+            </div>
+
         </div>
 
+
+        <a
+            class="view-all"
+            href="apps.html"
+        >
+            View All Apps →
+        </a>
+
     </div>
 
-</section>
-    <!-- Statistics -->
-
-<section class="stats">
-
-    <div class="stat-card">
-        <h2>13</h2>
-        <p>Grades</p>
-    </div>
-
-    <div class="stat-card">
-        <h2>100+</h2>
-        <p>Subjects</p>
-    </div>
-
-    <div class="stat-card">
-        <h2>1000+</h2>
-        <p>Exam Papers</p>
-    </div>
-
-    <div class="stat-card">
-        <h2>Free</h2>
-        <p>Downloads</p>
-    </div>
-
-</section>
-<!-- Grades -->
-
-<section class="grades">
-
-<h2 class="section-title">
-
-Choose Your Grade
-
-</h2>
-
-<div class="grade-grid">
-
-<a class="grade-card" href="grade.html?grade=1">Grade 1</a>
-
-<a class="grade-card" href="grade.html?grade=2">Grade 2</a>
-
-<a class="grade-card" href="grade.html?grade=3">Grade 3</a>
-
-<a class="grade-card" href="grade.html?grade=4">Grade 4</a>
-
-<a class="grade-card" href="grade.html?grade=5">Grade 5</a>
-
-<a class="grade-card" href="grade.html?grade=6">Grade 6</a>
-
-<a class="grade-card" href="grade.html?grade=7">Grade 7</a>
-
-<a class="grade-card" href="grade.html?grade=8">Grade 8</a>
-
-<a class="grade-card" href="grade.html?grade=9">Grade 9</a>
-
-<a class="grade-card" href="grade.html?grade=10">Grade 10</a>
-
-<a class="grade-card" href="grade.html?grade=11">Grade 11</a>
-
-<a class="grade-card" href="grade.html?grade=12">Grade 12 (A/L)</a>
-
-<a class="grade-card" href="grade.html?grade=13">Grade 13 (A/L)</a>
-
-</div>
 
 </section>
 
-<!-- Features -->
 
-<section class="features">
 
-<h2 class="section-title">
+<!-- ======================================
+     ADVERTISEMENT 3
+     ====================================== -->
 
-Why Choose SLExam Pro?
+<div class="home-ad">
 
-</h2>
-
-<div class="feature-grid">
-
-<div class="feature-card">
-
-📚
-
-<h3>All Grades</h3>
-
-<p>
-
-Grade 1 to Grade 13 Papers
-
-</p>
+    Advertisement
 
 </div>
 
-<div class="feature-card">
 
-📄
 
-<h3>PDF Preview</h3>
+<!-- ======================================
+     WHY CHOOSE
+     ====================================== -->
 
-<p>
+<section class="home-features">
 
-View Papers Online
+    <h2 class="home-section-title">
+        Why Choose SLExam Pro?
+    </h2>
 
-</p>
 
-</div>
+    <div class="feature-home-grid">
 
-<div class="feature-card">
 
-⬇️
+        <div class="feature-home-card">
 
-<h3>Free Download</h3>
+            <div class="icon">
+                📚
+            </div>
 
-<p>
+            <h3>
+                All Grades
+            </h3>
 
-Download Without Cost
+            <p>
+                Grade 1 to Grade 13
+                exam papers
+            </p>
 
-</p>
+        </div>
 
-</div>
 
-<div class="feature-card">
 
-📱
+        <div class="feature-home-card">
 
-<h3>Mobile Friendly</h3>
+            <div class="icon">
+                📄
+            </div>
 
-<p>
+            <h3>
+                PDF Preview
+            </h3>
 
-Works Perfectly On Phones
+            <p>
+                View papers online
+            </p>
 
-</p>
+        </div>
 
-</div>
 
-</div>
+
+        <div class="feature-home-card">
+
+            <div class="icon">
+                ⬇️
+            </div>
+
+            <h3>
+                Free Download
+            </h3>
+
+            <p>
+                Download papers free
+            </p>
+
+        </div>
+
+
+
+        <div class="feature-home-card">
+
+            <div class="icon">
+                📱
+            </div>
+
+            <h3>
+                Mobile Friendly
+            </h3>
+
+            <p>
+                Works perfectly on phones
+            </p>
+
+        </div>
+
+
+    </div>
 
 </section>
 
-<!-- Quick Links -->
 
-<section class="grades">
+</main>
 
-<h2 class="section-title">
 
-Quick Links
 
-</h2>
-
-<div class="grade-grid">
-
-<a class="grade-card" href="news.html">
-
-Education News
-
-</a>
-
-<a class="grade-card" href="scheme.html">
-
-Marking Schemes
-
-</a>
-
-<a class="grade-card" href="apps.html">
-
-Education Apps
-
-</a>
-
-<a class="grade-card" href="about.html">
-
-About SLExam Pro
-
-</a>
-
-</div>
-
-</section>
-
-<!-- Footer -->
+<!-- ======================================
+     FOOTER
+     ====================================== -->
 
 <footer class="footer">
 
-<div class="footer-container">
+    <div class="footer-container">
 
-<div class="footer-box">
-<h3>SLExam Pro</h3>
-<p>Free Sri Lankan Educational Resource Website.</p>
-</div>
 
-<div class="footer-box">
-<h3>Quick Links</h3>
+        <div class="footer-box">
 
-<a href="index.html">Home</a>
-<a href="news.html">News</a>
-<a href="scheme.html">Schemes</a>
-<a href="apps.html">Apps</a>
+            <h3>
+                SLExam Pro
+            </h3>
 
-</div>
+            <p>
+                Free Sri Lankan Educational
+                Resource Website.
+            </p>
 
-<div class="footer-box">
-<h3>Support</h3>
+        </div>
 
-<a href="about.html">About Us</a>
-<a href="contact.html">Contact</a>
-<a href="disclaimer.html">
-    Disclaimer
-</a>
-</div>
 
-<div class="footer-box">
-<h3>Follow Us</h3>
+        <div class="footer-box">
 
-<p>📘 Facebook</p>
-<p>▶️ YouTube</p>
-<p>📸 Instagram</p>
+            <h3>
+                Quick Links
+            </h3>
 
-</div>
+            <a href="index.html">
+                Home
+            </a>
 
-</div>
+            <a href="news.html">
+                News
+            </a>
 
-<hr>
+            <a href="scheme.html">
+                Schemes
+            </a>
 
-<p class="copyright">
-© 2026 SLExam Pro | All Rights Reserved
-</p>
+            <a href="apps.html">
+                Apps
+            </a>
+
+        </div>
+
+
+        <div class="footer-box">
+
+            <h3>
+                Support
+            </h3>
+
+            <a href="about.html">
+                About Us
+            </a>
+
+            <a href="contact.html">
+                Contact
+            </a>
+
+            <a href="disclaimer.html">
+                Disclaimer
+            </a>
+
+        </div>
+
+
+        <div class="footer-box">
+
+            <h3>
+                Follow Us
+            </h3>
+
+            <p>
+                📘 Facebook
+            </p>
+
+            <p>
+                ▶️ YouTube
+            </p>
+
+            <p>
+                📸 Instagram
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <hr>
+
+
+    <p class="copyright">
+
+        © 2026 SLExam Pro |
+        All Rights Reserved
+
+    </p>
 
 </footer>
+
+
 
 <script src="assets/js/app.js"></script>
 
