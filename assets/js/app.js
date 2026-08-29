@@ -537,12 +537,11 @@ async function loadPaperPage() {
 
 }
 
-
 // ======================================
-// Part 7 - Search
+// Part 7 - Universal Search
 // ======================================
 
-function initializeSearch() {
+async function initializeSearch() {
 
     const input =
         document.getElementById("searchInput");
@@ -550,131 +549,699 @@ function initializeSearch() {
     const button =
         document.getElementById("searchBtn");
 
+    if (!input || !button) {
+        return;
+    }
 
-    if (!input || !button) return;
+    // ==================================
+    // CREATE SEARCH RESULT BOX
+    // ==================================
+
+    let resultBox =
+        document.getElementById("searchResults");
+
+    if (!resultBox) {
+
+        resultBox =
+            document.createElement("div");
+
+        resultBox.id =
+            "searchResults";
+
+        resultBox.className =
+            "search-results";
+
+        const searchBox =
+            document.querySelector(".search-box");
+
+        if (searchBox) {
+            searchBox.after(resultBox);
+        }
+
+    }
 
 
-    input.addEventListener(
-        "keypress",
-        event => {
+    // ==================================
+    // SEARCH FUNCTION
+    // ==================================
 
-            if (event.key === "Enter") {
+    async function performSearch() {
 
-                button.click();
+        const value =
+            input.value
+                .trim()
+                .toLowerCase();
+
+        if (!value) {
+
+            resultBox.innerHTML = "";
+
+            resultBox.style.display =
+                "none";
+
+            return;
+
+        }
+
+
+        resultBox.style.display =
+            "block";
+
+        resultBox.innerHTML =
+            "<p>🔎 Searching...</p>";
+
+
+        const results = [];
+
+
+        // ==================================
+        // GRADE SEARCH
+        // ==================================
+
+        const gradeMatch =
+            value.match(/grade\s*(\d+)/i);
+
+        if (gradeMatch) {
+
+            const searchedGrade =
+                Number.parseInt(
+                    gradeMatch[1],
+                    10
+                );
+
+            if (
+                searchedGrade >= 1 &&
+                searchedGrade <= 13
+            ) {
+
+                results.push({
+
+                    type: "📚 Grade",
+
+                    title:
+                        `Grade ${searchedGrade}`,
+
+                    link:
+                        `grade.html?grade=${searchedGrade}`
+
+                });
 
             }
 
         }
-    );
 
 
-    button.addEventListener(
-        "click",
-        () => {
+        // ==================================
+        // SUBJECT / PAPER SEARCH
+        // ==================================
 
-            const value =
-                input.value
-                    .trim()
-                    .toLowerCase();
+        for (
+            let g = 1;
+            g <= 13;
+            g++
+        ) {
 
+            try {
 
-            if (!value) return;
-
-
-            // ==============================
-            // Grade Search
-            // ==============================
-
-            const match =
-                value.match(/\d+/);
-
-
-            if (match) {
-
-                const searchedGrade =
-                    Number.parseInt(
-                        match[0],
-                        10
+                const response =
+                    await fetch(
+                        `assets/data/grade${g}.json`
                     );
 
+                if (!response.ok) {
+                    continue;
+                }
+
+                const data =
+                    await response.json();
+
+
+                // ==================================
+                // GRADE 1 - 11
+                // ==================================
+
+                if (data.subjects) {
+
+                    for (
+                        const subjectName
+                        of Object.keys(
+                            data.subjects
+                        )
+                    ) {
+
+                        const subjectLower =
+                            subjectName
+                                .toLowerCase();
+
+
+                        // Subject match
+
+                        if (
+                            subjectLower
+                                .includes(value)
+                        ) {
+
+                            results.push({
+
+                                type: "📚 Subject",
+
+                                title:
+                                    `Grade ${g} - ${subjectName}`,
+
+                                link:
+                                    `subject.html?grade=${g}&subject=${encodeURIComponent(subjectName)}`
+
+                            });
+
+                        }
+
+
+                        // Papers
+
+                        const terms =
+                            data.subjects[
+                                subjectName
+                            ];
+
+
+                        if (
+                            !terms ||
+                            typeof terms !==
+                            "object"
+                        ) {
+                            continue;
+                        }
+
+
+                        for (
+                            const termName
+                            of Object.keys(terms)
+                        ) {
+
+                            const papers =
+                                terms[termName];
+
+
+                            if (
+                                !Array.isArray(
+                                    papers
+                                )
+                            ) {
+                                continue;
+                            }
+
+
+                            papers.forEach(
+                                (item, index) => {
+
+                                    if (
+                                        !item ||
+                                        !item.title
+                                    ) {
+                                        return;
+                                    }
+
+
+                                    const paperTitle =
+                                        item.title
+                                            .toLowerCase();
+
+
+                                    if (
+                                        paperTitle
+                                            .includes(value)
+                                    ) {
+
+                                        const termNumber =
+                                            termName
+                                                .match(/\d+/)
+                                                ?. [0] ||
+                                            termName;
+
+
+                                        results.push({
+
+                                            type:
+                                                "📄 Paper",
+
+                                            title:
+                                                `Grade ${g} - ${item.title}`,
+
+                                            link:
+                                                `paper.html?grade=${g}&subject=${encodeURIComponent(subjectName)}&term=${termNumber}&paper=${index}`
+
+                                        });
+
+                                    }
+
+                                }
+                            );
+
+                        }
+
+                    }
+
+                }
+
+
+                // ==================================
+                // GRADE 12 - 13 STREAMS
+                // ==================================
 
                 if (
-                    searchedGrade >= 1 &&
-                    searchedGrade <= 13
+                    data.streamSubjects
                 ) {
 
-                    window.location.href =
-                        `grade.html?grade=${searchedGrade}`;
+                    for (
+                        const streamName
+                        of Object.keys(
+                            data.streamSubjects
+                        )
+                    ) {
 
-                    return;
+                        const subjects =
+                            data.streamSubjects[
+                                streamName
+                            ];
+
+
+                        if (
+                            !subjects ||
+                            typeof subjects !==
+                            "object"
+                        ) {
+                            continue;
+                        }
+
+
+                        for (
+                            const subjectName
+                            of Object.keys(
+                                subjects
+                            )
+                        ) {
+
+                            if (
+                                subjectName
+                                    .toLowerCase()
+                                    .includes(value)
+                            ) {
+
+                                results.push({
+
+                                    type:
+                                        "📚 Subject",
+
+                                    title:
+                                        `Grade ${g} - ${streamName} - ${subjectName}`,
+
+                                    link:
+                                        `subject.html?grade=${g}&stream=${encodeURIComponent(streamName)}&subject=${encodeURIComponent(subjectName)}`
+
+                                });
+
+                            }
+
+                        }
+
+                    }
 
                 }
 
             }
 
+            catch (error) {
 
-            // ==============================
-            // Subject Search
-            // ==============================
-
-            const subjects = {
-
-                "தமிழ்": 1,
-                "கணிதம்": 1,
-                "சுற்றாடல்": 1,
-                "ஆங்கிலம்": 1,
-                "இரண்டாம் மொழி": 1,
-
-                "விஞ்ஞானம்": 6,
-                "science": 6,
-                "வரலாறு": 6,
-                "history": 6,
-                "புவியியல்": 6,
-                "குடியியல்": 6,
-                "சுகாதாரம்": 6,
-                "சைவசமயம்": 6,
-                "கத்தோலிக்கம்": 6,
-                "கிறிஸ்தவம்": 6,
-                "இஸ்லாம்": 6,
-                "அழகியல்": 6,
-                "சிங்களம்": 6,
-                "ict": 6,
-                "pts": 6,
-
-                "வணிகக்கல்வி": 10,
-                "விவசாயம்": 10,
-                "technology": 10,
-
-                "physics": 12,
-                "chemistry": 12,
-                "biology": 12,
-                "combined mathematics": 12,
-                "accounting": 12,
-                "economics": 12,
-                "business studies": 12
-
-            };
-
-
-            if (subjects[value]) {
-
-                window.location.href =
-                    `grade.html?grade=${subjects[value]}`;
-
-                return;
+                console.error(
+                    `Search Grade ${g} Error:`,
+                    error
+                );
 
             }
 
+        }
 
-            alert(
-                "No matching Grade or Subject found."
+
+        // ==================================
+        // NEWS
+        // ==================================
+
+        try {
+
+            const response =
+                await fetch(
+                    `assets/data/news.json?v=${Date.now()}`
+                );
+
+            if (response.ok) {
+
+                const data =
+                    await response.json();
+
+                const news =
+                    Array.isArray(data.news)
+                        ? data.news
+                        : [];
+
+
+                news.forEach(item => {
+
+                    if (!item) {
+                        return;
+                    }
+
+                    const title =
+                        String(
+                            item.title || ""
+                        );
+
+
+                    if (
+                        title
+                            .toLowerCase()
+                            .includes(value)
+                    ) {
+
+                        results.push({
+
+                            type:
+                                "📰 News",
+
+                            title:
+                                title,
+
+                            link:
+                                "news.html"
+
+                        });
+
+                    }
+
+                });
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "News Search Error:",
+                error
             );
+
+        }
+
+
+        // ==================================
+        // SCHEMES
+        // ==================================
+
+        try {
+
+            const response =
+                await fetch(
+                    `assets/data/schemes.json?v=${Date.now()}`
+                );
+
+            if (response.ok) {
+
+                const data =
+                    await response.json();
+
+                const schemes =
+                    Array.isArray(
+                        data.schemes
+                    )
+                        ? data.schemes
+                        : [];
+
+
+                schemes.forEach(item => {
+
+                    if (!item) {
+                        return;
+                    }
+
+
+                    const searchText =
+                        (
+                            item.title ||
+                            ""
+                        ).toLowerCase();
+
+
+                    if (
+                        searchText
+                            .includes(value)
+                    ) {
+
+                        results.push({
+
+                            type:
+                                "📚 Scheme",
+
+                            title:
+                                item.title,
+
+                            link:
+                                "scheme.html"
+
+                        });
+
+                    }
+
+                });
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Scheme Search Error:",
+                error
+            );
+
+        }
+
+
+        // ==================================
+        // EDUCATIONAL APPS
+        // ==================================
+
+        try {
+
+            const response =
+                await fetch(
+                    `assets/data/apps.json?v=${Date.now()}`
+                );
+
+            if (response.ok) {
+
+                const data =
+                    await response.json();
+
+                const apps =
+                    Array.isArray(data.apps)
+                        ? data.apps
+                        : [];
+
+
+                apps.forEach(item => {
+
+                    if (!item) {
+                        return;
+                    }
+
+
+                    const searchText =
+                        (
+                            item.name ||
+                            ""
+                        ).toLowerCase();
+
+
+                    if (
+                        searchText
+                            .includes(value)
+                    ) {
+
+                        results.push({
+
+                            type:
+                                "📱 App",
+
+                            title:
+                                item.name,
+
+                            link:
+                                "apps.html"
+
+                        });
+
+                    }
+
+                });
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "App Search Error:",
+                error
+            );
+
+        }
+
+
+        // ==================================
+        // REMOVE DUPLICATES
+        // ==================================
+
+        const uniqueResults = [];
+
+        const usedLinks =
+            new Set();
+
+
+        results.forEach(item => {
+
+            if (
+                !item ||
+                !item.link
+            ) {
+                return;
+            }
+
+
+            const key =
+                item.type +
+                "|" +
+                item.title +
+                "|" +
+                item.link;
+
+
+            if (
+                usedLinks.has(key)
+            ) {
+                return;
+            }
+
+
+            usedLinks.add(key);
+
+            uniqueResults.push(item);
+
+        });
+
+
+        // ==================================
+        // NO RESULTS
+        // ==================================
+
+        if (
+            uniqueResults.length === 0
+        ) {
+
+            resultBox.innerHTML = `
+
+                <div class="search-no-result">
+
+                    🔍 No matching results found.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        // ==================================
+        // SHOW RESULTS
+        // ==================================
+
+        resultBox.innerHTML =
+            uniqueResults
+                .slice(0, 30)
+                .map(item => `
+
+                    <a
+                        href="${item.link}"
+                        class="search-result-item"
+                    >
+
+                        <span class="search-result-type">
+                            ${item.type}
+                        </span>
+
+                        <span class="search-result-title">
+                            ${escapeSearchHTML(
+                                item.title
+                            )}
+                        </span>
+
+                    </a>
+
+                `)
+                .join("");
+
+    }
+
+
+    // ==================================
+    // ENTER KEY
+    // ==================================
+
+    input.addEventListener(
+        "keypress",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                performSearch();
+
+            }
 
         }
     );
 
+
+    // ==================================
+    // SEARCH BUTTON
+    // ==================================
+
+    button.addEventListener(
+        "click",
+        performSearch
+    );
+
 }
 
+
+// ======================================
+// SEARCH HTML ESCAPE
+// ======================================
+
+function escapeSearchHTML(value) {
+
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
 
 // ======================================
 // Part 8 - Auto Slider
