@@ -36,7 +36,12 @@
           "pdf": "assets/pdf/grade8/கணிதம்/term1/Maths Revision Paper.pdf"
         }
       ],
-      "2": [],
+      "2": [
+        {
+          "title": "2019-nwp-2nd-term",
+          "pdf": "assets/pdf/grade8/கணிதம்/term2/2019-nwp-2nd-term.pdf"
+        }
+      ],
       "3": []
     },
     "விஞ்ஞானம்": {
