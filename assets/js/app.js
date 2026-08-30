@@ -1391,6 +1391,690 @@ function initializeMenu() {
 
 }
 
+// ======================================
+// Part 10.5 - Home Recent Updates
+// ======================================
+
+async function loadHomeRecentUpdates() {
+
+    // Home page மட்டும்
+    if (
+        !document.getElementById("recentPapers") &&
+        !document.getElementById("recentNews") &&
+        !document.getElementById("recentSchemes") &&
+        !document.getElementById("recentApps")
+    ) {
+        return;
+    }
+
+
+    // ==================================
+    // RECENT PAPERS
+    // ==================================
+
+    await loadRecentPapers();
+
+
+    // ==================================
+    // RECENT NEWS
+    // ==================================
+
+    await loadRecentNews();
+
+
+    // ==================================
+    // RECENT SCHEMES
+    // ==================================
+
+    await loadRecentSchemes();
+
+
+    // ==================================
+    // RECENT APPS
+    // ==================================
+
+    await loadRecentApps();
+
+}
+
+
+
+// ======================================
+// RECENT PAPERS
+// ======================================
+
+async function loadRecentPapers() {
+
+    const container =
+        document.getElementById("recentPapers");
+
+    if (!container) return;
+
+
+    const papers = [];
+
+
+    // Grade 1 - 13
+    for (
+        let g = 1;
+        g <= 13;
+        g++
+    ) {
+
+        try {
+
+            const response =
+                await fetch(
+                    `assets/data/grade${g}.json?v=${Date.now()}`
+                );
+
+
+            if (!response.ok) {
+                continue;
+            }
+
+
+            const data =
+                await response.json();
+
+
+            // ==================================
+            // Grade 1 - 11
+            // ==================================
+
+            if (data.subjects) {
+
+                Object.keys(
+                    data.subjects
+                ).forEach(subjectName => {
+
+                    const terms =
+                        data.subjects[
+                            subjectName
+                        ];
+
+
+                    if (
+                        !terms ||
+                        typeof terms !==
+                        "object"
+                    ) {
+                        return;
+                    }
+
+
+                    Object.keys(
+                        terms
+                    ).forEach(termName => {
+
+                        const termPapers =
+                            terms[termName];
+
+
+                        if (
+                            !Array.isArray(
+                                termPapers
+                            )
+                        ) {
+                            return;
+                        }
+
+
+                        termPapers.forEach(
+                            (item, index) => {
+
+                                if (
+                                    !item ||
+                                    !item.title
+                                ) {
+                                    return;
+                                }
+
+
+                                papers.push({
+
+                                    grade:
+                                        g,
+
+                                    subject:
+                                        subjectName,
+
+                                    term:
+                                        termName,
+
+                                    title:
+                                        item.title,
+
+                                    pdf:
+                                        item.pdf,
+
+                                    index:
+                                        index
+
+                                });
+
+                            }
+                        );
+
+                    });
+
+                });
+
+            }
+
+
+            // ==================================
+            // Grade 12 - 13
+            // ==================================
+
+            if (data.streamSubjects) {
+
+                Object.keys(
+                    data.streamSubjects
+                ).forEach(streamName => {
+
+                    const streamSubjects =
+                        data.streamSubjects[
+                            streamName
+                        ];
+
+
+                    if (
+                        !streamSubjects ||
+                        typeof streamSubjects !==
+                        "object"
+                    ) {
+                        return;
+                    }
+
+
+                    Object.keys(
+                        streamSubjects
+                    ).forEach(subjectName => {
+
+                        const terms =
+                            streamSubjects[
+                                subjectName
+                            ];
+
+
+                        if (
+                            !terms ||
+                            typeof terms !==
+                            "object"
+                        ) {
+                            return;
+                        }
+
+
+                        Object.keys(
+                            terms
+                        ).forEach(termName => {
+
+                            const termPapers =
+                                terms[
+                                    termName
+                                ];
+
+
+                            if (
+                                !Array.isArray(
+                                    termPapers
+                                )
+                            ) {
+                                return;
+                            }
+
+
+                            termPapers.forEach(
+                                (item, index) => {
+
+                                    if (
+                                        !item ||
+                                        !item.title
+                                    ) {
+                                        return;
+                                    }
+
+
+                                    papers.push({
+
+                                        grade:
+                                            g,
+
+                                        stream:
+                                            streamName,
+
+                                        subject:
+                                            subjectName,
+
+                                        term:
+                                            termName,
+
+                                        title:
+                                            item.title,
+
+                                        pdf:
+                                            item.pdf,
+
+                                        index:
+                                            index
+
+                                    });
+
+                                }
+                            );
+
+                        });
+
+                    });
+
+                });
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.error(
+                `Recent Papers Grade ${g}:`,
+                error
+            );
+
+        }
+
+    }
+
+
+    // ==================================
+    // SHOW LAST 3
+    // ==================================
+
+    const recent =
+        papers.slice(-3).reverse();
+
+
+    if (
+        recent.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="recent-item">
+
+                <div class="recent-item-left">
+
+                    <div class="recent-icon">
+                        📄
+                    </div>
+
+                    <div>
+
+                        <div class="recent-title">
+                            No papers available
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    container.innerHTML =
+        recent.map(item => {
+
+            const streamPart =
+                item.stream
+                    ? `&stream=${encodeURIComponent(item.stream)}`
+                    : "";
+
+
+            const termNumber =
+                String(item.term)
+                    .match(/\d+/)
+                    ?. [0] ||
+                item.term;
+
+
+            const link =
+                `paper.html?grade=${item.grade}${streamPart}&subject=${encodeURIComponent(item.subject)}&term=${termNumber}&paper=${item.index}`;
+
+
+            return `
+
+                <a
+                    href="${link}"
+                    class="recent-item"
+                >
+
+                    <div class="recent-item-left">
+
+                        <div class="recent-icon">
+                            📄
+                        </div>
+
+                        <div>
+
+                            <div class="recent-title">
+                                Grade ${item.grade} - ${escapeRecentHTML(item.subject)}
+                            </div>
+
+                            <div class="recent-meta">
+                                ${escapeRecentHTML(item.term)}
+                                -
+                                ${escapeRecentHTML(item.title)}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="recent-arrow">
+                        →
+                    </div>
+
+                </a>
+
+            `;
+
+        }).join("");
+
+}
+
+
+
+// ======================================
+// RECENT NEWS
+// ======================================
+
+async function loadRecentNews() {
+
+    const container =
+        document.getElementById("recentNews");
+
+    if (!container) return;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `assets/data/news.json?v=${Date.now()}`
+            );
+
+
+        if (!response.ok) {
+            throw new Error(
+                "News JSON unavailable"
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const news =
+            Array.isArray(data.news)
+                ? data.news
+                : [];
+
+
+        const recent =
+            news.slice(0, 3);
+
+
+        if (
+            recent.length === 0
+        ) {
+
+            container.innerHTML =
+                `<div class="recent-small">
+                    No recent news available.
+                </div>`;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            recent.map(item => `
+
+                <div class="recent-small">
+
+                    📰
+                    ${escapeRecentHTML(
+                        item.title || "Education News"
+                    )}
+
+                </div>
+
+            `).join("");
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Recent News Error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+// ======================================
+// RECENT SCHEMES
+// ======================================
+
+async function loadRecentSchemes() {
+
+    const container =
+        document.getElementById("recentSchemes");
+
+    if (!container) return;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `assets/data/schemes.json?v=${Date.now()}`
+            );
+
+
+        if (!response.ok) {
+            throw new Error(
+                "Schemes JSON unavailable"
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const schemes =
+            Array.isArray(
+                data.schemes
+            )
+                ? data.schemes
+                : [];
+
+
+        const recent =
+            schemes.slice(0, 3);
+
+
+        if (
+            recent.length === 0
+        ) {
+
+            container.innerHTML =
+                `<div class="recent-small">
+                    No recent schemes available.
+                </div>`;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            recent.map(item => `
+
+                <div class="recent-small">
+
+                    📚
+                    ${escapeRecentHTML(
+                        item.title ||
+                        "Marking Scheme"
+                    )}
+
+                </div>
+
+            `).join("");
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Recent Schemes Error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+// ======================================
+// RECENT APPS
+// ======================================
+
+async function loadRecentApps() {
+
+    const container =
+        document.getElementById("recentApps");
+
+    if (!container) return;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `assets/data/apps.json?v=${Date.now()}`
+            );
+
+
+        if (!response.ok) {
+            throw new Error(
+                "Apps JSON unavailable"
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const apps =
+            Array.isArray(data.apps)
+                ? data.apps
+                : [];
+
+
+        const recent =
+            apps.slice(0, 3);
+
+
+        if (
+            recent.length === 0
+        ) {
+
+            container.innerHTML =
+                `<div class="recent-small">
+                    No recent apps available.
+                </div>`;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            recent.map(item => `
+
+                <div class="recent-small">
+
+                    📱
+                    ${escapeRecentHTML(
+                        item.name ||
+                        "Educational App"
+                    )}
+
+                </div>
+
+            `).join("");
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Recent Apps Error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+// ======================================
+// HTML ESCAPE
+// ======================================
+
+function escapeRecentHTML(value) {
+
+    return String(value || "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
 
 // ======================================
 // Part 11 - Initialize
@@ -1475,6 +2159,7 @@ window.addEventListener(
         initializeDarkMode();
 
         initializeMenu();
+        loadHomeRecentUpdates();
 
     }
 );
