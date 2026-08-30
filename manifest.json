@@ -1,0 +1,23 @@
+{
+  "name": "SLExam Pro",
+  "short_name": "SLExam",
+  "description": "Sri Lanka School Exam Papers, Education News, Schemes and Educational Apps",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1769d1",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
