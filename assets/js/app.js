@@ -2180,3 +2180,147 @@ window.addEventListener(
 
     }
 );
+
+/* ==================================
+   PROFESSIONAL HEADER CONTROLS
+   ================================== */
+
+(function () {
+
+    function initHeaderControls() {
+
+        const menuToggle =
+            document.getElementById("menuToggle");
+
+        const mainNav =
+            document.getElementById("mainNav");
+
+        const themeToggle =
+            document.getElementById("themeToggle");
+
+
+        /* ==================================
+           MOBILE MENU
+           ================================== */
+
+        if (menuToggle && mainNav) {
+
+            menuToggle.addEventListener(
+                "click",
+                function (event) {
+
+                    event.stopPropagation();
+
+                    const isOpen =
+                        mainNav.classList.toggle("active");
+
+                    menuToggle.setAttribute(
+                        "aria-expanded",
+                        isOpen ? "true" : "false"
+                    );
+
+                    menuToggle.textContent =
+                        isOpen ? "✕" : "☰";
+
+                }
+            );
+
+
+            /* Close menu after clicking a link */
+
+            mainNav
+                .querySelectorAll("a")
+                .forEach(function (link) {
+
+                    link.addEventListener(
+                        "click",
+                        function () {
+
+                            mainNav.classList.remove(
+                                "active"
+                            );
+
+                            menuToggle.setAttribute(
+                                "aria-expanded",
+                                "false"
+                            );
+
+                            menuToggle.textContent = "☰";
+
+                        }
+                    );
+
+                });
+
+        }
+
+
+        /* ==================================
+           DARK MODE
+           ================================== */
+
+        if (themeToggle) {
+
+            themeToggle.addEventListener(
+                "click",
+                function () {
+
+                    document.body.classList.toggle(
+                        "dark-mode"
+                    );
+
+                    const darkMode =
+                        document.body.classList.contains(
+                            "dark-mode"
+                        );
+
+                    localStorage.setItem(
+                        "theme",
+                        darkMode ? "dark" : "light"
+                    );
+
+                    themeToggle.textContent =
+                        darkMode ? "☀️" : "🌙";
+
+                }
+            );
+
+
+            /* Restore saved theme */
+
+            const savedTheme =
+                localStorage.getItem("theme");
+
+            if (savedTheme === "dark") {
+
+                document.body.classList.add(
+                    "dark-mode"
+                );
+
+                themeToggle.textContent = "☀️";
+
+            }
+
+        }
+
+    }
+
+
+    /* ==================================
+       INITIALIZE
+       ================================== */
+
+    if (document.readyState === "loading") {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initHeaderControls
+        );
+
+    } else {
+
+        initHeaderControls();
+
+    }
+
+})();
