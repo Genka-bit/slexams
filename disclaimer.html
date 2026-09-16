@@ -268,58 +268,65 @@
      HEADER
      ========================================= -->
 
-<header class="header">
+<header class="site-header">
 
-    <button id="menuBtn"
-            class="menu-btn">
+    <div class="header-container">
 
-        ☰
+        <a href="index.html" class="site-logo">
+            <span class="logo-main">SLExam</span>
+            <span class="logo-pro">Pro</span>
+        </a>
 
-    </button>
+        <nav class="main-nav" id="mainNav">
 
+            <a href="index.html" class="nav-link">
+                Home
+            </a>
 
-    <div class="logo">
+            <a href="news.html" class="nav-link">
+                Education News
+            </a>
 
-        <h1>
+            <a href="scheme.html" class="nav-link">
+                Schemes
+            </a>
 
-            SLExam <span>Pro</span>
+            <a href="apps.html" class="nav-link">
+                Apps
+            </a>
 
-        </h1>
+            <a href="about.html" class="nav-link">
+                About
+            </a>
+
+            <a href="contact.html" class="nav-link">
+                Contact
+            </a>
+
+        </nav>
+
+        <div class="header-actions">
+
+            <button
+                type="button"
+                class="theme-toggle"
+                id="themeToggle"
+                aria-label="Toggle dark mode">
+                🌙
+            </button>
+
+            <button
+                type="button"
+                class="menu-toggle"
+                id="menuToggle"
+                aria-label="Open menu"
+                aria-expanded="false">
+                ☰
+            </button>
+
+        </div>
 
     </div>
-
-
-    <nav class="navbar">
-
-        <a href="index.html">
-            Home
-        </a>
-
-        <a href="news.html">
-            News
-        </a>
-
-        <a href="scheme.html">
-            Schemes
-        </a>
-
-        <a href="apps.html">
-            Apps
-        </a>
-
-        <a href="search.html">
-            🔎 Search
-        </a>
-
-    </nav>
-
-
-    <button id="darkModeBtn"
-            class="dark-btn">
-
-        🌙
-
-    </button>
 
 </header>
 
@@ -837,93 +844,163 @@
 
 
 
-<!-- =========================================
-     FOOTER
-     ========================================= -->
+<!-- ==================================
+     PROFESSIONAL FOOTER
+     ================================== -->
 
-<footer class="footer">
+<footer class="site-footer">
 
     <div class="footer-container">
 
+        <!-- About -->
+        <div class="footer-column footer-about">
 
-        <div class="footer-box">
-
-            <h3>
-                SLExam Pro
-            </h3>
+            <a href="index.html" class="footer-logo">
+                <span>SLExam</span><strong>Pro</strong>
+            </a>
 
             <p>
-                Free Sri Lankan Educational Resource Website.
+                SLExam Pro is a free educational resource
+                platform for Sri Lankan students, teachers
+                and parents.
+            </p>
+
+            <p>
+                Find school examination papers, educational
+                resources, schemes and useful learning materials
+                for Grades 1–13.
             </p>
 
         </div>
 
 
-        <div class="footer-box">
+        <!-- Quick Links -->
+        <div class="footer-column">
 
-            <h3>
-                Quick Links
-            </h3>
+            <h3>Quick Links</h3>
 
-            <a href="index.html">
-                Home
-            </a>
+            <ul>
 
-            <a href="news.html">
-                News
-            </a>
+                <li>
+                    <a href="index.html">Home</a>
+                </li>
 
-            <a href="scheme.html">
-                Schemes
-            </a>
+                <li>
+                    <a href="news.html">Education News</a>
+                </li>
 
-            <a href="apps.html">
-                Apps
-            </a>
+                <li>
+                    <a href="schemes.html">Schemes</a>
+                </li>
+
+                <li>
+                    <a href="apps.html">Education Apps</a>
+                </li>
+
+            </ul>
 
         </div>
 
 
-        <div class="footer-box">
+        <!-- Support -->
+        <div class="footer-column">
 
-    <h3>
-        Support
-    </h3>
+            <h3>Support</h3>
 
-    <a href="about.html">
-        About Us
+            <ul>
+
+                <li>
+                    <a href="about.html">About Us</a>
+                </li>
+
+                <li>
+                    <a href="contact.html">Contact Us</a>
+                </li>
+
+                <li>
+                    <a href="privacy.html">Privacy Policy</a>
+                </li>
+
+                <li>
+                    <a href="terms.html">Terms &amp; Conditions</a>
+                </li>
+
+                <li>
+                    <a href="disclaimer.html">Disclaimer</a>
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- Contact -->
+        <div class="footer-column">
+
+            <h3>Contact</h3>
+
+            <ul class="footer-contact">
+
+                <li>
+    📧
+    <a href="#" id="emailLink">
+        Email Us
     </a>
+</li>
 
-    <a href="contact.html">
-        Contact
-    </a>
+                <li>
+                    🌐
+                    <a href="https://slexams.dpdns.org/">
+                        slexams.dpdns.org
+                    </a>
+                </li>
 
-    <a href="privacy.html">
-        Privacy Policy
-    </a>
+            </ul>
 
-    <a href="terms.html">
-        Terms & Conditions
-    </a>
 
-    <a href="disclaimer.html">
-        Disclaimer
-    </a>
+            <!-- Social Links -->
+            <div class="footer-social">
 
-</div>
+                <a
+                    href="https://www.facebook.com/profile.php?id=61594227180545"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Facebook">
+                    Facebook
+                </a>
 
+                <a
+                    href="https://youtube.com/@iqleveltamil?si=Sg-uYh0lEkyH5M35"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="YouTube">
+                    YouTube
+                </a>
+
+            </div>
+
+        </div>
 
     </div>
 
 
-    <hr>
+    <!-- Footer Bottom -->
 
+    <div class="footer-bottom">
 
-    <p class="copyright">
+        <div class="footer-bottom-container">
 
-        © 2026 SLExam Pro | All Rights Reserved
+            <p>
+                © 2026 SLExam Pro. All rights reserved.
+            </p>
 
-    </p>
+            <p>
+                Educational Resource Platform for Sri Lanka
+            </p>
+
+        </div>
+
+    </div>
 
 </footer>
 
