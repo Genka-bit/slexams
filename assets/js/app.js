@@ -2218,3 +2218,27 @@ window.addEventListener(
     }
 
 })();
+
+/* ==================================
+   EMAIL LINK
+   ================================== */
+
+(function () {
+
+    const emailLink =
+        document.getElementById("emailLink");
+
+    if (!emailLink) {
+        return;
+    }
+
+    const user = "genkaweb";
+    const domain = "gmail.com";
+
+    const email =
+        user + "@" + domain;
+
+    emailLink.href =
+        "mailto:" + email;
+
+})();
