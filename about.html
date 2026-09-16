@@ -19,52 +19,67 @@ content="Learn more about SLExam Pro, a free Sri Lankan educational resource web
 <body>
 
 
-<!-- ================================
-     HEADER
-================================ -->
+<header class="site-header">
 
-<header class="header">
+    <div class="header-container">
 
-<button id="menuBtn" class="menu-btn">
-☰
-</button>
+        <a href="index.html" class="site-logo">
+            <span class="logo-main">SLExam</span>
+            <span class="logo-pro">Pro</span>
+        </a>
 
+        <nav class="main-nav" id="mainNav">
 
-<div class="logo">
+            <a href="index.html" class="nav-link">
+                Home
+            </a>
 
-<h1>
-SLExam <span>Pro</span>
-</h1>
+            <a href="news.html" class="nav-link">
+                Education News
+            </a>
 
-</div>
+            <a href="scheme.html" class="nav-link">
+                Schemes
+            </a>
 
+            <a href="apps.html" class="nav-link">
+                Apps
+            </a>
 
-<nav class="navbar">
+            <a href="about.html" class="nav-link">
+                About
+            </a>
 
-<a href="index.html">Home</a>
+            <a href="contact.html" class="nav-link">
+                Contact
+            </a>
 
-<a href="news.html">News</a>
+        </nav>
 
-<a href="scheme.html">Schemes</a>
+        <div class="header-actions">
 
-<a href="apps.html">Apps</a>
+            <button
+                type="button"
+                class="theme-toggle"
+                id="themeToggle"
+                aria-label="Toggle dark mode">
+                🌙
+            </button>
 
-<a href="about.html">About</a>
+            <button
+                type="button"
+                class="menu-toggle"
+                id="menuToggle"
+                aria-label="Open menu"
+                aria-expanded="false">
+                ☰
+            </button>
 
-<a href="contact.html">Contact</a>
+        </div>
 
-<a href="disclaimer.html">Disclaimer</a>
-
-</nav>
-
-
-<button id="darkModeBtn" class="dark-btn">
-🌙
-</button>
+    </div>
 
 </header>
-
-
 
 <!-- ================================
      HERO
