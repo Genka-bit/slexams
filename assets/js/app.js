@@ -354,6 +354,16 @@ function loadSubjectPage() {
 
     }
 
+const worksheet =
+    document.getElementById("worksheet");
+
+if (worksheet) {
+
+    worksheet.href =
+        `worksheet.html?grade=${grade}&stream=${url(stream)}&subject=${url(subject)}`;
+
+}
+
 }
 
 
