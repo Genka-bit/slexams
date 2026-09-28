@@ -14,6 +14,7 @@ const stream = params.get("stream");
 const subject = params.get("subject");
 const term = params.get("term");
 const paper = params.get("paper");
+const type = params.get("type") || "paper";
 
 let paperData = null;
 
@@ -105,29 +106,76 @@ function url(value) {
 // Get Papers
 // ======================================
 
-function getPapers(data) {
+
+function getPapers(data, resourceType = "paper") {
 
     if (!data) return [];
 
-    // Grade 1–11
+    // ======================================
+    // GRADE 1–11
+    // ======================================
+
     if (data.subjects && subject) {
 
-        return data.subjects?.[subject]?.[term] || [];
+        const subjectData =
+            data.subjects?.[subject];
+
+        if (!subjectData) {
+            return [];
+        }
+
+        // Worksheets
+        if (resourceType === "worksheet") {
+
+            return Array.isArray(
+                subjectData.worksheets
+            )
+                ? subjectData.worksheets
+                : [];
+
+        }
+
+        // Term Papers
+        return (
+            subjectData?.[term] || []
+        );
 
     }
 
-    // Grade 12–13
+
+    // ======================================
+    // GRADE 12–13
+    // ======================================
+
     if (
         data.streamSubjects &&
         stream &&
         subject
     ) {
 
-        return (
+        const subjectData =
             data.streamSubjects
                 ?. [stream]
-                ?. [subject]
-                ?. [term] || []
+                ?. [subject];
+
+        if (!subjectData) {
+            return [];
+        }
+
+        // Worksheets
+        if (resourceType === "worksheet") {
+
+            return Array.isArray(
+                subjectData.worksheets
+            )
+                ? subjectData.worksheets
+                : [];
+
+        }
+
+        // Term Papers
+        return (
+            subjectData?.[term] || []
         );
 
     }
@@ -381,8 +429,17 @@ async function loadTermPage() {
 
     if (!title || !container) return;
 
+    if (type === "worksheet") {
+
+    title.textContent =
+        `${subject} - Worksheets / செயலட்டைகள்`;
+
+} else {
+
     title.textContent =
         `${subject} - Term ${term}`;
+
+}
 
     container.innerHTML = "";
 
@@ -402,8 +459,8 @@ async function loadTermPage() {
     }
 
 
-    const papers =
-        getPapers(data);
+   const papers =
+    getPapers(data, type);
 
 
     if (
@@ -426,17 +483,38 @@ async function loadTermPage() {
         if (!item || !item.title) return;
 
 
-        container.appendChild(
+        const link =
+    type === "worksheet"
 
-            createCard(
+        ? `paper.html?grade=${grade}&stream=${url(stream)}&subject=${url(subject)}&type=worksheet&paper=${index}`
 
-                item.title,
+        : `paper.html?grade=${grade}&stream=${url(stream)}&subject=${url(subject)}&term=${term}&paper=${index}`;
 
-                `paper.html?grade=${grade}&stream=${url(stream)}&subject=${url(subject)}&term=${term}&paper=${index}`
 
-            )
+const a =
+    document.createElement("a");
 
-        );
+a.className =
+    "paper-list-item";
+
+a.href =
+    link;
+
+a.innerHTML = `
+    <span class="paper-list-icon">
+        ${type === "worksheet" ? "📝" : "📄"}
+    </span>
+
+    <span class="paper-list-title">
+        ${item.title}
+    </span>
+
+    <span class="paper-list-arrow">
+        ›
+    </span>
+`;
+
+container.appendChild(a);
 
     });
 
