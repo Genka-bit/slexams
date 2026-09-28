@@ -106,10 +106,10 @@ function url(value) {
 // Get Papers
 // ======================================
 
-
 function getPapers(data, resourceType = "paper") {
 
     if (!data) return [];
+
 
     // ======================================
     // GRADE 1–11
@@ -124,7 +124,9 @@ function getPapers(data, resourceType = "paper") {
             return [];
         }
 
-        // Worksheets
+
+        // WORKSHEETS
+
         if (resourceType === "worksheet") {
 
             return Array.isArray(
@@ -135,7 +137,9 @@ function getPapers(data, resourceType = "paper") {
 
         }
 
-        // Term Papers
+
+        // TERM PAPERS
+
         return (
             subjectData?.[term] || []
         );
@@ -162,7 +166,9 @@ function getPapers(data, resourceType = "paper") {
             return [];
         }
 
-        // Worksheets
+
+        // WORKSHEETS
+
         if (resourceType === "worksheet") {
 
             return Array.isArray(
@@ -173,17 +179,19 @@ function getPapers(data, resourceType = "paper") {
 
         }
 
-        // Term Papers
+
+        // TERM PAPERS
+
         return (
             subjectData?.[term] || []
         );
 
     }
 
+
     return [];
 
 }
-
 
 // ======================================
 // Part 2 - Grade Page
