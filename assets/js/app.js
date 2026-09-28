@@ -557,8 +557,8 @@ async function loadPaperPage() {
     }
 
 
-    const papers =
-        getPapers(data);
+   const papers =
+    getPapers(data, type);
 
 
     const paperIndex =
