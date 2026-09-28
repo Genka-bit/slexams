@@ -377,7 +377,8 @@ function loadSubjectPage() {
 
     const term3 =
         document.getElementById("term3");
-
+const worksheet =
+    document.getElementById("worksheet");
 
     if (term1) {
 
@@ -402,13 +403,10 @@ function loadSubjectPage() {
 
     }
 
-const worksheet =
-    document.getElementById("worksheet");
-
-if (worksheet) {
+ if (worksheet) {
 
     worksheet.href =
-        `worksheet.html?grade=${grade}&stream=${url(stream)}&subject=${url(subject)}`;
+        `term.html?grade=${grade}&stream=${url(stream)}&subject=${url(subject)}&type=worksheet`;
 
 }
 
