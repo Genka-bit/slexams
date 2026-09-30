@@ -1278,6 +1278,12 @@ document.getElementById("streamSelect");
 const subjectSelect =
 document.getElementById("subjectSelect");
 
+const resourceType =
+document.getElementById("resourceType");
+
+const termLabel =
+document.getElementById("termLabel");
+
 const termSelect =
 document.getElementById("termSelect");
 
@@ -1298,6 +1304,44 @@ document.getElementById("paperStatus");
 
 
 let papers = [];
+
+function updateResourceTypeUI() {
+
+    const isWorksheet =
+        resourceType.value === "worksheet";
+
+
+    if (isWorksheet) {
+
+        termLabel.style.display =
+            "none";
+
+        termSelect.style.display =
+            "none";
+
+        termSelect.value = "";
+
+    }
+    else {
+
+        termLabel.style.display =
+            "";
+
+        termSelect.style.display =
+            "";
+
+    }
+
+}
+
+
+resourceType.addEventListener(
+    "change",
+    updateResourceTypeUI
+);
+
+
+updateResourceTypeUI();
 
 
 gradeSelect.addEventListener(
@@ -1367,106 +1411,151 @@ addPaperBtn.addEventListener(
 "click",
 function() {
 
-const grade =
-gradeSelect.value;
+    const grade =
+        gradeSelect.value;
 
-const stream =
-streamSelect.value;
+    const stream =
+        streamSelect.value;
 
-const subject =
-subjectSelect.value;
+    const subject =
+        subjectSelect.value;
 
-const term =
-termSelect.value;
+    const type =
+        resourceType.value;
 
-const file =
-pdfFile.files[0];
+    const term =
+        termSelect.value;
 
-
-if (!grade) {
-
-alert("Select Grade.");
-
-return;
-
-}
+    const file =
+        pdfFile.files[0];
 
 
-if (
-(grade === "12" ||
-grade === "13") &&
-!stream
-) {
+    // -----------------------------
+    // GRADE
+    // -----------------------------
 
-alert("Select Stream.");
+    if (!grade) {
 
-return;
+        alert("Select Grade.");
 
-}
+        return;
 
-
-if (!subject) {
-
-alert("Select Subject.");
-
-return;
-
-}
+    }
 
 
-if (!term) {
+    // -----------------------------
+    // STREAM
+    // -----------------------------
 
-alert("Select Term.");
+    if (
+        (grade === "12" ||
+         grade === "13") &&
+        !stream
+    ) {
 
-return;
+        alert("Select Stream.");
 
-}
+        return;
 
-
-if (!file) {
-
-alert("Select PDF.");
-
-return;
-
-}
-
-
-if (
-!file.name
-.toLowerCase()
-.endsWith(".pdf")
-) {
-
-alert("Only PDF files.");
-
-return;
-
-}
+    }
 
 
-papers.push({
+    // -----------------------------
+    // SUBJECT
+    // -----------------------------
 
-grade,
-stream,
-subject,
-term,
-title:
-file.name.replace(
-/\.pdf$/i,
-""
-),
-file
+    if (!subject) {
 
-});
+        alert("Select Subject.");
+
+        return;
+
+    }
 
 
-pdfFile.value = "";
+    // -----------------------------
+    // TERM
+    // -----------------------------
 
-renderPaperList();
+    if (
+        type === "paper" &&
+        !term
+    ) {
 
-paperStatus.textContent =
-"Paper added.";
+        alert("Select Term.");
+
+        return;
+
+    }
+
+
+    // -----------------------------
+    // PDF
+    // -----------------------------
+
+    if (!file) {
+
+        alert("Select PDF.");
+
+        return;
+
+    }
+
+
+    if (
+        !file.name
+            .toLowerCase()
+            .endsWith(".pdf")
+    ) {
+
+        alert("Only PDF files.");
+
+        return;
+
+    }
+
+
+    // -----------------------------
+    // ADD TO LIST
+    // -----------------------------
+
+    papers.push({
+
+        grade,
+
+        stream,
+
+        subject,
+
+        type,
+
+        term,
+
+        title:
+            file.name.replace(
+                /\.pdf$/i,
+                ""
+            ),
+
+        file
+
+    });
+
+
+    // Clear file input
+
+    pdfFile.value = "";
+
+
+    // Refresh list
+
+    renderPaperList();
+
+
+    paperStatus.textContent =
+        type === "worksheet"
+            ? "Worksheet added."
+            : "Paper added.";
 
 });
 
@@ -1500,7 +1589,11 @@ ${paper.stream
 ? " - " + paper.stream
 : ""}
  - ${paper.subject}
- - Term ${paper.term}
+ - ${
+    paper.type === "worksheet"
+        ? "Worksheet / செயலட்டைகள்"
+        : "Term " + paper.term
+   }
 </small>
 
 <br>
@@ -1572,7 +1665,7 @@ new FormData();
 
 formData.append(
 "type",
-"paper"
+paper.type
 );
 
 formData.append(
@@ -1590,10 +1683,14 @@ formData.append(
 paper.subject
 );
 
-formData.append(
-"term",
-paper.term
-);
+if (paper.type === "paper") {
+
+    formData.append(
+        "term",
+        paper.term
+    );
+
+}
 
 formData.append(
 "pdf",
