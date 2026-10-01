@@ -1,7 +1,12 @@
 {
   "subjects": {
     "தமிழ்": {
-      "1": [],
+      "1": [
+        {
+          "title": "Gr 08 - Tamil",
+          "pdf": "assets/pdf/grade8/தமிழ்/term1/Gr 08 - Tamil.pdf"
+        }
+      ],
       "2": [],
       "3": []
     },
