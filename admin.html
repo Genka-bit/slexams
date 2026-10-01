@@ -882,7 +882,23 @@
 
     </select>
 
+<!-- RESOURCE TYPE -->
 
+<label>
+    Resource Type
+</label>
+
+<select id="deleteResourceType">
+
+    <option value="paper">
+        📄 Exam Paper
+    </option>
+
+    <option value="worksheet">
+        📝 Worksheet / செயலட்டைகள்
+    </option>
+
+</select>
     <!-- TERM -->
 
     <label>
@@ -2984,7 +3000,10 @@ const deleteTerm =
     document.getElementById(
         "deleteTerm"
     );
-
+const deleteResourceType =
+    document.getElementById(
+        "deleteResourceType"
+    );
 const deletePaperList =
     document.getElementById(
         "deletePaperList"
@@ -3281,6 +3300,26 @@ function loadDeleteTerms() {
     const subject =
         deleteSubject.value;
 
+    const resourceType =
+        deleteResourceType.value;
+
+
+    if (resourceType === "worksheet") {
+
+        deleteTerm.innerHTML = `
+            <option value="">
+                Not Required
+            </option>
+        `;
+
+        deleteTerm.disabled =
+            true;
+
+        loadDeletePapers();
+
+        return;
+    }
+
 
     if (!subject) {
 
@@ -3300,16 +3339,11 @@ function loadDeleteTerms() {
         `;
 
         return;
-
     }
 
 
     let subjectData = {};
 
-
-    // ==================================
-    // NORMAL
-    // ==================================
 
     if (
         deletePaperDatabase.subjects
@@ -3322,10 +3356,6 @@ function loadDeleteTerms() {
 
     }
 
-
-    // ==================================
-    // STREAM
-    // ==================================
 
     if (
         deletePaperDatabase.streamSubjects
@@ -3343,7 +3373,12 @@ function loadDeleteTerms() {
 
 
     const terms =
-        Object.keys(subjectData);
+        ["1", "2", "3"].filter(
+            term =>
+                Array.isArray(
+                    subjectData[term]
+                )
+        );
 
 
     deleteTerm.innerHTML = `
@@ -3387,7 +3422,6 @@ function loadDeleteTerms() {
 
 }
 
-
 // ======================================
 // LOAD PAPERS
 // ======================================
@@ -3400,40 +3434,51 @@ function loadDeletePapers() {
     const term =
         deleteTerm.value;
 
+    const resourceType =
+        deleteResourceType.value;
+
 
     if (
         !subject ||
-        !term ||
         !deletePaperDatabase
     ) {
-
         return;
-
     }
 
 
-    let papers = [];
+    let items = [];
 
-
-    // ==================================
-    // NORMAL
-    // ==================================
 
     if (
         deletePaperDatabase.subjects
     ) {
 
-        papers =
+        const subjectData =
             deletePaperDatabase
-                .subjects?.[subject]?.[term] ||
-            [];
+                .subjects?.[subject] || {};
+
+
+        if (
+            resourceType === "worksheet"
+        ) {
+
+            items =
+                subjectData.worksheets || [];
+
+        }
+        else {
+
+            if (!term) {
+                return;
+            }
+
+            items =
+                subjectData[term] || [];
+
+        }
 
     }
 
-
-    // ==================================
-    // STREAM
-    // ==================================
 
     if (
         deletePaperDatabase.streamSubjects
@@ -3442,22 +3487,40 @@ function loadDeletePapers() {
         const stream =
             deleteStream.value;
 
-        papers =
+        const subjectData =
             deletePaperDatabase
-                .streamSubjects?.[stream]?.[subject]?.[term] ||
-            [];
+                .streamSubjects?.[stream]?.[subject] || {};
+
+
+        if (
+            resourceType === "worksheet"
+        ) {
+
+            items =
+                subjectData.worksheets || [];
+
+        }
+        else {
+
+            if (!term) {
+                return;
+            }
+
+            items =
+                subjectData[term] || [];
+
+        }
 
     }
 
 
-    // ==================================
-    // NO PAPERS
-    // ==================================
-
-    if (!Array.isArray(papers) ||
-        papers.length === 0) {
+    if (
+        !Array.isArray(items) ||
+        items.length === 0
+    ) {
 
         deletePaperList.innerHTML = `
+
             <div
                 style="
                     padding:15px;
@@ -3466,34 +3529,43 @@ function loadDeletePapers() {
                 ">
 
                 <strong>
-                    No Papers Found
+                    ${
+                        resourceType === "worksheet"
+                            ? "No Worksheets Found"
+                            : "No Papers Found"
+                    }
                 </strong>
 
                 <p>
-                    இந்த Term-ல் Paper இல்லை.
+                    ${
+                        resourceType === "worksheet"
+                            ? "இந்த Subject-ல் Worksheet இல்லை."
+                            : "இந்த Term-ல் Paper இல்லை."
+                    }
                 </p>
 
             </div>
         `;
 
         return;
-
     }
 
 
-    // ==================================
-    // PAPER LIST
-    // ==================================
-
     deletePaperList.innerHTML = `
+
         <h3>
-            📄 Existing Papers
+            ${
+                resourceType === "worksheet"
+                    ? "📝 Existing Worksheets / செயலட்டைகள்"
+                    : "📄 Existing Papers"
+            }
         </h3>
+
     `;
 
 
-    papers.forEach(
-        function (paper, index) {
+    items.forEach(
+        function (item, index) {
 
             const row =
                 document.createElement(
@@ -3533,14 +3605,28 @@ function loadDeletePapers() {
 
 
             title.innerHTML = `
-                📄 <strong>
+
+                ${
+                    resourceType === "worksheet"
+                        ? "📝"
+                        : "📄"
+                }
+
+                <strong>
+
                     ${
                         escapeDeleteText(
-                            paper.title ||
-                            ("Paper " + (index + 1))
+                            item.title ||
+                            (
+                                resourceType === "worksheet"
+                                    ? "Worksheet " + (index + 1)
+                                    : "Paper " + (index + 1)
+                            )
                         )
                     }
+
                 </strong>
+
             `;
 
 
@@ -3555,7 +3641,6 @@ function loadDeletePapers() {
 
             button.textContent =
                 "🗑️ Delete";
-
 
             button.style.background =
                 "#d32f2f";
@@ -3581,7 +3666,7 @@ function loadDeletePapers() {
                 function () {
 
                     deleteSelectedPaper(
-                        paper
+                        item
                     );
 
                 }
@@ -3605,7 +3690,6 @@ function loadDeletePapers() {
     );
 
 }
-
 
 // ======================================
 // DELETE SELECTED PAPER
@@ -3671,9 +3755,11 @@ const term =
 
 
         formData.append(
-            "type",
-            "deletePaper"
-        );
+    "type",
+    deleteResourceType.value === "worksheet"
+        ? "deleteWorksheet"
+        : "deletePaper"
+);
 
 
         formData.append(
@@ -3872,6 +3958,18 @@ deleteSubject.addEventListener(
     }
 );
 
+// ======================================
+// RESOURCE TYPE CHANGE
+// ======================================
+
+deleteResourceType.addEventListener(
+    "change",
+    function () {
+
+        loadDeleteTerms();
+
+    }
+);
 
 // ======================================
 // TERM CHANGE
