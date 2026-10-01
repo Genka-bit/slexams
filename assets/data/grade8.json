@@ -39,7 +39,12 @@
           "pdf": "assets/pdf/grade8/தமிழ்/term1/Grade 8_Tamil_முதலாம் தவணைப் பரீட்சை.pdf"
         }
       ],
-      "2": [],
+      "2": [
+        {
+          "title": "gr8-ta-tamil-2015-term_2 jaffna",
+          "pdf": "assets/pdf/grade8/தமிழ்/term2/gr8-ta-tamil-2015-term_2 jaffna.pdf"
+        }
+      ],
       "3": [],
       "worksheets": [
         {
