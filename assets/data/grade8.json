@@ -65,7 +65,12 @@
           "pdf": "assets/pdf/grade8/தமிழ்/term2/Grade 8_Tamil_இரண்டாம் தவணைப் பரீட்சை.pdf"
         }
       ],
-      "3": [],
+      "3": [
+        {
+          "title": "2024-Grade-8-Tamil-3rd-term-Southern-Province-TM-12",
+          "pdf": "assets/pdf/grade8/தமிழ்/term3/2024-Grade-8-Tamil-3rd-term-Southern-Province-TM-12.pdf"
+        }
+      ],
       "worksheets": [
         {
           "title": "Grade 8_Tamil_அலகுப் பரீட்சை-1",
