@@ -1378,16 +1378,15 @@ function initializeSlider() {
 }
 
 
-
-// ======================================
+// ======================================================
 // Part 10.5 - Home Recent Updates
-// ======================================
+// ======================================================
 
 async function loadHomeRecentUpdates() {
 
-    // Home page மட்டும்
     if (
         !document.getElementById("recentPapers") &&
+        !document.getElementById("recentWorksheets") &&
         !document.getElementById("recentNews") &&
         !document.getElementById("recentSchemes") &&
         !document.getElementById("recentApps")
@@ -1395,263 +1394,78 @@ async function loadHomeRecentUpdates() {
         return;
     }
 
-
-    // ==================================
-    // RECENT PAPERS
-    // ==================================
-
     await loadRecentPapers();
-
-
-    // ==================================
-    // RECENT NEWS
-    // ==================================
-
+    await loadRecentWorksheets();
     await loadRecentNews();
-
-
-    // ==================================
-    // RECENT SCHEMES
-    // ==================================
-
     await loadRecentSchemes();
-
-
-    // ==================================
-    // RECENT APPS
-    // ==================================
-
     await loadRecentApps();
-
 }
 
 
-
-// ======================================
-// RECENT PAPERS
-// ======================================
+// ======================================================
+// Recently Added Papers
+// ======================================================
 
 async function loadRecentPapers() {
 
-    const container =
-        document.getElementById("recentPapers");
+    const container = document.getElementById("recentPapers");
 
     if (!container) return;
 
+    let papers = [];
 
-    const papers = [];
-
-
-    // Grade 1 - 13
-    for (
-        let g = 1;
-        g <= 13;
-        g++
-    ) {
+    for (let g = 1; g <= 13; g++) {
 
         try {
 
-            const response =
-                await fetch(
-                    `assets/data/grade${g}.json?v=${Date.now()}`
-                );
+            const response = await fetch(
+                `assets/data/grade${g}.json?v=${Date.now()}`
+            );
 
+            if (!response.ok) continue;
 
-            if (!response.ok) {
-                continue;
-            }
+            const data = await response.json();
 
-
-            const data =
-                await response.json();
-
-
-            // ==================================
+            // ------------------------------------------
             // Grade 1 - 11
-            // ==================================
+            // ------------------------------------------
 
-            if (data.subjects) {
+            if (g <= 11 && data.subjects) {
 
-                Object.keys(
-                    data.subjects
-                ).forEach(subjectName => {
+                Object.keys(data.subjects).forEach(subjectName => {
 
-                    const terms =
-                        data.subjects[
-                            subjectName
-                        ];
+                    const subjectData = data.subjects[subjectName];
 
+                    if (!subjectData) return;
 
-                    if (
-                        !terms ||
-                        typeof terms !==
-                        "object"
-                    ) {
-                        return;
-                    }
+                    Object.keys(subjectData).forEach(termName => {
 
+                        // IMPORTANT:
+                        // Do not include worksheets here
+                        if (termName === "worksheets") return;
 
-                    Object.keys(
-                        terms
-                    ).forEach(termName => {
+                        const termNumber = String(termName);
 
-                        const termPapers =
-                            terms[termName];
-
-
-                        if (
-                            !Array.isArray(
-                                termPapers
-                            )
-                        ) {
+                        if (!["1", "2", "3"].includes(termNumber)) {
                             return;
                         }
 
+                        const termPapers = subjectData[termNumber];
 
-                        termPapers.forEach(
-                            (item, index) => {
+                        if (!Array.isArray(termPapers)) return;
 
-                                if (
-                                    !item ||
-                                    !item.title
-                                ) {
-                                    return;
-                                }
+                        termPapers.forEach((item, index) => {
 
+                            if (!item || !item.pdf) return;
 
-                                papers.push({
-
-                                    grade:
-                                        g,
-
-                                    subject:
-                                        subjectName,
-
-                                    term:
-                                        termName,
-
-                                    title:
-                                        item.title,
-
-                                    pdf:
-                                        item.pdf,
-
-                                    index:
-                                        index
-
-                                });
-
-                            }
-                        );
-
-                    });
-
-                });
-
-            }
-
-
-            // ==================================
-            // Grade 12 - 13
-            // ==================================
-
-            if (data.streamSubjects) {
-
-                Object.keys(
-                    data.streamSubjects
-                ).forEach(streamName => {
-
-                    const streamSubjects =
-                        data.streamSubjects[
-                            streamName
-                        ];
-
-
-                    if (
-                        !streamSubjects ||
-                        typeof streamSubjects !==
-                        "object"
-                    ) {
-                        return;
-                    }
-
-
-                    Object.keys(
-                        streamSubjects
-                    ).forEach(subjectName => {
-
-                        const terms =
-                            streamSubjects[
-                                subjectName
-                            ];
-
-
-                        if (
-                            !terms ||
-                            typeof terms !==
-                            "object"
-                        ) {
-                            return;
-                        }
-
-
-                        Object.keys(
-                            terms
-                        ).forEach(termName => {
-
-                            const termPapers =
-                                terms[
-                                    termName
-                                ];
-
-
-                            if (
-                                !Array.isArray(
-                                    termPapers
-                                )
-                            ) {
-                                return;
-                            }
-
-
-                            termPapers.forEach(
-                                (item, index) => {
-
-                                    if (
-                                        !item ||
-                                        !item.title
-                                    ) {
-                                        return;
-                                    }
-
-
-                                    papers.push({
-
-                                        grade:
-                                            g,
-
-                                        stream:
-                                            streamName,
-
-                                        subject:
-                                            subjectName,
-
-                                        term:
-                                            termName,
-
-                                        title:
-                                            item.title,
-
-                                        pdf:
-                                            item.pdf,
-
-                                        index:
-                                            index
-
-                                    });
-
-                                }
-                            );
+                            papers.push({
+                                grade: g,
+                                subject: subjectName,
+                                term: termNumber,
+                                title: item.title || `Grade ${g} Paper`,
+                                pdf: item.pdf,
+                                index: index
+                            });
 
                         });
 
@@ -1661,12 +1475,74 @@ async function loadRecentPapers() {
 
             }
 
-        }
 
-        catch (error) {
+            // ------------------------------------------
+            // Grade 12 - 13
+            // ------------------------------------------
 
-            console.error(
-                `Recent Papers Grade ${g}:`,
+            if (g >= 12 && data.streamSubjects) {
+
+                Object.keys(data.streamSubjects).forEach(streamName => {
+
+                    const streamData =
+                        data.streamSubjects[streamName];
+
+                    if (!streamData) return;
+
+                    Object.keys(streamData).forEach(subjectName => {
+
+                        const subjectData =
+                            streamData[subjectName];
+
+                        if (!subjectData) return;
+
+                        Object.keys(subjectData).forEach(termName => {
+
+                            // IMPORTANT:
+                            // Do not include worksheets here
+                            if (termName === "worksheets") return;
+
+                            const termNumber = String(termName);
+
+                            if (!["1", "2", "3"].includes(termNumber)) {
+                                return;
+                            }
+
+                            const termPapers =
+                                subjectData[termNumber];
+
+                            if (!Array.isArray(termPapers)) return;
+
+                            termPapers.forEach((item, index) => {
+
+                                if (!item || !item.pdf) return;
+
+                                papers.push({
+                                    grade: g,
+                                    stream: streamName,
+                                    subject: subjectName,
+                                    term: termNumber,
+                                    title:
+                                        item.title ||
+                                        `Grade ${g} Paper`,
+                                    pdf: item.pdf,
+                                    index: index
+                                });
+
+                            });
+
+                        });
+
+                    });
+
+                });
+
+            }
+
+        } catch (error) {
+
+            console.warn(
+                `Could not load Grade ${g} papers:`,
                 error
             );
 
@@ -1675,112 +1551,284 @@ async function loadRecentPapers() {
     }
 
 
-    // ==================================
-    // SHOW LAST 3
-    // ==================================
+    // ------------------------------------------
+    // Latest 3 papers
+    // ------------------------------------------
 
-    const recent =
-        papers.slice(-3).reverse();
+    const recent = papers.slice(-3).reverse();
 
 
-    if (
-        recent.length === 0
-    ) {
+    // ------------------------------------------
+    // No papers
+    // ------------------------------------------
+
+    if (recent.length === 0) {
 
         container.innerHTML = `
-
             <div class="recent-item">
-
-                <div class="recent-item-left">
-
-                    <div class="recent-icon">
-                        📄
+                <div class="recent-icon">📄</div>
+                <div>
+                    <div class="recent-title">
+                        No papers available yet
                     </div>
-
-                    <div>
-
-                        <div class="recent-title">
-                            No papers available
-                        </div>
-
+                    <div class="recent-meta">
+                        New exam papers will appear here.
                     </div>
-
                 </div>
-
             </div>
-
         `;
 
         return;
     }
 
 
-    container.innerHTML =
-        recent.map(item => {
+    // ------------------------------------------
+    // Display papers
+    // ------------------------------------------
 
-            const streamPart =
-                item.stream
-                    ? `&stream=${encodeURIComponent(item.stream)}`
-                    : "";
+    container.innerHTML = recent.map(item => {
 
+        const streamParam =
+            item.stream
+                ? `&stream=${encodeURIComponent(item.stream)}`
+                : "";
 
-            const termNumber =
-                String(item.term)
-                    .match(/\d+/)
-                    ?. [0] ||
-                item.term;
+        return `
+            <a
+                class="recent-item"
+                href="paper.html?grade=${item.grade}${streamParam}&subject=${encodeURIComponent(item.subject)}&term=${item.term}&paper=${item.index}"
+            >
 
+                <div class="recent-icon">
+                    📄
+                </div>
 
-            const link =
-                `paper.html?grade=${item.grade}${streamPart}&subject=${encodeURIComponent(item.subject)}&term=${termNumber}&paper=${item.index}`;
-
-
-            return `
-
-                <a
-                    href="${link}"
-                    class="recent-item"
-                >
-
-                    <div class="recent-item-left">
-
-                        <div class="recent-icon">
-                            📄
-                        </div>
-
-                        <div>
-
-                            <div class="recent-title">
-                                Grade ${item.grade} - ${escapeRecentHTML(item.subject)}
-                            </div>
-
-                            <div class="recent-meta">
-                                ${escapeRecentHTML(item.term)}
-                                -
-                                ${escapeRecentHTML(item.title)}
-                            </div>
-
-                        </div>
-
+                <div>
+                    <div class="recent-title">
+                        ${escapeRecentHTML(item.title)}
                     </div>
 
-                    <div class="recent-arrow">
-                        →
+                    <div class="recent-meta">
+                        Grade ${item.grade}
+                        • ${escapeRecentHTML(item.subject)}
+                        • Term ${item.term}
                     </div>
+                </div>
 
-                </a>
+            </a>
+        `;
 
-            `;
-
-        }).join("");
+    }).join("");
 
 }
 
 
+// ======================================================
+// Recently Added Worksheets
+// ======================================================
 
-// ======================================
-// RECENT NEWS
-// ======================================
+async function loadRecentWorksheets() {
+
+    const container =
+        document.getElementById("recentWorksheets");
+
+    if (!container) return;
+
+    let worksheets = [];
+
+
+    for (let g = 1; g <= 13; g++) {
+
+        try {
+
+            const response = await fetch(
+                `assets/data/grade${g}.json?v=${Date.now()}`
+            );
+
+            if (!response.ok) continue;
+
+            const data = await response.json();
+
+
+            // ------------------------------------------
+            // Grade 1 - 11
+            // ------------------------------------------
+
+            if (g <= 11 && data.subjects) {
+
+                Object.keys(data.subjects).forEach(subjectName => {
+
+                    const subjectData =
+                        data.subjects[subjectName];
+
+                    if (!subjectData) return;
+
+                    const list =
+                        subjectData.worksheets;
+
+                    if (!Array.isArray(list)) return;
+
+                    list.forEach((item, index) => {
+
+                        if (!item || !item.pdf) return;
+
+                        worksheets.push({
+                            grade: g,
+                            subject: subjectName,
+                            title:
+                                item.title ||
+                                `Grade ${g} Worksheet`,
+                            pdf: item.pdf,
+                            index: index
+                        });
+
+                    });
+
+                });
+
+            }
+
+
+            // ------------------------------------------
+            // Grade 12 - 13
+            // ------------------------------------------
+
+            if (g >= 12 && data.streamSubjects) {
+
+                Object.keys(data.streamSubjects).forEach(streamName => {
+
+                    const streamData =
+                        data.streamSubjects[streamName];
+
+                    if (!streamData) return;
+
+                    Object.keys(streamData).forEach(subjectName => {
+
+                        const subjectData =
+                            streamData[subjectName];
+
+                        if (!subjectData) return;
+
+                        const list =
+                            subjectData.worksheets;
+
+                        if (!Array.isArray(list)) return;
+
+                        list.forEach((item, index) => {
+
+                            if (!item || !item.pdf) return;
+
+                            worksheets.push({
+                                grade: g,
+                                stream: streamName,
+                                subject: subjectName,
+                                title:
+                                    item.title ||
+                                    `Grade ${g} Worksheet`,
+                                pdf: item.pdf,
+                                index: index
+                            });
+
+                        });
+
+                    });
+
+                });
+
+            }
+
+        } catch (error) {
+
+            console.warn(
+                `Could not load Grade ${g} worksheets:`,
+                error
+            );
+
+        }
+
+    }
+
+
+    // ------------------------------------------
+    // Latest 3 worksheets
+    // ------------------------------------------
+
+    const recent =
+        worksheets.slice(-3).reverse();
+
+
+    // ------------------------------------------
+    // No worksheets
+    // ------------------------------------------
+
+    if (recent.length === 0) {
+
+        container.innerHTML = `
+            <div class="recent-item">
+                <div class="recent-icon">📝</div>
+
+                <div>
+                    <div class="recent-title">
+                        No worksheets available yet
+                    </div>
+
+                    <div class="recent-meta">
+                        New worksheets will appear here.
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    // ------------------------------------------
+    // Display worksheets
+    // ------------------------------------------
+
+    container.innerHTML = recent.map(item => {
+
+        const streamParam =
+            item.stream
+                ? `&stream=${encodeURIComponent(item.stream)}`
+                : "";
+
+        return `
+            <a
+                class="recent-item"
+                href="paper.html?grade=${item.grade}${streamParam}&subject=${encodeURIComponent(item.subject)}&type=worksheet&paper=${item.index}"
+            >
+
+                <div class="recent-icon">
+                    📝
+                </div>
+
+                <div>
+
+                    <div class="recent-title">
+                        ${escapeRecentHTML(item.title)}
+                    </div>
+
+                    <div class="recent-meta">
+                        Grade ${item.grade}
+                        • ${escapeRecentHTML(item.subject)}
+                        • Worksheet
+                    </div>
+
+                </div>
+
+            </a>
+        `;
+
+    }).join("");
+
+}
+
+
+// ======================================================
+// Recent News
+// ======================================================
 
 async function loadRecentNews() {
 
@@ -1789,7 +1837,6 @@ async function loadRecentNews() {
 
     if (!container) return;
 
-
     try {
 
         const response =
@@ -1797,62 +1844,30 @@ async function loadRecentNews() {
                 `assets/data/news.json?v=${Date.now()}`
             );
 
+        if (!response.ok) return;
 
-        if (!response.ok) {
-            throw new Error(
-                "News JSON unavailable"
-            );
-        }
+        const data = await response.json();
 
-
-        const data =
-            await response.json();
-
-
-        const news =
-            Array.isArray(data.news)
-                ? data.news
-                : [];
-
+        const news = Array.isArray(data.news)
+            ? data.news
+            : [];
 
         const recent =
             news.slice(0, 3);
 
-
-        if (
-            recent.length === 0
-        ) {
-
-            container.innerHTML =
-                `<div class="recent-small">
-                    No recent news available.
-                </div>`;
-
-            return;
-
-        }
-
+        if (recent.length === 0) return;
 
         container.innerHTML =
             recent.map(item => `
-
                 <div class="recent-small">
-
-                    📰
-                    ${escapeRecentHTML(
-                        item.title || "Education News"
-                    )}
-
+                    ${escapeRecentHTML(item.title || "Education News")}
                 </div>
-
             `).join("");
 
-    }
+    } catch (error) {
 
-    catch (error) {
-
-        console.error(
-            "Recent News Error:",
+        console.warn(
+            "Could not load recent news:",
             error
         );
 
@@ -1861,10 +1876,9 @@ async function loadRecentNews() {
 }
 
 
-
-// ======================================
-// RECENT SCHEMES
-// ======================================
+// ======================================================
+// Recent Schemes
+// ======================================================
 
 async function loadRecentSchemes() {
 
@@ -1873,7 +1887,6 @@ async function loadRecentSchemes() {
 
     if (!container) return;
 
-
     try {
 
         const response =
@@ -1881,65 +1894,33 @@ async function loadRecentSchemes() {
                 `assets/data/schemes.json?v=${Date.now()}`
             );
 
+        if (!response.ok) return;
 
-        if (!response.ok) {
-            throw new Error(
-                "Schemes JSON unavailable"
-            );
-        }
-
-
-        const data =
-            await response.json();
-
+        const data = await response.json();
 
         const schemes =
-            Array.isArray(
-                data.schemes
-            )
+            Array.isArray(data.schemes)
                 ? data.schemes
                 : [];
-
 
         const recent =
             schemes.slice(0, 3);
 
-
-        if (
-            recent.length === 0
-        ) {
-
-            container.innerHTML =
-                `<div class="recent-small">
-                    No recent schemes available.
-                </div>`;
-
-            return;
-
-        }
-
+        if (recent.length === 0) return;
 
         container.innerHTML =
             recent.map(item => `
-
                 <div class="recent-small">
-
-                    📚
                     ${escapeRecentHTML(
-                        item.title ||
-                        "Marking Scheme"
+                        item.title || "Scheme"
                     )}
-
                 </div>
-
             `).join("");
 
-    }
+    } catch (error) {
 
-    catch (error) {
-
-        console.error(
-            "Recent Schemes Error:",
+        console.warn(
+            "Could not load recent schemes:",
             error
         );
 
@@ -1948,10 +1929,9 @@ async function loadRecentSchemes() {
 }
 
 
-
-// ======================================
-// RECENT APPS
-// ======================================
+// ======================================================
+// Recent Apps
+// ======================================================
 
 async function loadRecentApps() {
 
@@ -1960,7 +1940,6 @@ async function loadRecentApps() {
 
     if (!container) return;
 
-
     try {
 
         const response =
@@ -1968,63 +1947,33 @@ async function loadRecentApps() {
                 `assets/data/apps.json?v=${Date.now()}`
             );
 
+        if (!response.ok) return;
 
-        if (!response.ok) {
-            throw new Error(
-                "Apps JSON unavailable"
-            );
-        }
-
-
-        const data =
-            await response.json();
-
+        const data = await response.json();
 
         const apps =
             Array.isArray(data.apps)
                 ? data.apps
                 : [];
 
-
         const recent =
             apps.slice(0, 3);
 
-
-        if (
-            recent.length === 0
-        ) {
-
-            container.innerHTML =
-                `<div class="recent-small">
-                    No recent apps available.
-                </div>`;
-
-            return;
-
-        }
-
+        if (recent.length === 0) return;
 
         container.innerHTML =
             recent.map(item => `
-
                 <div class="recent-small">
-
-                    📱
                     ${escapeRecentHTML(
-                        item.name ||
-                        "Educational App"
+                        item.name || "Education App"
                     )}
-
                 </div>
-
             `).join("");
 
-    }
+    } catch (error) {
 
-    catch (error) {
-
-        console.error(
-            "Recent Apps Error:",
+        console.warn(
+            "Could not load recent apps:",
             error
         );
 
@@ -2033,34 +1982,18 @@ async function loadRecentApps() {
 }
 
 
-
-// ======================================
-// HTML ESCAPE
-// ======================================
+// ======================================================
+// Escape HTML
+// ======================================================
 
 function escapeRecentHTML(value) {
 
-    return String(value || "")
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
 }
 
