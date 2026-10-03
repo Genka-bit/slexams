@@ -1841,7 +1841,7 @@ async function loadRecentNews() {
 
         const response =
             await fetch(
-                `assets/data/news.json?v=${Date.now()}`
+                `/assets/data/news.json?v=${Date.now()}`
             );
 
        if (!response.ok) {
@@ -2080,14 +2080,15 @@ window.addEventListener(
 
         // Common Features
 
-        initializeSearch();
-
-        initializeSlider();
-
-        initializeDarkMode();
-
-        initializeMenu();
         loadHomeRecentUpdates();
+
+initializeSearch();
+
+initializeSlider();
+
+initializeDarkMode();
+
+initializeMenu();
 
     }
 );
