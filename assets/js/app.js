@@ -1848,9 +1848,13 @@ async function loadRecentNews() {
 
         const data = await response.json();
 
-        const news = Array.isArray(data.news)
-            ? data.news
-            : [];
+console.log("NEWS JSON:", data);
+
+const news = Array.isArray(data.news)
+    ? data.news
+    : [];
+
+console.log("NEWS ARRAY:", news);
 
         const recent =
             news.slice(0, 3);
