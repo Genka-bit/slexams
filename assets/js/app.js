@@ -1844,10 +1844,13 @@ async function loadRecentNews() {
                 `assets/data/news.json?v=${Date.now()}`
             );
 
-        if (!response.ok) return;
+       if (!response.ok) {
+    console.error("News JSON failed:", response.status);
+    return;
+}
 
         const data = await response.json();
-
+console.log("NEWS DATA:", data);
 console.log("NEWS JSON:", data);
 
 const news = Array.isArray(data.news)
