@@ -212,7 +212,12 @@
       "worksheets": []
     },
     "விஞ்ஞானம்": {
-      "1": [],
+      "1": [
+        {
+          "title": "8-Science-1st-Term-tm-jfn-2023",
+          "pdf": "assets/pdf/grade8/விஞ்ஞானம்/term1/8-Science-1st-Term-tm-jfn-2023.pdf"
+        }
+      ],
       "2": [],
       "3": []
     },
