@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://slexams.site/</loc>
-  </url>
-  <url>
-    <loc>https://slexams.site/grade.html?grade=8</loc>
-  </url>
+  <url><loc>https://slexams.site/</loc></url>
+
+  <url><loc>https://slexams.site/grade.html?grade=1</loc></url>
+  <url><loc>https://slexams.site/grade.html?grade=2</loc></url>
+  <url><loc>https://slexams.site/grade.html?grade=3</loc></url>
+  <url><loc>https://slexams.site/grade.html?grade=4</loc></url>
+  <url><loc>https://slexams.site/grade.html?grade=5</loc></url>
+  <url><loc>https://slexams.site/grade.html?grade=6</loc></url>
+  <url><loc>https://slexams.site/grade.html?grade=7</loc></url>
+  <url><loc>https://slexams.site/grade.html?grade=8</loc></url>
+  <url><loc>https://slexams.site/grade.html?grade=9</loc></url>
+  <url><loc>https://slexams.site/grade.html?grade=10</loc></url>
+  <url><loc>https://slexams.site/grade.html?grade=11</loc></url>
+  <url><loc>https://slexams.site/grade.html?grade=12</loc></url>
+  <url><loc>https://slexams.site/grade.html?grade=13</loc></url>
+
+  <url><loc>https://slexams.site/news.html</loc></url>
+  <url><loc>https://slexams.site/scheme.html</loc></url>
+  <url><loc>https://slexams.site/apps.html</loc></url>
+
   <url>
     <loc>https://slexams.site/subject.html?grade=8&amp;subject=%E0%AE%95%E0%AE%A3%E0%AE%BF%E0%AE%A4%E0%AE%AE%E0%AF%8D</loc>
   </url>
@@ -14,14 +28,5 @@
   </url>
   <url>
     <loc>https://slexams.site/paper.html?grade=8&amp;stream=&amp;subject=%E0%AE%95%E0%AE%A3%E0%AE%BF%E0%AE%A4%E0%AE%AE%E0%AF%8D&amp;term=1&amp;paper=0</loc>
-  </url>
-  <url>
-    <loc>https://slexams.site/news.html</loc>
-  </url>
-  <url>
-    <loc>https://slexams.site/scheme.html</loc>
-  </url>
-  <url>
-    <loc>https://slexams.site/apps.html</loc>
   </url>
 </urlset>
