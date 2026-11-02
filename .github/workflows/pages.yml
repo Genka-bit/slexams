@@ -21,6 +21,7 @@ jobs:
         run: |
           node --check assets/js/app.js
           node --check assets/js/social.js
+          node tests/check_init.cjs
       - name: Run build checks
         run: python -m unittest discover -s tests -v
       - name: Build static content and social cards

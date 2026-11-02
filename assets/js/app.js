@@ -2092,9 +2092,7 @@ initializeSearch();
 
 initializeSlider();
 
-initializeDarkMode();
-
-initializeMenu();
+// Header menu and theme controls are initialized by initHeaderControls below.
 
     }
 );
