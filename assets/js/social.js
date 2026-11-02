@@ -112,7 +112,7 @@
         const marker = document.querySelector('[data-content-id]');
         const page = location.pathname.split('/').pop();
         try {
-            const response = await fetch(new URL('assets/data/content-index.json', root));
+            const response = await fetch(new URL('assets/data/content-index.json', root), { cache: 'no-cache' });
             if (!response.ok) return;
             const records = await response.json();
             const aliases = new Map();
