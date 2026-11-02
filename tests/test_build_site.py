@@ -31,11 +31,13 @@ class StaticPagesTest(unittest.TestCase):
                 page = (output / record['path'].strip('/') / 'index.html').read_text()
                 self.assertIn('property="og:title" content="' + builder.escape(record['title']) + '"', page)
                 self.assertIn('property="og:image"', page)
+                self.assertIn('assets/js/app.js?v=', page)
                 self.assertIn('data-content-id="' + record['id'] + '"', page)
                 self.assertIn('href="' + builder.ORIGIN + record['path'] + '"', page)
             tree = ElementTree.parse(output / 'sitemap.xml')
             urls = {x.text for x in tree.findall('.//{*}loc')}
             self.assertTrue({builder.ORIGIN + r['path'] for r in records} <= urls)
+            self.assertIn('assets/js/app.js?v=', (output / 'index.html').read_text())
 
     def test_markup_and_url_injection(self):
         self.assertEqual(builder.safe_url('javascript:alert(1)'), '')

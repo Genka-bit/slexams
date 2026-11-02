@@ -168,6 +168,18 @@ def build(source, output):
     urls = ''.join('<url><loc>' + escape(ORIGIN + r['path']) + '</loc></url>\n' for r in records)
     (output / 'sitemap.xml').write_text(original.replace('</urlset>', urls + '</urlset>'), encoding='utf-8')
     (output / 'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: ' + ORIGIN + '/sitemap.xml\n', encoding='utf-8')
+    # Give changed JS/CSS new URLs so returning browsers do not retain old code.
+    versions = {
+        p.relative_to(output).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()[:12]
+        for folder in ('assets/js', 'assets/css')
+        for p in (output / folder).glob('*') if p.is_file()
+    }
+    pattern = re.compile(r'''(["'])(/?assets/(?:js|css)/[^"'?]+\.(?:js|css))(?:\?[^"']*)?\1''')
+    def version_asset(match):
+        version = versions.get(match[2].lstrip('/'))
+        return match[1] + match[2] + '?v=' + version + match[1] if version else match[0]
+    for page in output.rglob('*.html'):
+        page.write_text(pattern.sub(version_asset, page.read_text(encoding='utf-8')), encoding='utf-8')
     print(f'Built {len(records)} resource pages into {output}')
     return records
 
