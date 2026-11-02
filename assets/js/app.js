@@ -1,3 +1,16 @@
+// Share in-flight grade requests between home sections.
+const homeGradeRequests = new Map();
+function loadHomeGrade(number) {
+    if (!homeGradeRequests.has(number)) {
+        homeGradeRequests.set(number, fetch(`assets/data/grade${number}.json`)
+            .then(response => {
+                if (!response.ok) throw new Error(`Unable to load grade ${number}`);
+                return response.json();
+            }));
+    }
+    return homeGradeRequests.get(number);
+}
+
 // ======================================
 // SLExam Pro v5.1
 // Final App.js
@@ -221,6 +234,7 @@ async function loadGradePage() {
     }
 
     title.textContent = "Grade " + grade;
+    document.title = "Grade " + grade + " Exam Papers | SLExam Pro";
 
     container.innerHTML = "";
 
@@ -512,7 +526,7 @@ a.innerHTML = `
     </span>
 
     <span class="paper-list-title">
-        ${item.title}
+        ${escapeSearchHTML(item.title)}
     </span>
 
     <span class="paper-list-arrow">
@@ -613,6 +627,7 @@ async function loadPaperPage() {
     // Original paper title
     title.textContent =
         selectedPaper.title;
+    document.title = selectedPaper.title + " | SLExam Pro";
 
 
     // PDF Viewer
@@ -1394,11 +1409,14 @@ async function loadHomeRecentUpdates() {
         return;
     }
 
-    await loadRecentPapers();
-    await loadRecentWorksheets();
-    await loadRecentNews();
-    await loadRecentSchemes();
-    await loadRecentApps();
+    // Start all grade reads together, then reuse the same results for both lists.
+    if (document.getElementById("recentPapers") || document.getElementById("recentWorksheets")) {
+        await Promise.allSettled(Array.from({ length: 13 }, (_, index) => loadHomeGrade(index + 1)));
+    }
+    await Promise.allSettled([
+        loadRecentPapers(), loadRecentWorksheets(), loadRecentNews(),
+        loadRecentSchemes(), loadRecentApps()
+    ]);
 }
 
 
@@ -1418,13 +1436,7 @@ async function loadRecentPapers() {
 
         try {
 
-            const response = await fetch(
-                `assets/data/grade${g}.json?v=${Date.now()}`
-            );
-
-            if (!response.ok) continue;
-
-            const data = await response.json();
+            const data = await loadHomeGrade(g);
 
             // ------------------------------------------
             // Grade 1 - 11
@@ -1641,13 +1653,7 @@ async function loadRecentWorksheets() {
 
         try {
 
-            const response = await fetch(
-                `assets/data/grade${g}.json?v=${Date.now()}`
-            );
-
-            if (!response.ok) continue;
-
-            const data = await response.json();
+            const data = await loadHomeGrade(g);
 
 
             // ------------------------------------------

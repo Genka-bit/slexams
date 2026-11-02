@@ -7,9 +7,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Education News | SLExam Pro</title>
+<meta name="description" content="Read education news and examination announcements for Sri Lankan students and teachers.">
 
 <link rel="stylesheet" href="assets/css/style.css">
 
+<link rel="stylesheet" href="assets/css/social.css">
 </head>
 
 <body>
@@ -313,7 +315,7 @@ async function loadNews() {
             if (item.image) {
 
                 imageHTML = `
-                    <img
+                    <img loading="lazy"
                         src="${item.image}"
                         alt="${item.title}"
                         style="
@@ -396,6 +398,8 @@ loadNews();
 </script>
 <script src="assets/js/app.js"></script>
 
+<script src="assets/js/social.js" defer></script>
 </body>
 
 </html>
+
