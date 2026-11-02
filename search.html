@@ -9,6 +9,7 @@
       content="width=device-width, initial-scale=1.0">
 
 <title>Search | SLExam Pro</title>
+<meta name="description" content="Search | SLExam Pro — free learning resources for Sri Lankan students and teachers on SLExam Pro.">
 
 <link rel="stylesheet"
       href="assets/css/style.css">
@@ -327,6 +328,7 @@
   .appendChild(document.createElement('script')))
 </script>
 
+<link rel="stylesheet" href="assets/css/social.css">
 </head>
 
 
@@ -1887,14 +1889,14 @@ function displayResults(
 
                 <h3>
 
-                    ${item.title}
+                    ${escapeSearchHTML(item.title)}
 
                 </h3>
 
 
                 <p>
 
-                    ${item.description}
+                    ${escapeSearchHTML(item.description)}
 
                 </p>
 
@@ -2041,6 +2043,7 @@ startSearch();
 </script>
 
 
+<script src="assets/js/social.js" defer></script>
 </body>
 
 </html>

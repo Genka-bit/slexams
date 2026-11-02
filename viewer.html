@@ -7,7 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>SLExam - PDF Viewer</title>
+<meta name="description" content="SLExam - PDF Viewer — free learning resources for Sri Lankan students and teachers on SLExam Pro.">
 
+<link rel="stylesheet" href="assets/css/style.css">
 <style>
 
 body{
@@ -134,6 +136,7 @@ margin-top:40px;
   .appendChild(document.createElement('script')))
 </script>
 
+<link rel="stylesheet" href="assets/css/social.css">
 </head>
 
 
@@ -409,68 +412,33 @@ Paper
 
 
 <script>
-
-
-let params =
-new URLSearchParams(window.location.search);
-
-
-let paper =
-params.get("paper");
-
-
-
-document.getElementById("paperTitle").innerHTML =
-"📄 " + paper;
-
-
-
-/*
-இங்கு பின்னர் உண்மையான PDF Link சேர்க்கப்படும்
-
-உதாரணம்:
-
-let pdf =
-"pdf/grade10/math/paper1.pdf";
-
-*/
-
-
-let params =
-new URLSearchParams(window.location.search);
-
-
-let pdf =
-params.get("pdf");
-
-
-let name =
-params.get("name");
-
-
-
-document.getElementById("paperTitle").innerHTML =
-"📄 " + name;
-
-
-
-document.getElementById("pdfViewer").src = pdf;
-
-
-document.getElementById("downloadBtn").href = pdf;
-
-
-document.getElementById("pdfViewer").src = pdf;
-
-
-document.getElementById("downloadBtn").href = pdf;
-
-
-
+(() => {
+    const query = new URLSearchParams(location.search);
+    const title = document.getElementById("paperTitle");
+    const frame = document.getElementById("pdfViewer");
+    const download = document.getElementById("downloadBtn");
+    title.textContent = "📄 " + (query.get("name") || "Exam Paper");
+    try {
+        const value = query.get("pdf");
+        if (!value) throw new Error("Missing PDF");
+        const pdf = new URL(value, location.href);
+        if (!["http:", "https:"].includes(pdf.protocol)) throw new Error("Invalid PDF URL");
+        frame.src = pdf.href;
+        frame.title = title.textContent;
+        download.href = pdf.href;
+    } catch {
+        title.textContent = "PDF Not Available";
+        frame.hidden = true;
+        download.hidden = true;
+    }
+})();
 </script>
 
 
 
+<script src="assets/js/app.js"></script>
+<script src="assets/js/social.js" defer></script>
 </body>
 
 </html>
+
