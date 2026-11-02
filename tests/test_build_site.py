@@ -4,6 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from xml.etree import ElementTree
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('builder', ROOT / 'scripts/build_site.py')
@@ -12,6 +13,29 @@ spec.loader.exec_module(builder)
 
 
 class StaticPagesTest(unittest.TestCase):
+    def test_share_jpeg_is_small_and_metadata_preserves_original(self):
+        with tempfile.TemporaryDirectory() as temp:
+            source, output = Path(temp) / 'source', Path(temp) / 'output'
+            original = source / 'assets/images/news/poster.png'
+            original.parent.mkdir(parents=True)
+            Image.new('RGBA', (1600, 2000), (20, 80, 120, 180)).save(original)
+            original_bytes = original.read_bytes()
+            details = builder.prepare_share_image(source, output, builder.ORIGIN + '/assets/images/news/poster.png')
+            target = output / details['share_image'].removeprefix(builder.ORIGIN + '/')
+            self.assertLessEqual(target.stat().st_size, 200_000)
+            with Image.open(target) as image:
+                self.assertEqual(image.format, 'JPEG')
+                self.assertEqual(image.size, (details['image_width'], details['image_height']))
+            self.assertEqual(original.read_bytes(), original_bytes)
+            record = next(r for r in builder.collect(ROOT) if r['kind'] == 'news')
+            original_url = record['image']
+            record.update(details)
+            page = builder.render(record, '', '')
+            self.assertIn('og:image:type" content="image/jpeg', page)
+            self.assertIn('og:image:width" content="1200', page)
+            self.assertIn('src="' + original_url + '"', page)
+            self.assertIn('og:image" content="' + details['share_image'] + '"', page)
+
     def test_identity_does_not_depend_on_list_position(self):
         records = builder.collect(ROOT)
         self.assertEqual(len(records), len({r['id'] for r in records}))

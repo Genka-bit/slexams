@@ -36,7 +36,7 @@
         status.className = 'share-status';
         status.setAttribute('role', 'status');
         status.setAttribute('aria-live', 'polite');
-        const shareURL = ORIGIN + record.path;
+        const shareURL = ORIGIN + record.path + (record.shareVersion ? '?share=' + encodeURIComponent(record.shareVersion) : '');
         const text = record.title + '\n' + shareURL;
         const link = (label, url) => {
             const element = document.createElement('a');
@@ -112,7 +112,7 @@
         const marker = document.querySelector('[data-content-id]');
         const page = location.pathname.split('/').pop();
         try {
-            const response = await fetch(new URL('assets/data/content-index.json', root));
+            const response = await fetch(new URL('assets/data/content-index.json', root), { cache: 'no-cache' });
             if (!response.ok) return;
             const records = await response.json();
             const aliases = new Map();

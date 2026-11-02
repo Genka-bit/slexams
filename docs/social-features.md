@@ -8,8 +8,11 @@ the item; editing either creates a new identity. Add explicit persistent `id`
 fields for new news items when the upload Worker is next updated.
 
 Resource pages include Open Graph and Twitter metadata in the initial HTML.
-News/apps use their existing image; PDF resources use the SLExam icon as a
-fallback. Existing query-based detail pages resolve the same IDs. Lists link to
+News/apps use a JPEG derivative of their existing image; PDF resources use
+a derivative of the SLExam icon as a fallback. Share JPEGs retain the full image
+with letterboxing, are no larger than 200 KB, and include image type/dimension
+metadata. Original on-page images are preserved. Share URLs carry a metadata
+version to distinguish newly generated cards from older cached previews. Existing query-based detail pages resolve the same IDs. Lists link to
 the new static pages after the resource index has loaded.
 
 ## Publishing
@@ -51,6 +54,7 @@ the response was lost. The user-created `test-check` row is not a resource view.
 ## Local validation
 
 ```sh
+python -m pip install Pillow==12.3.0
 python -m unittest discover -s tests -v
 node --check assets/js/app.js
 node --check assets/js/social.js
