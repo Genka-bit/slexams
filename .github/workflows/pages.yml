@@ -23,7 +23,11 @@ jobs:
           node --check assets/js/social.js
           node tests/check_init.cjs
       - name: Run build checks
-        run: python -m unittest discover -s tests -v
+        env:
+          PIP_DISABLE_PIP_VERSION_CHECK: '1'
+        run: |
+          python -m pip install Pillow==12.3.0
+          python -m unittest discover -s tests -v
       - name: Build static content and social cards
         run: python scripts/build_site.py --output _site
       - uses: actions/upload-pages-artifact@v5

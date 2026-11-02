@@ -1,12 +1,15 @@
-"""Build static resource pages with crawler-readable social metadata (stdlib only)."""
+"""Build static resource pages with crawler-readable social metadata."""
 import argparse
 import hashlib
+import io
 import html
 import json
 import re
 import shutil
 from pathlib import Path
-from urllib.parse import quote, urlencode, urljoin, urlsplit
+from urllib.parse import quote, unquote, urlencode, urljoin, urlsplit
+
+from PIL import Image, ImageOps
 
 ORIGIN = 'https://slexams.site'
 
@@ -92,6 +95,40 @@ def paragraphs(text):
     return ''.join('<p>' + escape(p).replace('\n', '<br>') + '</p>' for p in str(text).split('\n\n') if p.strip())
 
 
+def prepare_share_image(source, output, image_url):
+    """Encode a small social derivative; preserve the original page image."""
+    parts = urlsplit(image_url)
+    if parts.netloc != urlsplit(ORIGIN).netloc:
+        return {}
+    original = (source / unquote(parts.path).lstrip('/')).resolve()
+    if not original.is_relative_to(source.resolve()) or not original.is_file():
+        original = source / 'assets/images/icon-512.png'
+    if not original.is_file():
+        return {}
+    raw = original.read_bytes()
+    digest = hashlib.sha256(b'social-jpeg-v1\n' + raw).hexdigest()[:24]
+    relative = 'assets/images/share/' + digest + '.jpg'
+    destination = output / relative
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with Image.open(io.BytesIO(raw)) as opened:
+        image = ImageOps.exif_transpose(opened).convert('RGBA')
+        flattened = Image.new('RGB', image.size, 'white')
+        flattened.paste(image, mask=image.getchannel('A'))
+    # Letterbox instead of cropping text out of posters. Baseline JPEG is widely readable.
+    for width, height in ((1200, 630), (1000, 525), (800, 420), (600, 315)):
+        contained = ImageOps.contain(flattened, (width, height), Image.Resampling.LANCZOS)
+        canvas = Image.new('RGB', (width, height), 'white')
+        canvas.paste(contained, ((width - contained.width) // 2, (height - contained.height) // 2))
+        for quality in (82, 72, 62, 52, 42):
+            encoded = io.BytesIO()
+            canvas.save(encoded, format='JPEG', quality=quality, optimize=True, progressive=False)
+            if encoded.tell() <= 200_000:
+                destination.write_bytes(encoded.getvalue())
+                print(f'Share JPEG: {original.name}: {len(raw)} -> {encoded.tell()} bytes ({width}x{height})')
+                return dict(share_image=ORIGIN + '/' + relative, image_width=width, image_height=height)
+    raise ValueError('Could not encode a bounded share image: ' + str(original))
+
+
 def render(record, header, footer):
     title, description = escape(record['title']), escape(record['description'][:300])
     canonical = ORIGIN + record['path']
@@ -114,6 +151,12 @@ def render(record, header, footer):
         for image in record.get('previews', []):
             body += f'<img class="resource-preview" src="{escape(image)}" alt="{title} preview" loading="lazy" width="640" height="480">'
     social_type = 'article' if record['kind'] == 'news' else 'website'
+    share_image = record.get('share_image', record['image'])
+    image_details = ''
+    if record.get('image_width'):
+        image_details = f'''<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="{record['image_width']}">
+<meta property="og:image:height" content="{record['image_height']}">'''
     return f'''<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -126,12 +169,14 @@ def render(record, header, footer):
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{escape(canonical)}">
-<meta property="og:image" content="{escape(record['image'])}">
+<meta property="og:image" content="{escape(share_image)}">
+<meta property="og:image:secure_url" content="{escape(share_image)}">
+{image_details}
 <meta property="og:image:alt" content="{title}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{title}">
 <meta name="twitter:description" content="{description}">
-<meta name="twitter:image" content="{escape(record['image'])}">
+<meta name="twitter:image" content="{escape(share_image)}">
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/social.css">
 </head><body>{header}
@@ -158,11 +203,16 @@ def build(source, output):
     footer = re.search(r'<footer\b[\s\S]*?</footer>', home).group()
     records = collect(source)
     index = []
+    image_cache = {}
     for record in records:
+        if record['image'] not in image_cache:
+            image_cache[record['image']] = prepare_share_image(source, output, record['image'])
+        record.update(image_cache[record['image']])
+        record['shareVersion'] = hashlib.sha256((record.get('share_image', record['image']) + '\n' + record['title'] + '\n' + record['description']).encode()).hexdigest()[:12]
         page = output / record['path'].strip('/') / 'index.html'
         page.parent.mkdir(parents=True, exist_ok=True)
         page.write_text(render(record, header, footer), encoding='utf-8')
-        index.append({k: record[k] for k in ('id', 'kind', 'title', 'description', 'path', 'aliases')})
+        index.append({k: record[k] for k in ('id', 'kind', 'title', 'description', 'path', 'aliases', 'shareVersion')})
     (output / 'assets/data/content-index.json').write_text(json.dumps(index, ensure_ascii=False), encoding='utf-8')
     original = (source / 'sitemap.xml').read_text(encoding='utf-8')
     urls = ''.join('<url><loc>' + escape(ORIGIN + r['path']) + '</loc></url>\n' for r in records)
