@@ -16,6 +16,21 @@ spec.loader.exec_module(builder)
 
 
 class StaticPagesTest(unittest.TestCase):
+    def test_home_inline_styles_preserve_cascade_ads_and_resource_fallback(self):
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder)
+            (source / 'assets/css').mkdir(parents=True)
+            (source / 'assets/css/style.css').write_text('body { color: blue; }')
+            (source / 'assets/css/social.css').write_text('.recent { color: red; }')
+            document = '<head><link rel="stylesheet" href="assets/css/style.css"><style>body { color: green; }</style><script async src="https://example.com/ads.js"></script><link rel="stylesheet" href="assets/css/social.css"></head>'
+            page = builder.inline_home_styles(document, source)
+            self.assertNotIn('<link', page)
+            self.assertLess(page.index('color: blue'), page.index('color: green'))
+            self.assertLess(page.index('color: green'), page.index('color: red'))
+            self.assertIn('<script async src="https://example.com/ads.js"></script>', page)
+            (source / 'assets/css/style.css').write_text('body { background: url(../image.png); }')
+            self.assertIn('<link rel="stylesheet" href="assets/css/style.css">', builder.inline_home_styles(document, source))
+
     def test_static_canonical_metadata_and_verification_are_preserved(self):
         source = '<html><head><title>Old</title><meta name="description" content="Old description"><meta name="google-adsense-account" content="keep-me"><meta name="monetag" content="keep-too"></head><body><h1>Home</h1></body></html>'
         page = builder.update_html_seo(source, 'index.html')

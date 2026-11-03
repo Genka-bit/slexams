@@ -81,6 +81,26 @@ class _TagAttributes(HTMLParser):
         self.attributes = dict(attrs)
 
 
+def inline_home_styles(document, source):
+    """Keep the cascade intact while avoiding two cold-load CSS requests."""
+    def replace_link(match):
+        parser = _TagAttributes()
+        parser.feed(match[0])
+        attrs = parser.attributes
+        path = attrs.get('href', '')
+        if attrs.get('rel', '').lower() != 'stylesheet' or path not in (
+            'assets/css/style.css', 'assets/css/social.css'
+        ) or any(key in attrs for key in ('media', 'disabled', 'title')):
+            return match[0]
+        css = (source / path).read_text(encoding='utf-8')
+        # Relative CSS resources would resolve differently inside an HTML page.
+        # Retain the external stylesheet if those are introduced in the future.
+        if re.search(r'url\s*\(|@import|</style', css, re.I):
+            return match[0]
+        return '<style data-inline-source="' + path + '">\n' + css + '\n</style>'
+    return re.sub(r'<link\b[^>]*>', replace_link, document, flags=re.I)
+
+
 def update_html_seo(document, filename):
     match = re.search(r'<head\b[^>]*>([\s\S]*?)</head>', document, re.I)
     if not match:
@@ -532,6 +552,8 @@ def build(source, output):
     (output / 'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: ' + ORIGIN + '/sitemap.xml\n', encoding='utf-8')
     for page in output.glob('*.html'):
         page.write_text(update_html_seo(page.read_text(encoding='utf-8'), page.name), encoding='utf-8')
+    home = output / 'index.html'
+    home.write_text(inline_home_styles(home.read_text(encoding='utf-8'), source), encoding='utf-8')
     # Give changed JS/CSS new URLs so returning browsers do not retain old code.
     versions = {
         p.relative_to(output).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()[:12]
