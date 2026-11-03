@@ -302,74 +302,43 @@ async function loadNews() {
 
 
         news.forEach((item, newsIndex) => {
-
-            const card =
-                document.createElement("div");
-
-            card.className =
-                "news-card";
-
-
-            let imageHTML = "";
+            const card = document.createElement("a");
+            card.className = "news-card news-card-link";
+            card.href = "news-detail.html?id=" + newsIndex;
+            card.setAttribute("aria-labelledby", "news-title-" + newsIndex);
 
             if (item.image) {
-
-                imageHTML = `
-                    <img loading="${newsIndex === 0 ? 'eager' : 'lazy'}"
-                        ${responsiveImageAttributes(item.imageVariants, item.image, "(max-width: 700px) 90vw, (max-width: 1000px) 45vw, 380px")}
-                        alt="${item.title}"
-                        style="
-                            width:100%;
-                            height:auto;
-                            border-radius:10px;
-                            margin-bottom:15px;
-                        ">
-                `;
-
+                const image = document.createElement("img");
+                image.className = "news-card-image";
+                image.loading = newsIndex === 0 ? "eager" : "lazy";
+                image.alt = ""; // The adjacent title names this single card link.
+                const attributes = document.createElement("template");
+                attributes.innerHTML = "<img " + responsiveImageAttributes(item.imageVariants, item.image, "(max-width: 700px) 90vw, (max-width: 1000px) 45vw, 380px") + ">";
+                for (const attribute of attributes.content.firstElementChild.attributes) {
+                    image.setAttribute(attribute.name, attribute.value);
+                }
+                card.append(image);
             }
 
-
-const linkHTML = `
-
-    <p style="margin-top:20px;">
-
-        <a
-            class="grade-card"
-            href="news-detail.html?id=${newsIndex}">
-
-            Read More
-
-        </a>
-
-    </p>
-
-`;
-
-            card.innerHTML = `
-
-                ${imageHTML}
-
-                <h2>
-                    ${item.title}
-                </h2>
-
-                <p>
-                    ${item.description}
-                </p>
-
-                <small>
-                    ${item.date}
-                </small>
-
-                <br><br>
-
-                ${linkHTML}
-
-            `;
-
-
+            const title = document.createElement("h2");
+            title.id = "news-title-" + newsIndex;
+            title.textContent = item.title || "News";
+            const description = document.createElement("p");
+            description.className = "news-card-summary";
+            const summary = String(item.description || "").replace(/\s+/g, " ").trim();
+            description.textContent = summary.length > 180
+                ? summary.slice(0, 180).replace(/\s+\S*$/u, "") + "…" : summary;
+            const bottom = document.createElement("span");
+            bottom.className = "news-card-bottom";
+            const date = document.createElement("small");
+            date.textContent = item.date || "";
+            const more = document.createElement("span");
+            more.className = "news-card-more";
+            more.textContent = "Read More →";
+            more.setAttribute("aria-hidden", "true");
+            bottom.append(date, more);
+            card.append(title, description, bottom);
             container.appendChild(card);
-
         });
 
     }
