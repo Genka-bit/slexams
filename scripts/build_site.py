@@ -425,6 +425,8 @@ def display_image_attributes(metadata, fallback, sizes):
 
 
 def render(record, header, footer):
+    # Resource pages have an h1 but no enclosing h2 before the footer sections.
+    footer = footer.replace('<h3>', '<h2>').replace('</h3>', '</h2>')
     title, description = escape(record['title']), escape(record['description'][:300])
     canonical = ORIGIN + record['path']
     body = ''
