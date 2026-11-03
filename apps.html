@@ -692,7 +692,7 @@ function createAppCard(app) {
 
         <img
             class="app-image"
-            src="${app.mainImage}"
+            ${responsiveImageAttributes(app.mainImageVariants, app.mainImage || app.image, "100px")}
             alt="${app.name}"
             loading="lazy"
         >

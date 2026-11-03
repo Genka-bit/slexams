@@ -15,6 +15,54 @@ spec.loader.exec_module(builder)
 
 
 class StaticPagesTest(unittest.TestCase):
+    def test_responsive_webp_sizes_and_original_preservation(self):
+        with tempfile.TemporaryDirectory() as temp:
+            source, output = Path(temp) / 'source', Path(temp) / 'output'
+            image_path = source / 'assets/images/poster.png'
+            image_path.parent.mkdir(parents=True)
+            Image.new('RGB', (1500, 1000), (30, 90, 140)).save(image_path)
+            original = image_path.read_bytes()
+            metadata = builder.prepare_display_image(source, output, builder.ORIGIN + '/assets/images/poster.png')
+            self.assertEqual([v['width'] for v in metadata['sources']], [320, 640, 960, 1280])
+            for variant in metadata['sources']:
+                with Image.open(output / variant['src'].lstrip('/')) as image:
+                    self.assertEqual(image.format, 'WEBP')
+                    self.assertEqual(image.size, (variant['width'], variant['height']))
+                    self.assertAlmostEqual(image.height / image.width, 1000 / 1500, delta=0.003)
+            self.assertEqual(image_path.read_bytes(), original)
+            Image.new('RGBA', (120, 80), (40, 80, 120, 160)).save(image_path)
+            small = builder.prepare_display_image(source, output, builder.ORIGIN + '/assets/images/poster.png')
+            self.assertEqual([v['width'] for v in small['sources']], [120])
+            self.assertEqual(builder.prepare_display_image(source, output, 'https://example.com/photo.jpg'), {})
+
+    def test_deployed_media_metadata_keeps_original_json_and_share_jpeg(self):
+        with tempfile.TemporaryDirectory() as temp:
+            source, output = Path(temp) / 'source', Path(temp) / 'output'
+            folder = source / 'assets/data'
+            folder.mkdir(parents=True)
+            for grade in range(1, 14):
+                (folder / f'grade{grade}.json').write_text('{"subjects":{}}')
+            item = dict(title='A poster', description='News', date='2026-01-01', image='assets/images/poster.png')
+            (folder / 'news.json').write_text(json.dumps({'news': [item]}))
+            for name in ('apps', 'schemes'):
+                (folder / f'{name}.json').write_text(json.dumps({name: []}))
+            (source / 'index.html').write_text('<html><header>Header</header><footer>Footer</footer></html>')
+            (source / 'sitemap.xml').write_text('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>')
+            image = source / item['image']
+            image.parent.mkdir(parents=True)
+            Image.new('RGB', (1000, 1500), 'white').save(image)
+            before = (folder / 'news.json').read_bytes()
+            records = builder.build(source, output)
+            deployed = json.loads((output / 'assets/data/news.json').read_text())['news'][0]
+            self.assertEqual(deployed['image'], item['image'])
+            self.assertTrue(deployed['imageVariants']['sources'])
+            self.assertEqual((folder / 'news.json').read_bytes(), before)
+            page = (output / records[0]['path'].strip('/') / 'index.html').read_text()
+            self.assertIn('srcset="/assets/images/optimized/', page)
+            self.assertIn('sizes="(max-width: 700px) 92vw, 640px"', page)
+            self.assertIn('og:image:type" content="image/jpeg"', page)
+            self.assertIn('loading="lazy"', builder.render({**records[0], 'previews': ['https://example.com/preview.jpg']}, '', ''))
+
     def test_current_resource_id_collectors_match(self):
         ids = set()
         for path in (ROOT / 'assets/data').glob('*.json'):

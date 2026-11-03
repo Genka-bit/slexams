@@ -225,6 +225,43 @@ def prepare_share_image(source, output, image_url):
     raise ValueError('Could not encode a bounded share image: ' + str(original))
 
 
+def prepare_display_image(source, output, image_url):
+    """Create responsive WebP variants for visible news/app media, without upscaling."""
+    parts = urlsplit(image_url)
+    if parts.netloc != urlsplit(ORIGIN).netloc:
+        return {}
+    original = (source / unquote(parts.path).lstrip('/')).resolve()
+    if not original.is_relative_to(source.resolve()) or not original.is_file():
+        return {}
+    raw = original.read_bytes()
+    digest = hashlib.sha256(b'display-webp-v1-quality85\n' + raw).hexdigest()[:24]
+    with Image.open(io.BytesIO(raw)) as opened:
+        image = ImageOps.exif_transpose(opened).convert('RGBA')
+    widths = sorted({width for width in (320, 640, 960, 1280) if width < image.width} | {min(image.width, 1280)})
+    variants = []
+    for width in widths:
+        height = max(1, round(image.height * width / image.width))
+        resized = image.resize((width, height), Image.Resampling.LANCZOS)
+        relative = f'assets/images/optimized/{digest}-{width}.webp'
+        target = output / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        resized.save(target, format='WEBP', quality=85, method=6)
+        variants.append(dict(src='/' + relative, width=width, height=height))
+    typical = next((v for v in variants if v['width'] >= 640), variants[-1])
+    typical_bytes = (output / typical['src'].lstrip('/')).stat().st_size
+    print(f'Display WebP: {original.name}: {len(raw)} -> {typical_bytes} bytes at {typical["width"]}px; {len(variants)} sizes')
+    return dict(sources=variants)
+
+
+def display_image_attributes(metadata, fallback, sizes):
+    sources = metadata.get('sources', []) if metadata else []
+    if not sources:
+        return f'src="{escape(fallback)}" decoding="async"'
+    default = next((v for v in sources if v['width'] >= 640), sources[-1])
+    srcset = ', '.join(v['src'] + ' ' + str(v['width']) + 'w' for v in sources)
+    return f'src="{escape(default["src"])}" srcset="{escape(srcset)}" sizes="{escape(sizes)}" width="{default["width"]}" height="{default["height"]}" decoding="async"'
+
+
 def render(record, header, footer):
     title, description = escape(record['title']), escape(record['description'][:300])
     canonical = ORIGIN + record['path']
@@ -238,14 +275,16 @@ def render(record, header, footer):
         body += f'<p><a class="resource-button" href="{escape(pdf)}" target="_blank" rel="noopener noreferrer">📄 Open PDF / Download</a></p>'
         body += f'<iframe class="resource-pdf" src="{escape(preview)}" title="{title}" loading="lazy"></iframe>'
     else:
-        body += f'<img class="resource-cover" src="{escape(record["image"])}" alt="{title}" width="640" height="360">'
+        attrs = display_image_attributes(record.get('display_image'), record['image'], '(max-width: 700px) 92vw, 640px')
+        body += f'<img class="resource-cover" {attrs} alt="{title}" fetchpriority="high">'
         body += paragraphs(record.get('body') or record['description'])
         if record.get('link'):
             body += f'<p><a class="resource-button" href="{escape(record["link"])}" target="_blank" rel="noopener noreferrer">Official link</a></p>'
         for label, target in record.get('links', {}).items():
             body += f'<p><a class="resource-button" href="{escape(target)}" target="_blank" rel="noopener noreferrer">{escape(label)}</a></p>'
         for image in record.get('previews', []):
-            body += f'<img class="resource-preview" src="{escape(image)}" alt="{title} preview" loading="lazy" width="640" height="480">'
+            attrs = display_image_attributes(record.get('display_previews', {}).get(image), image, '(max-width: 700px) 92vw, 640px')
+            body += f'<img class="resource-preview" {attrs} alt="{title} preview" loading="lazy">'
     social_type = 'article' if record['kind'] == 'news' else 'website'
     share_image = record.get('share_image', record['image'])
     image_details = ''
@@ -301,7 +340,28 @@ def build(source, output):
     upload_dates = resource_added_dates(source)
     index = []
     image_cache = {}
+    display_cache = {}
+    references = {r['image'] for r in records if r['kind'] in ('news', 'app')}
+    references.update(image for r in records for image in r.get('previews', []))
+    for image in sorted(references):
+        display_cache[image] = prepare_display_image(source, output, image)
+    # Enrich only deployed JSON; keep original fields and repository data intact.
+    for filename, key in (('news.json', 'news'), ('apps.json', 'apps')):
+        database = read_data(source, filename)
+        for item in database.get(key, []):
+            if key == 'news':
+                metadata = display_cache.get(safe_url(item.get('image')))
+                if metadata:
+                    item['imageVariants'] = metadata
+            else:
+                metadata = display_cache.get(safe_url(item.get('mainImage') or item.get('image')))
+                if metadata:
+                    item['mainImageVariants'] = metadata
+                item['previewImageVariants'] = [display_cache.get(safe_url(image), {}) for image in item.get('previewImages', [])]
+        (output / 'assets/data' / filename).write_text(json.dumps(database, ensure_ascii=False, indent=2), encoding='utf-8')
     for record in records:
+        record['display_image'] = display_cache.get(record['image'], {})
+        record['display_previews'] = {image: display_cache.get(image, {}) for image in record.get('previews', [])}
         if record['image'] not in image_cache:
             image_cache[record['image']] = prepare_share_image(source, output, record['image'])
         record.update(image_cache[record['image']])
