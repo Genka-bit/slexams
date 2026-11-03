@@ -111,6 +111,8 @@
     async function initialize() {
         const marker = document.querySelector('[data-content-id]');
         const page = location.pathname.split('/').pop();
+        // Home recent links already come from the generated feed as stable URLs.
+        if (!marker && (page === '' || page === 'index.html')) return;
         try {
             const response = await fetch(new URL('assets/data/content-index.json', root), { cache: 'no-cache' });
             if (!response.ok) return;
