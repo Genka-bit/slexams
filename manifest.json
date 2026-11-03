@@ -1,7 +1,7 @@
 {
   "name": "SLExam Pro",
   "short_name": "SLExam",
-  "description": "Sri Lanka School Exam Papers, Education News, Schemes and Educational Apps",
+  "description": "Sri Lanka School Exam Papers, News, Schemes and Educational Apps",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
