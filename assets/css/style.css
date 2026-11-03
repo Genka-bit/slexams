@@ -1104,6 +1104,7 @@ body.dark-mode .terms-intro {
    FOOTER HEADINGS
    ================================== */
 
+.footer-column h2,
 .footer-column h3 {
     margin: 0 0 18px;
 
