@@ -121,7 +121,10 @@
             for (const record of records) for (const alias of record.aliases) aliases.set(keyFor(alias), record);
             const record = marker ? records.find(r => r.id === marker.dataset.contentId)
                 : DETAIL_PAGES.has(page) ? aliases.get(keyFor(location.href)) : null;
-            if (record) renderActions(record);
+            if (record) {
+                if (typeof setPageSEO === 'function') setPageSEO(record.title + ' | SLExam Pro', record.description, ORIGIN + record.path);
+                renderActions(record);
+            }
 
             // Existing dynamically rendered lists link to the static resource pages too.
             const rewrite = node => {

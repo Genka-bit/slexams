@@ -26,6 +26,7 @@ jobs:
           node tests/check_init.cjs
           node tests/check_recent.cjs
           node tests/check_images.cjs
+          node tests/check_seo.cjs
       - name: Run build checks
         env:
           PIP_DISABLE_PIP_VERSION_CHECK: '1'

@@ -96,3 +96,31 @@ image. Opening an app preview in the existing full-screen viewer still uses its
 original image. Below-fold previews use lazy loading and async decoding.
 WhatsApp/social metadata continues to use the previously verified JPEG derivatives.
 Run `node tests/check_images.cjs` to check the shared attribute helper.
+
+## SEO metadata and canonical URLs
+
+The build writes distinct metadata and canonical URLs for home, category indexes
+and information pages. Home uses the root URL as canonical. Grade, stream,
+subject and term templates intentionally omit a generic static canonical; the
+frontend sets it from the normalized valid query, removing empty/default and
+tracking parameters. Legacy resource details canonicalize to their stable
+`/content/` page when the content index resolves the resource.
+
+Resource pages include a visible breadcrumb and matching BreadcrumbList JSON-LD.
+News includes NewsArticle metadata and its supplied visible publication date.
+No author, exact publication time, rating or review is invented: datePublished
+is only emitted when the source supplies an ISO datetime with timezone. Home
+provides WebSite/Organization metadata. AdSense and Monetag verification tags
+are preserved when other head metadata is rewritten.
+
+The sitemap is regenerated from preferred resource URLs, public static pages,
+all grade navigation pages, streams and populated subject/term/worksheet lists.
+Array-index resource aliases, search, admin and the obsolete viewer are omitted.
+Admin/search/viewer HTML carries noindex,follow; robots.txt allows crawling so
+that directive can be read. The noindex tag is not authentication. New content
+uploads regenerate this sitemap automatically.
+
+Validate runtime title/canonical normalization with `node tests/check_seo.cjs`.
+After deployment, resubmit `https://slexams.site/sitemap.xml` in the existing
+Search Console property and inspect representative resource/category URLs.
+Canonical hints and structured data do not guarantee indexing or rich results.

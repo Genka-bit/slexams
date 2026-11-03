@@ -4,6 +4,7 @@ import os
 import subprocess
 import tempfile
 import unittest
+import re
 from pathlib import Path
 from xml.etree import ElementTree
 from PIL import Image
@@ -15,6 +16,48 @@ spec.loader.exec_module(builder)
 
 
 class StaticPagesTest(unittest.TestCase):
+    def test_static_canonical_metadata_and_verification_are_preserved(self):
+        source = '<html><head><title>Old</title><meta name="description" content="Old description"><meta name="google-adsense-account" content="keep-me"><meta name="monetag" content="keep-too"></head><body><h1>Home</h1></body></html>'
+        page = builder.update_html_seo(source, 'index.html')
+        self.assertEqual(page.count('rel="canonical"'), 1)
+        self.assertIn('href="https://slexams.site/"', page)
+        self.assertIn('content="keep-me"', page)
+        self.assertIn('content="keep-too"', page)
+        self.assertEqual(page.count('name="description"'), 1)
+        data = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', page, re.S)[1])
+        self.assertTrue({'WebSite', 'Organization'} <= {item['@type'] for item in data['@graph']})
+        for name in ('admin.html', 'search.html', 'viewer.html'):
+            self.assertIn('content="noindex,follow"', builder.update_html_seo(source, name))
+        category = builder.update_html_seo(source.replace('<h1>Home</h1>', '<h2 id="gradeTitle">Grade</h2>'), 'grade.html')
+        self.assertNotIn('rel="canonical"', category)  # Runtime knows the grade query.
+        self.assertIn('<h1 id="gradeTitle">', category)
+
+    def test_resource_schema_and_visible_breadcrumbs_match(self):
+        record = next(r for r in builder.collect(ROOT) if r['kind'] == 'news')
+        page = builder.render(record, '', '')
+        self.assertIn('aria-label="Breadcrumb"', page)
+        self.assertIn('Published <time', page)
+        data = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', page, re.S)[1])
+        crumbs = next(item for item in data['@graph'] if item['@type'] == 'BreadcrumbList')['itemListElement']
+        self.assertEqual([item['position'] for item in crumbs], list(range(1, len(crumbs) + 1)))
+        for crumb in crumbs[:-1]:
+            self.assertIn('href="' + builder.escape(crumb['item']) + '"', page)
+        article = next(item for item in data['@graph'] if item['@type'] == 'NewsArticle')
+        self.assertEqual(article['headline'], record['title'])
+        self.assertNotIn('author', article)
+        self.assertNotIn('datePublished', article)  # Only the date is known in current data.
+        record['title'] = '</script><script>alert(1)</script>'
+        self.assertNotIn('</script><script>alert(1)</script>', builder.json_ld(builder.resource_schema(record)))
+
+    def test_sitemap_lists_canonicals_and_populated_categories_only(self):
+        urls = builder.sitemap_urls(ROOT, builder.collect(ROOT))
+        self.assertEqual(len(urls), len(set(urls)))
+        self.assertIn(builder.ORIGIN + '/about.html', urls)
+        self.assertIn(builder.ORIGIN + '/grade.html?grade=8', urls)
+        self.assertTrue(any('/term.html?' in url and 'type=worksheet' in url for url in urls))
+        self.assertFalse(any('/paper.html?' in url or '/news-detail.html?' in url for url in urls))
+        self.assertFalse(any('/admin.html' in url or '/search.html' in url or '/viewer.html' in url for url in urls))
+
     def test_responsive_webp_sizes_and_original_preservation(self):
         with tempfile.TemporaryDirectory() as temp:
             source, output = Path(temp) / 'source', Path(temp) / 'output'
