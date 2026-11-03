@@ -974,11 +974,11 @@ async function loadAppDetail() {
                         ${
                             app.previewImages
                                 .map(
-                                    image => `
+                                    (image, imageIndex) => `
 
                                     <img
                                         class="app-preview-image"
-                                        src="${image}"
+                                        ${responsiveImageAttributes(app.previewImageVariants?.[imageIndex], image, "(max-width: 600px) 85vw, 450px")}
                                         alt="${app.name} Preview"
                                         loading="lazy"
                                         data-preview="${image}">
@@ -1003,7 +1003,7 @@ async function loadAppDetail() {
 
             <img
                 class="app-detail-image"
-                src="${app.mainImage || ""}"
+                ${responsiveImageAttributes(app.mainImageVariants, app.mainImage || app.image, "140px")}
                 alt="${app.name}"
                 onerror="this.style.display='none'">
 

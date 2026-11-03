@@ -63,9 +63,8 @@ python scripts/build_site.py --output _site
 
 Build tests verify stable IDs, static social metadata, sitemap entries, URL
 validation and escaped article content. The repository's existing media files
-are copied as-is. Image compression, replacing the sample Windows app entry,
-and an expanded offline
-cache are separate follow-up work from the audit.
+are copied as-is. Replacing the sample Windows app entry and expanding the offline cache remain
+separate follow-up work from the audit.
 
 ## Recently added resources
 
@@ -82,3 +81,18 @@ shows dates in the Asia/Colombo timezone and links directly to stable resource
 pages. Unknown upload dates are not guessed. Local builds without Git history
 produce empty recent sections; CI must use `fetch-depth: 0`. Subsequent admin
 uploads trigger the same pipeline and require no upload-Worker change.
+
+## Responsive on-page media
+
+The build generates WebP display variants at up to 320, 640, 960 and 1280
+pixels wide for referenced local news and app images. Images retain their aspect
+ratio and are never upscaled; source files are preserved. Content hashes version
+the variant URLs. Static resource pages use srcset/sizes and intrinsic dimensions.
+
+Deployed news/apps JSON gains optional image-variant metadata, while its original
+image and preview-image fields stay intact. The matching legacy list/detail
+templates consume the variants, so they do not first download the full original
+image. Opening an app preview in the existing full-screen viewer still uses its
+original image. Below-fold previews use lazy loading and async decoding.
+WhatsApp/social metadata continues to use the previously verified JPEG derivatives.
+Run `node tests/check_images.cjs` to check the shared attribute helper.

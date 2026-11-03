@@ -7,6 +7,27 @@
 // Part 1 - URL Parameters + Database
 // ======================================
 
+// Attribute strings for build-generated responsive media; originals remain fallbacks.
+function responsiveImageAttributes(metadata, fallback, sizes) {
+    const safeImageURL = value => {
+        if (!value) return "";
+        try {
+            const target = new URL(value, document.baseURI);
+            return ["https:", "http:"].includes(target.protocol) ? target.href : "";
+        } catch { return ""; }
+    };
+    const sources = (Array.isArray(metadata?.sources) ? metadata.sources : [])
+        .filter(item => Number.isInteger(item.width) && item.width > 0 && Number.isInteger(item.height) && item.height > 0 && safeImageURL(item.src))
+        .sort((a, b) => a.width - b.width);
+    if (!sources.length) {
+        const original = safeImageURL(fallback);
+        return original ? `src="${escapeSearchHTML(original)}" decoding="async"` : 'decoding="async"';
+    }
+    const chosen = sources.find(item => item.width >= 640) || sources[sources.length - 1];
+    const srcset = sources.map(item => `${safeImageURL(item.src)} ${item.width}w`).join(", ");
+    return `src="${escapeSearchHTML(safeImageURL(chosen.src))}" srcset="${escapeSearchHTML(srcset)}" sizes="${escapeSearchHTML(sizes)}" width="${chosen.width}" height="${chosen.height}" decoding="async"`;
+}
+
 const params = new URLSearchParams(window.location.search);
 
 const grade = params.get("grade");

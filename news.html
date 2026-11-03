@@ -301,7 +301,7 @@ async function loadNews() {
         container.innerHTML = "";
 
 
-        news.forEach(item => {
+        news.forEach((item, newsIndex) => {
 
             const card =
                 document.createElement("div");
@@ -315,11 +315,12 @@ async function loadNews() {
             if (item.image) {
 
                 imageHTML = `
-                    <img loading="lazy"
-                        src="${item.image}"
+                    <img loading="${newsIndex === 0 ? 'eager' : 'lazy'}"
+                        ${responsiveImageAttributes(item.imageVariants, item.image, "(max-width: 700px) 90vw, (max-width: 1000px) 45vw, 380px")}
                         alt="${item.title}"
                         style="
                             width:100%;
+                            height:auto;
                             border-radius:10px;
                             margin-bottom:15px;
                         ">
@@ -327,9 +328,6 @@ async function loadNews() {
 
             }
 
-
-            const newsIndex =
-    news.indexOf(item);
 
 const linkHTML = `
 
