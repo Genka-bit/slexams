@@ -1,5 +1,7 @@
 import importlib.util
 import json
+import os
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -13,6 +15,49 @@ spec.loader.exec_module(builder)
 
 
 class StaticPagesTest(unittest.TestCase):
+    def test_current_resource_id_collectors_match(self):
+        ids = set()
+        for path in (ROOT / 'assets/data').glob('*.json'):
+            ids.update(builder.resource_ids(path.name, json.loads(path.read_text())))
+        self.assertEqual(ids, {r['id'] for r in builder.collect(ROOT)})
+
+    def test_upload_dates_ignore_reorders_and_content_dates(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            def git(*args, **kwargs):
+                return subprocess.run(['git', '-C', str(root), *args], check=True, capture_output=True, text=True, **kwargs)
+            git('init', '-q')
+            git('config', 'user.name', 'Test')
+            git('config', 'user.email', 'test@example.invalid')
+            folder = root / 'assets/data'
+            folder.mkdir(parents=True)
+            def publish(filename, data, timestamp):
+                (folder / filename).write_text(json.dumps(data))
+                git('add', 'assets/data')
+                git('commit', '-qm', 'Update data', env={**os.environ, 'GIT_AUTHOR_DATE': timestamp, 'GIT_COMMITTER_DATE': timestamp})
+            first = {'title': 'Old paper', 'pdf': 'assets/pdf/old.pdf'}
+            second = {'title': 'Newer grade 1 paper', 'pdf': 'assets/pdf/new.pdf'}
+            publish('grade11.json', {'subjects': {'Math': {'1': [first]}}}, '2026-01-01T12:00:00+00:00')
+            publish('grade1.json', {'subjects': {'Tamil': {'1': [second]}}}, '2026-01-02T12:00:00+00:00')
+            publish('grade11.json', {'subjects': {'Math': {'1': [{**first, 'title': 'Renamed old paper'}]}}}, '2026-01-03T12:00:00+00:00')
+            publish('news.json', {'news': [{'id': 'news-stable', 'title': 'News', 'date': '2099-01-01'}]}, '2026-01-04T12:00:00+00:00')
+            dates = builder.resource_added_dates(root)
+            old_id = builder.content_id('paper', builder.safe_url(first['pdf']))
+            new_id = builder.content_id('paper', builder.safe_url(second['pdf']))
+            self.assertEqual(dates[old_id].replace('Z', '+00:00'), '2026-01-01T12:00:00+00:00')
+            self.assertEqual(dates[new_id].replace('Z', '+00:00'), '2026-01-02T12:00:00+00:00')
+            self.assertEqual(dates[builder.content_id('news', 'news-stable')].replace('Z', '+00:00'), '2026-01-04T12:00:00+00:00')
+            records = [dict(id=old_id, kind='paper', title='Old', description='', path='/old'), dict(id=new_id, kind='paper', title='New', description='', path='/new')]
+            self.assertEqual([r['id'] for r in builder.recent_feed(records, dates)['paper']], [new_id, old_id])
+            # Re-adding a removed item is a fresh addition, but a rename is not.
+            publish('grade11.json', {'subjects': {'Math': {'1': []}}}, '2026-01-05T12:00:00+00:00')
+            publish('grade11.json', {'subjects': {'Math': {'1': [first]}}}, '2026-01-06T12:00:00+00:00')
+            self.assertEqual(builder.resource_added_dates(root)[old_id].replace('Z', '+00:00'), '2026-01-06T12:00:00+00:00')
+
+    def test_unknown_dates_are_not_labelled_recent(self):
+        record = dict(id='unknown', kind='paper', title='Unknown', description='', path='/unknown')
+        self.assertEqual(builder.recent_feed([record], {})['paper'], [])
+
     def test_share_jpeg_is_small_and_metadata_preserves_original(self):
         with tempfile.TemporaryDirectory() as temp:
             source, output = Path(temp) / 'source', Path(temp) / 'output'

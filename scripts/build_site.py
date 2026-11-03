@@ -6,6 +6,8 @@ import html
 import json
 import re
 import shutil
+import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import quote, unquote, urlencode, urljoin, urlsplit
 
@@ -93,6 +95,100 @@ def collect(root):
 
 def paragraphs(text):
     return ''.join('<p>' + escape(p).replace('\n', '<br>') + '</p>' for p in str(text).split('\n\n') if p.strip())
+
+
+def resource_ids(filename, data):
+    """Use the same identities as collect() when inspecting old JSON snapshots."""
+    found = set()
+    if re.fullmatch(r'grade\d+\.json', filename):
+        groups = [data['subjects']] if 'subjects' in data else data.get('streamSubjects', {}).values()
+        for subjects in groups:
+            for terms in subjects.values():
+                if not isinstance(terms, dict):
+                    continue
+                for term, items in terms.items():
+                    if not isinstance(items, list):
+                        continue
+                    kind = 'worksheet' if term == 'worksheets' else 'paper'
+                    for item in items:
+                        if isinstance(item, dict) and (pdf := safe_url(item.get('pdf'))):
+                            found.add(content_id(kind, pdf))
+    elif filename == 'news.json':
+        for item in data.get('news', []):
+            found.add(content_id('news', item.get('id') or item.get('title', '') + '\n' + item.get('date', '')))
+    elif filename == 'schemes.json':
+        for item in data.get('schemes', []):
+            if pdf := safe_url(item.get('url') or item.get('pdf')):
+                found.add(content_id('scheme', item.get('id') or pdf))
+    elif filename == 'apps.json':
+        for item in data.get('apps', []):
+            if item.get('id'):
+                found.add(content_id('app', item['id']))
+    return found
+
+
+def resource_added_dates(source):
+    """Recover publication times from additions on the current first-parent history.
+
+    A title edit/reorder keeps its existing date. Removal followed by re-addition
+    gets the new addition time. Do not use exam years or news publication dates
+    as a substitute for repository upload time.
+    """
+    top = subprocess.run(['git', '-C', str(source), 'rev-parse', '--show-toplevel'], capture_output=True, text=True)
+    if top.returncode or Path(top.stdout.strip()).resolve() != source.resolve():
+        print('No repository history: recent sections will not guess upload dates')
+        return {}
+    shallow = subprocess.run(['git', '-C', str(source), 'rev-parse', '--is-shallow-repository'], capture_output=True, text=True, check=True)
+    if shallow.stdout.strip() == 'true':
+        raise ValueError('Complete Git history is required for upload ordering; use checkout fetch-depth: 0')
+    history = subprocess.run([
+        'git', '-C', str(source), 'log', '--first-parent', '--reverse',
+        '--format=%H%x00%cI', '--name-only', '--', 'assets/data/'
+    ], capture_output=True, text=True, check=True)
+    dates, previous = {}, {}
+    commit, timestamp = None, None
+    for line in history.stdout.splitlines():
+        if '\x00' in line:
+            commit, timestamp = line.split('\x00', 1)
+            continue
+        path = line.strip()
+        if not commit or not path or not re.fullmatch(r'assets/data/(grade\d+|news|schemes|apps)\.json', path):
+            continue
+        snapshot = subprocess.run(['git', '-C', str(source), 'show', f'{commit}:{path}'], capture_output=True, text=True)
+        if snapshot.returncode:
+            current = set()  # Deleted file.
+        else:
+            try:
+                data = json.loads(snapshot.stdout)
+                current = resource_ids(Path(path).name, data)
+            except (ValueError, TypeError, AttributeError, KeyError):
+                continue  # An invalid intermediate JSON snapshot was never a valid publication.
+        for identity in current - previous.get(path, set()):
+            dates[identity] = timestamp
+        previous[path] = current
+    return dates
+
+
+def recent_feed(records, dates, limit=3):
+    feed = {}
+    for kind in ('paper', 'worksheet', 'news', 'scheme', 'app'):
+        dated = []
+        for record in records:
+            if record['kind'] != kind or not dates.get(record['id']):
+                continue
+            try:
+                added = datetime.fromisoformat(dates[record['id']].replace('Z', '+00:00'))
+                if added.tzinfo is None:
+                    continue
+                dated.append((added.astimezone(timezone.utc), record))
+            except (ValueError, TypeError):
+                continue
+        dated.sort(key=lambda pair: (pair[0], pair[1]['id']), reverse=True)
+        feed[kind] = [dict(
+            id=r['id'], title=r['title'], path=r['path'],
+            description=r['description'][:180], addedAt=dates[r['id']]
+        ) for _, r in dated[:limit]]
+    return feed
 
 
 def prepare_share_image(source, output, image_url):
@@ -202,6 +298,7 @@ def build(source, output):
     header = re.search(r'<header\b[\s\S]*?</header>', home).group()
     footer = re.search(r'<footer\b[\s\S]*?</footer>', home).group()
     records = collect(source)
+    upload_dates = resource_added_dates(source)
     index = []
     image_cache = {}
     for record in records:
@@ -214,6 +311,8 @@ def build(source, output):
         page.write_text(render(record, header, footer), encoding='utf-8')
         index.append({k: record[k] for k in ('id', 'kind', 'title', 'description', 'path', 'aliases', 'shareVersion')})
     (output / 'assets/data/content-index.json').write_text(json.dumps(index, ensure_ascii=False), encoding='utf-8')
+    (output / 'assets/data/recent-content.json').write_text(json.dumps(recent_feed(records, upload_dates), ensure_ascii=False), encoding='utf-8')
+    print(f'Upload dates recovered for {sum(r["id"] in upload_dates for r in records)}/{len(records)} resources')
     original = (source / 'sitemap.xml').read_text(encoding='utf-8')
     urls = ''.join('<url><loc>' + escape(ORIGIN + r['path']) + '</loc></url>\n' for r in records)
     (output / 'sitemap.xml').write_text(original.replace('</urlset>', urls + '</urlset>'), encoding='utf-8')

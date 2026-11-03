@@ -3,6 +3,12 @@
 .content-actions a:focus-visible,.content-actions button:focus-visible,.resource-button:focus-visible{outline:3px solid #f59e0b;outline-offset:3px}
 .content-views{font-weight:700;margin-right:auto}.share-status{flex-basis:100%;font-size:14px}.share-status:empty{display:none}
 .content-actions input{max-width:100%;width:100%;padding:10px}
+.recent-title,.recent-meta{display:block;overflow-wrap:anywhere}
+.recent-content-link{display:flex;justify-content:space-between;align-items:center;gap:12px;text-decoration:none;color:inherit;min-height:44px}
+.recent-content-link .recent-title{font-size:15px;line-height:1.6}
+.recent-content-link .recent-meta{font-size:12px;color:#475569;margin-top:4px}
+.recent-item-left>span:last-child{min-width:0}
+body.dark-mode .recent-content-link .recent-meta{color:#cbd5e1}
 .resource-page{width:min(900px,92%);margin:28px auto;overflow-wrap:anywhere}
 .resource-page h1{font-size:clamp(24px,5vw,36px);line-height:1.4;margin:18px 0}
 .resource-page p{margin:16px 0;line-height:1.8}.resource-page .content-actions{width:100%}

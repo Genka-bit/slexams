@@ -64,5 +64,21 @@ python scripts/build_site.py --output _site
 Build tests verify stable IDs, static social metadata, sitemap entries, URL
 validation and escaped article content. The repository's existing media files
 are copied as-is. Image compression, replacing the sample Windows app entry,
-real upload timestamps for the home recent lists, and an expanded offline
+and an expanded offline
 cache are separate follow-up work from the audit.
+
+## Recently added resources
+
+The build reads complete first-parent Git history for the grade, news, scheme
+and app JSON files. A resource gets the commit time at which its identity
+appeared in that file. Editing/reordering an existing item preserves that time;
+removing and re-adding it records the new addition. Exam years in filenames and
+the publication date of a news story are never treated as upload timestamps.
+These are repository publication times, not physical R2 upload timestamps.
+
+The generated `assets/data/recent-content.json` contains the newest three dated
+records in each category, across all grades. Home loads this single small feed,
+shows dates in the Asia/Colombo timezone and links directly to stable resource
+pages. Unknown upload dates are not guessed. Local builds without Git history
+produce empty recent sections; CI must use `fetch-depth: 0`. Subsequent admin
+uploads trigger the same pipeline and require no upload-Worker change.

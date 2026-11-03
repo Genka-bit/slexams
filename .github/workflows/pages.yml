@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
@@ -22,6 +24,7 @@ jobs:
           node --check assets/js/app.js
           node --check assets/js/social.js
           node tests/check_init.cjs
+          node tests/check_recent.cjs
       - name: Run build checks
         env:
           PIP_DISABLE_PIP_VERSION_CHECK: '1'
