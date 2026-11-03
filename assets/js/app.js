@@ -7,6 +7,66 @@
 // Part 1 - URL Parameters + Database
 // ======================================
 
+function paginateList(container, selector, label) {
+    const size = 10;
+    let page = 0;
+    let items = [];
+    const nav = document.createElement("nav");
+    nav.className = "list-pagination";
+    nav.setAttribute("aria-label", label + " pages");
+    const previous = document.createElement("button");
+    previous.type = "button";
+    previous.textContent = "← Previous";
+    const status = document.createElement("span");
+    status.setAttribute("aria-live", "polite");
+    const next = document.createElement("button");
+    next.type = "button";
+    next.textContent = "Next →";
+    for (const button of [previous, next]) button.setAttribute("aria-controls", container.id);
+    nav.append(previous, status, next);
+    container.insertAdjacentElement("afterend", nav);
+    function show(moveFocus) {
+        const pages = Math.ceil(items.length / size);
+        page = Math.max(0, Math.min(page, pages - 1));
+        items.forEach((item, index) => {
+            item.classList.add("list-page-item");
+            item.hidden = index < page * size || index >= (page + 1) * size;
+        });
+        nav.hidden = items.length <= size;
+        previous.disabled = page === 0;
+        next.disabled = page >= pages - 1;
+        status.textContent = `Page ${page + 1} of ${Math.max(1, pages)} · ${page * size + 1}–${Math.min((page + 1) * size, items.length)} of ${items.length}`;
+        if (moveFocus) {
+            container.setAttribute("tabindex", "-1");
+            container.focus({ preventScroll: true });
+            container.scrollIntoView({ block: "start", behavior: "auto" });
+        }
+    }
+    function refresh() {
+        items = Array.from(container.children).filter(item => item.matches(selector));
+        page = 0;
+        show(false);
+    }
+    previous.addEventListener("click", () => { if (page > 0) { page--; show(true); } });
+    next.addEventListener("click", () => { if ((page + 1) * size < items.length) { page++; show(true); } });
+    // Lists arrive asynchronously; observe cards, not changes to their attributes.
+    if (typeof MutationObserver !== "undefined") new MutationObserver(refresh).observe(container, { childList: true });
+    refresh();
+    return { refresh };
+}
+
+function initializeListPagination() {
+    for (const [id, selector, label] of [
+        ["newsContainer", ".news-card", "News"],
+        ["androidApps", ".app-card", "Android apps"],
+        ["windowsApps", ".app-card", "Windows apps"],
+        ["paperContainer", ".paper-list-item", "Papers and worksheets"]
+    ]) {
+        const container = document.getElementById(id);
+        if (container) paginateList(container, selector, label);
+    }
+}
+
 function setPageSEO(title, description, canonical) {
     document.title = String(title);
     const meta = (attribute, name, value) => {
@@ -1622,6 +1682,8 @@ window.addEventListener(
 
 
         // Common Features
+
+        initializeListPagination();
 
         initializeCategorySEO();
 
