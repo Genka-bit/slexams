@@ -6,7 +6,7 @@
 .recent-title,.recent-meta{display:block;overflow-wrap:anywhere}
 .recent-content-link{display:flex;justify-content:space-between;align-items:center;gap:12px;text-decoration:none;color:inherit;min-height:44px}
 .recent-content-link .recent-title{font-size:15px;line-height:1.6}
-.recent-content-link .recent-meta{font-size:12px;color:#475569;margin-top:4px}
+.recent-item .recent-meta,.recent-content-link .recent-meta{font-size:12px;color:#475569;margin-top:4px}
 .recent-item-left>span:last-child{min-width:0}
 body.dark-mode .recent-content-link .recent-meta{color:#cbd5e1}
 .resource-page{width:min(900px,92%);margin:28px auto;overflow-wrap:anywhere}
