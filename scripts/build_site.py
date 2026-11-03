@@ -7,13 +7,155 @@ import json
 import re
 import shutil
 import subprocess
+from html.parser import HTMLParser
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import quote, unquote, urlencode, urljoin, urlsplit
+from urllib.parse import parse_qs, quote, unquote, urlencode, urljoin, urlsplit
 
 from PIL import Image, ImageOps
 
 ORIGIN = 'https://slexams.site'
+
+PUBLIC_PAGES = {
+    'index.html': ('Sri Lanka Exam Papers for Grades 1–13 | SLExam Pro', 'Find free Sri Lankan school exam papers, term tests and worksheets for Grades 1–13, plus education news, schemes and learning apps.'),
+    'news.html': ('Sri Lanka Education News & Exam Updates | SLExam Pro', 'Read Sri Lankan education news, examination announcements and updates for students, teachers and parents.'),
+    'apps.html': ('Educational Apps for Students & Teachers | SLExam Pro', 'Explore educational apps, their features, preview images and official download links for students and teachers.'),
+    'scheme.html': ('School Schemes & Teaching Resources | SLExam Pro', 'Browse available school schemes and teaching resources by grade and subject on SLExam Pro.'),
+    'exam-papers.html': ('School Exam Papers for Grades 1–13 | SLExam Pro', 'Choose a grade to browse Sri Lankan school term examination papers and revision resources.'),
+    'about.html': ('About SLExam Pro | Sri Lanka Learning Resources', 'Learn about SLExam Pro, a free educational resource platform for Sri Lankan students, teachers and parents.'),
+    'contact.html': ('Contact SLExam Pro', 'Contact SLExam Pro with questions, corrections and enquiries about school papers and educational resources.'),
+    'privacy.html': ('Privacy Policy | SLExam Pro', 'Read the SLExam Pro privacy policy and information about data handling on this educational resource website.'),
+    'terms.html': ('Terms & Conditions | SLExam Pro', 'Read the terms and conditions for accessing and using SLExam Pro educational resources.'),
+    'disclaimer.html': ('Disclaimer & Copyright | SLExam Pro', 'Read the SLExam Pro educational resource disclaimer and copyright information.')
+}
+
+
+def json_ld(value):
+    text = json.dumps(value, ensure_ascii=False, separators=(',', ':'))
+    text = text.replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
+    return '<script type="application/ld+json">' + text + '</script>'
+
+
+def breadcrumbs_for(record):
+    items = [('Home', ORIGIN + '/')]
+    if record['kind'] in ('paper', 'worksheet'):
+        grade = record.get('grade')
+        if grade:
+            items.append((f'Grade {grade}', ORIGIN + '/grade.html?' + urlencode({'grade': grade})))
+    else:
+        parent = {'news': ('Education News', 'news.html'), 'scheme': ('Schemes', 'scheme.html'), 'app': ('Education Apps', 'apps.html')}[record['kind']]
+        items.append((parent[0], ORIGIN + '/' + parent[1]))
+    items.append((record['title'], ORIGIN + record['path']))
+    return items
+
+
+def resource_schema(record):
+    canonical = ORIGIN + record['path']
+    crumb_id = canonical + '#breadcrumbs'
+    graph = [
+        {'@type': 'WebPage', '@id': canonical, 'url': canonical, 'name': record['title'],
+         'description': record['description'], 'isPartOf': {'@id': ORIGIN + '/#website'}, 'breadcrumb': {'@id': crumb_id}},
+        {'@type': 'BreadcrumbList', '@id': crumb_id, 'itemListElement': [
+            {'@type': 'ListItem', 'position': i + 1, 'name': name, 'item': target}
+            for i, (name, target) in enumerate(breadcrumbs_for(record))
+        ]}
+    ]
+    if record['kind'] == 'news':
+        article = {'@type': 'NewsArticle', '@id': canonical + '#article', 'headline': record['title'],
+                   'description': record['description'], 'image': [record.get('share_image', record['image'])],
+                   'mainEntityOfPage': {'@id': canonical}, 'publisher': {'@type': 'Organization', '@id': ORIGIN + '/#organization', 'name': 'SLExam Pro', 'url': ORIGIN + '/', 'logo': {'@type': 'ImageObject', 'url': ORIGIN + '/assets/images/icon-512.png'}}}
+        # Do not invent a publication time or author when the source has only a date.
+        date = str(record.get('date') or '')
+        try:
+            parsed = datetime.fromisoformat(date.replace('Z', '+00:00'))
+            if 'T' in date and parsed.tzinfo is not None:
+                article['datePublished'] = date
+        except (ValueError, TypeError):
+            pass
+        graph.append(article)
+    return {'@context': 'https://schema.org', '@graph': graph}
+
+
+class _TagAttributes(HTMLParser):
+    def handle_starttag(self, tag, attrs):
+        self.attributes = dict(attrs)
+
+
+def update_html_seo(document, filename):
+    match = re.search(r'<head\b[^>]*>([\s\S]*?)</head>', document, re.I)
+    if not match:
+        return document
+    head = match[1]
+    old_title = re.search(r'<title\b[^>]*>([\s\S]*?)</title>', head, re.I)
+    title, description = PUBLIC_PAGES.get(filename, (html.unescape(old_title[1].strip()) if old_title else 'SLExam Pro', None))
+    def remove_tag(tag_match):
+        nonlocal description
+        parser = _TagAttributes()
+        parser.feed(tag_match[0])
+        attrs = getattr(parser, 'attributes', {})
+        name, prop = attrs.get('name', '').lower(), attrs.get('property', '').lower()
+        if name == 'description':
+            if description is None:
+                description = attrs.get('content', '')
+            return ''
+        if (name == 'robots' and filename in ('admin.html', 'search.html', 'viewer.html')) or 'canonical' in attrs.get('rel', '').lower().split():
+            return ''
+        if filename in PUBLIC_PAGES and (prop.startswith('og:') or name.startswith('twitter:')):
+            return ''
+        return tag_match[0]
+    head = re.sub(r'<(?:meta|link)\b[^>]*>', remove_tag, head, flags=re.I)
+    head = re.sub(r'<title\b[^>]*>[\s\S]*?</title>', '', head, flags=re.I)
+    description = description or 'Browse free school papers and educational resources for Sri Lankan students and teachers on SLExam Pro.'
+    tags = [f'<title>{escape(title)}</title>', f'<meta name="description" content="{escape(description)}">']
+    if filename in ('admin.html', 'search.html', 'viewer.html'):
+        tags.append('<meta name="robots" content="noindex,follow">')
+    if filename in PUBLIC_PAGES:
+        canonical = ORIGIN + ('/' if filename == 'index.html' else '/' + filename)
+        tags.extend([
+            f'<link rel="canonical" href="{canonical}">',
+            '<meta property="og:site_name" content="SLExam Pro">', '<meta property="og:type" content="website">',
+            f'<meta property="og:title" content="{escape(title)}">', f'<meta property="og:description" content="{escape(description)}">',
+            f'<meta property="og:url" content="{canonical}">', f'<meta property="og:image" content="{ORIGIN}/assets/images/icon-512.png">'
+        ])
+        page_type = 'AboutPage' if filename == 'about.html' else 'ContactPage' if filename == 'contact.html' else 'CollectionPage' if filename in ('news.html', 'apps.html', 'scheme.html', 'exam-papers.html') else 'WebPage'
+        graph = [{'@type': page_type, '@id': canonical, 'url': canonical, 'name': title, 'description': description, 'isPartOf': {'@id': ORIGIN + '/#website'}}]
+        if filename == 'index.html':
+            graph.extend([
+                {'@type': 'WebSite', '@id': ORIGIN + '/#website', 'url': ORIGIN + '/', 'name': 'SLExam Pro', 'inLanguage': ['en', 'ta'], 'publisher': {'@id': ORIGIN + '/#organization'}},
+                {'@type': 'Organization', '@id': ORIGIN + '/#organization', 'name': 'SLExam Pro', 'url': ORIGIN + '/', 'logo': ORIGIN + '/assets/images/icon-512.png'}
+            ])
+        tags.append(json_ld({'@context': 'https://schema.org', '@graph': graph}))
+    document = document[:match.start(1)] + head + '\n' + '\n'.join(tags) + '\n' + document[match.end(1):]
+    if filename in ('grade.html', 'stream.html', 'subject.html', 'term.html', 'paper.html'):
+        # Preserve IDs and styles while making the primary page heading semantic.
+        document = re.sub(r'<h2([^>]*\bid="(?:gradeTitle|streamGradeTitle|subjectTitle|termTitle|paperTitle)"[^>]*)>([\s\S]*?)</h2>', r'<h1\1>\2</h1>', document, count=1)
+    return document.replace('href="schemes.html"', 'href="scheme.html"').replace('href="index.html"', 'href="/"')
+
+
+def sitemap_urls(source, records):
+    urls = {ORIGIN + ('/' if name == 'index.html' else '/' + name) for name in PUBLIC_PAGES if (source / name).exists()}
+    urls.update(ORIGIN + record['path'] for record in records)
+    for grade in range(1, 14):
+        data = read_data(source, f'grade{grade}.json')
+        if (source / 'grade.html').exists():
+            urls.add(ORIGIN + '/grade.html?' + urlencode({'grade': grade}))
+        groups = [('', data['subjects'])] if 'subjects' in data else list(data.get('streamSubjects', {}).items())
+        for stream, subjects in groups:
+            base = dict(grade=str(grade))
+            if stream:
+                base['stream'] = stream
+                if (source / 'stream.html').exists():
+                    urls.add(ORIGIN + '/stream.html?' + urlencode(base))
+            for subject, terms in subjects.items():
+                query = {**base, 'subject': subject}
+                populated = [(term, items) for term, items in terms.items() if isinstance(items, list) and any(isinstance(item, dict) and safe_url(item.get('pdf')) for item in items)]
+                if populated and (source / 'subject.html').exists():
+                    urls.add(ORIGIN + '/subject.html?' + urlencode(query))
+                if (source / 'term.html').exists():
+                    for term, _ in populated:
+                        params = {**query, **({'type': 'worksheet'} if term == 'worksheets' else {'term': term})}
+                        urls.add(ORIGIN + '/term.html?' + urlencode(params))
+    return sorted(urls)
 
 
 def escape(value):
@@ -292,6 +434,17 @@ def render(record, header, footer):
         image_details = f'''<meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="{record['image_width']}">
 <meta property="og:image:height" content="{record['image_height']}">'''
+    breadcrumbs = '<nav class="seo-breadcrumb" aria-label="Breadcrumb"><ol>' + ''.join(
+        '<li>' + (f'<span aria-current="page">{escape(name)}</span>' if i == len(breadcrumbs_for(record)) - 1 else f'<a href="{escape(target)}">{escape(name)}</a>') + '</li>'
+        for i, (name, target) in enumerate(breadcrumbs_for(record))
+    ) + '</ol></nav>'
+    publication = ''
+    if record['kind'] == 'news':
+        try:
+            date = datetime.fromisoformat(str(record.get('date') or '').replace('Z', '+00:00'))
+            publication = f'<p class="publication-date">Published <time datetime="{escape(record["date"])}">{date.strftime("%d %b %Y")}</time></p>'
+        except (ValueError, TypeError):
+            pass
     return f'''<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -312,12 +465,13 @@ def render(record, header, footer):
 <meta name="twitter:title" content="{title}">
 <meta name="twitter:description" content="{description}">
 <meta name="twitter:image" content="{escape(share_image)}">
+{json_ld(resource_schema(record))}
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/social.css">
 </head><body>{header}
 <main class="resource-page" data-content-id="{escape(record['id'])}">
-<p><a href="index.html">← Home</a></p>
-<h1>{title}</h1><p>{description}</p>
+{breadcrumbs}
+<h1>{title}</h1>{publication}<p>{description}</p>
 <div id="contentActions"></div>
 {body}
 </main>{footer}
@@ -373,10 +527,11 @@ def build(source, output):
     (output / 'assets/data/content-index.json').write_text(json.dumps(index, ensure_ascii=False), encoding='utf-8')
     (output / 'assets/data/recent-content.json').write_text(json.dumps(recent_feed(records, upload_dates), ensure_ascii=False), encoding='utf-8')
     print(f'Upload dates recovered for {sum(r["id"] in upload_dates for r in records)}/{len(records)} resources')
-    original = (source / 'sitemap.xml').read_text(encoding='utf-8')
-    urls = ''.join('<url><loc>' + escape(ORIGIN + r['path']) + '</loc></url>\n' for r in records)
-    (output / 'sitemap.xml').write_text(original.replace('</urlset>', urls + '</urlset>'), encoding='utf-8')
+    urls = ''.join('<url><loc>' + escape(target) + '</loc></url>\n' for target in sitemap_urls(source, records))
+    (output / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + '</urlset>\n', encoding='utf-8')
     (output / 'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: ' + ORIGIN + '/sitemap.xml\n', encoding='utf-8')
+    for page in output.glob('*.html'):
+        page.write_text(update_html_seo(page.read_text(encoding='utf-8'), page.name), encoding='utf-8')
     # Give changed JS/CSS new URLs so returning browsers do not retain old code.
     versions = {
         p.relative_to(output).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()[:12]

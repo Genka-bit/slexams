@@ -7,6 +7,79 @@
 // Part 1 - URL Parameters + Database
 // ======================================
 
+function setPageSEO(title, description, canonical) {
+    document.title = String(title);
+    const meta = (attribute, name, value) => {
+        let element = document.querySelector(`meta[${attribute}="${name}"]`);
+        if (!element) {
+            element = document.createElement("meta");
+            element.setAttribute(attribute, name);
+            document.head.append(element);
+        }
+        element.setAttribute("content", name.includes("description") ? String(value).slice(0, 500) : String(value));
+    };
+    meta("name", "description", description);
+    meta("property", "og:title", title);
+    meta("property", "og:description", description);
+    if (canonical) {
+        const target = new URL(canonical);
+        if (target.origin !== "https://slexams.site") return;
+        let link = document.querySelector('link[rel="canonical"]');
+        if (!link) {
+            link = document.createElement("link");
+            link.setAttribute("rel", "canonical");
+            document.head.append(link);
+        }
+        link.setAttribute("href", target.href);
+        meta("property", "og:url", target.href);
+    }
+}
+
+function initializeCategorySEO() {
+    const page = (window.location.pathname || "").split("/").pop();
+    if (!["grade.html", "stream.html", "subject.html", "term.html", "scheme-grades.html", "scheme-subjects.html"].includes(page)) return;
+    const query = new URLSearchParams(window.location.search);
+    const gradeValue = Number(query.get("grade"));
+    const validGrade = Number.isInteger(gradeValue) && gradeValue >= 1 && gradeValue <= 13;
+    const streamValue = (query.get("stream") || "").trim().slice(0, 200);
+    const subjectValue = (query.get("subject") || "").trim().slice(0, 200);
+    const levelValue = (query.get("level") || "").trim().slice(0, 100);
+    const canonicalQuery = new URLSearchParams();
+    let name;
+    if (page.startsWith("scheme-")) {
+        if (!validGrade && !levelValue) return;
+        if (validGrade) canonicalQuery.set("grade", String(gradeValue));
+        if (levelValue) canonicalQuery.set("level", levelValue);
+        name = (validGrade ? `Grade ${gradeValue}` : levelValue) + " School Schemes";
+    } else {
+        if (!validGrade) return;
+        canonicalQuery.set("grade", String(gradeValue));
+        name = `Grade ${gradeValue}`;
+        if (page !== "grade.html" && streamValue) {
+            canonicalQuery.set("stream", streamValue);
+            name += " " + streamValue;
+        }
+        if (["subject.html", "term.html"].includes(page)) {
+            if (!subjectValue) return;
+            canonicalQuery.set("subject", subjectValue);
+            name += " " + subjectValue;
+        }
+        if (page === "term.html") {
+            if (query.get("type") === "worksheet") {
+                canonicalQuery.set("type", "worksheet");
+                name += " Worksheets";
+            } else {
+                const termValue = query.get("term");
+                if (!["1", "2", "3"].includes(termValue)) return;
+                canonicalQuery.set("term", termValue);
+                name += ` Term ${termValue} Exam Papers`;
+            }
+        } else name += " Exam Papers & Worksheets";
+    }
+    const description = `Browse ${name} on SLExam Pro. Find available Sri Lankan school resources for revision, learning and teaching.`;
+    setPageSEO(name + " | SLExam Pro", description, "https://slexams.site/" + page + "?" + canonicalQuery.toString());
+}
+
 // Attribute strings for build-generated responsive media; originals remain fallbacks.
 function responsiveImageAttributes(metadata, fallback, sizes) {
     const safeImageURL = value => {
@@ -242,7 +315,6 @@ async function loadGradePage() {
     }
 
     title.textContent = "Grade " + grade;
-    document.title = "Grade " + grade + " Exam Papers | SLExam Pro";
 
     container.innerHTML = "";
 
@@ -1550,6 +1622,8 @@ window.addEventListener(
 
 
         // Common Features
+
+        initializeCategorySEO();
 
         loadHomeRecentUpdates();
 
