@@ -17,8 +17,8 @@ from PIL import Image, ImageOps
 ORIGIN = 'https://slexams.site'
 
 PUBLIC_PAGES = {
-    'index.html': ('Sri Lanka Exam Papers for Grades 1–13 | SLExam Pro', 'Find free Sri Lankan school exam papers, term tests and worksheets for Grades 1–13, plus education news, schemes and learning apps.'),
-    'news.html': ('Sri Lanka Education News & Exam Updates | SLExam Pro', 'Read Sri Lankan education news, examination announcements and updates for students, teachers and parents.'),
+    'index.html': ('Sri Lanka Exam Papers for Grades 1–13 | SLExam Pro', 'Find free Sri Lankan school exam papers, term tests and worksheets for Grades 1–13, plus news, schemes and learning apps.'),
+    'news.html': ('News | SLExam Pro', 'Read news and updates across a range of topics on SLExam Pro.'),
     'apps.html': ('Educational Apps for Students & Teachers | SLExam Pro', 'Explore educational apps, their features, preview images and official download links for students and teachers.'),
     'scheme.html': ('School Schemes & Teaching Resources | SLExam Pro', 'Browse available school schemes and teaching resources by grade and subject on SLExam Pro.'),
     'exam-papers.html': ('School Exam Papers for Grades 1–13 | SLExam Pro', 'Choose a grade to browse Sri Lankan school term examination papers and revision resources.'),
@@ -43,7 +43,7 @@ def breadcrumbs_for(record):
         if grade:
             items.append((f'Grade {grade}', ORIGIN + '/grade.html?' + urlencode({'grade': grade})))
     else:
-        parent = {'news': ('Education News', 'news.html'), 'scheme': ('Schemes', 'scheme.html'), 'app': ('Education Apps', 'apps.html')}[record['kind']]
+        parent = {'news': ('News', 'news.html'), 'scheme': ('Schemes', 'scheme.html'), 'app': ('Education Apps', 'apps.html')}[record['kind']]
         items.append((parent[0], ORIGIN + '/' + parent[1]))
     items.append((record['title'], ORIGIN + record['path']))
     return items
@@ -235,7 +235,7 @@ def collect(root):
                             date=item.get('addedAt', ''), grade=grade, subject=subject)
     for index, item in enumerate(read_data(root, 'news.json').get('news', [])):
         add('news', item.get('id') or item.get('title', '') + '\n' + item.get('date', ''),
-            item.get('title', 'Education News'), item.get('description', ''), f'news-detail.html?id={index}',
+            item.get('title', 'News'), item.get('description', ''), f'news-detail.html?id={index}',
             image=item.get('image'), body=item.get('content', ''), date=item.get('date', ''), link=safe_url(item.get('link')))
     for item in read_data(root, 'schemes.json').get('schemes', []):
         pdf = safe_url(item.get('url') or item.get('pdf'))
