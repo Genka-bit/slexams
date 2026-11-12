@@ -232,7 +232,8 @@ def collect(root):
                         title = item.get('title') or f'Grade {grade} {subject}'
                         description = f'Grade {grade} • {subject} • ' + ('Worksheet' if kind == 'worksheet' else f'Term {term} exam paper') + ' | SLExam Pro'
                         add(kind, pdf, title, description, 'paper.html?' + urlencode(query), pdf=pdf,
-                            date=item.get('addedAt', ''), grade=grade, subject=subject)
+                            date=item.get('addedAt', ''), grade=grade, subject=subject,
+                            term=term, stream=stream, paper_details=item.get('paperDetails', {}))
     for index, item in enumerate(read_data(root, 'news.json').get('news', [])):
         add('news', item.get('id') or item.get('title', '') + '\n' + item.get('date', ''),
             item.get('title', 'News'), item.get('description', ''), f'news-detail.html?id={index}',
@@ -424,12 +425,44 @@ def display_image_attributes(metadata, fallback, sizes):
     return f'src="{escape(default["src"])}" srcset="{escape(srcset)}" sizes="{escape(sizes)}" width="{default["width"]}" height="{default["height"]}" decoding="async"'
 
 
+def paper_detail_rows(record):
+    """Use source fields only; never infer exam year or publisher from filenames."""
+    details = record.get('paper_details')
+    details = details if isinstance(details, dict) else {}
+    rows = []
+    def text(label, value):
+        if isinstance(value, (str, int)) and not isinstance(value, bool) and str(value).strip():
+            rows.append((label, str(value).strip()))
+    text('வகுப்பு', record.get('grade'))
+    text('பாடம்', record.get('subject'))
+    text('பிரிவு', record.get('stream'))
+    exam = details.get('exam')
+    if not isinstance(exam, str) or not exam.strip():
+        term = str(record.get('term', ''))
+        exam = 'செயலட்டை' if record['kind'] == 'worksheet' else ({'1': 'முதலாம் தவணை', '2': 'இரண்டாம் தவணை', '3': 'மூன்றாம் தவணை'}.get(term))
+    text('வகை / தவணை', exam)
+    for label, field in [('ஆண்டு', 'year'), ('வெளியிட்ட அமைப்பு', 'publisher'), ('மொழிமூலம்', 'medium')]:
+        text(label, details.get(field))
+    for label, field, suffix in [('நேரம்', 'durationMinutes', ' நிமிடங்கள்'), ('பக்கங்கள்', 'pages', '')]:
+        value = details.get(field)
+        if isinstance(value, int) and not isinstance(value, bool) and value > 0:
+            text(label, str(value) + suffix)
+    return rows
+
+
+def render_paper_details(record):
+    if record['kind'] not in ('paper', 'worksheet'):
+        return ''
+    rows = ''.join('<tr><th scope="row">' + escape(label) + '</th><td>' + escape(value) + '</td></tr>' for label, value in paper_detail_rows(record))
+    return '<section class="paper-details" lang="ta"><h2>வினாத்தாள் விவரங்கள்</h2><table><caption class="sr-only">இந்தப் பதிவில் கிடைக்கும் வினாத்தாள் தகவல்கள்</caption><tbody>' + rows + '</tbody></table></section>'
+
+
 def render(record, header, footer):
     # Resource pages have an h1 but no enclosing h2 before the footer sections.
     footer = footer.replace('<h3>', '<h2>').replace('</h3>', '</h2>')
     title, description = escape(record['title']), escape(record['description'][:300])
     canonical = ORIGIN + record['path']
-    body = ''
+    body = render_paper_details(record)
     if record['kind'] in ('paper', 'worksheet', 'scheme'):
         pdf = record['pdf']
         preview = pdf

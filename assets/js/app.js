@@ -685,6 +685,56 @@ container.appendChild(a);
 // Part 6 - Paper Page
 // ======================================
 
+function renderPaperDetails(selectedPaper) {
+    const host = document.getElementById("paperDetails");
+    if (!host) return;
+    host.replaceChildren();
+    host.hidden = true;
+    const details = selectedPaper.paperDetails && typeof selectedPaper.paperDetails === "object"
+        ? selectedPaper.paperDetails : {};
+    const rows = [];
+    const add = (label, value) => {
+        if ((typeof value === "string" || typeof value === "number") && String(value).trim()) {
+            rows.push([label, String(value).trim()]);
+        }
+    };
+    add("வகுப்பு", grade);
+    add("பாடம்", subject);
+    add("பிரிவு", stream);
+    const exam = typeof details.exam === "string" && details.exam.trim() ? details.exam
+        : type === "worksheet" ? "செயலட்டை"
+        : ({"1": "முதலாம் தவணை", "2": "இரண்டாம் தவணை", "3": "மூன்றாம் தவணை"}[term]);
+    add("வகை / தவணை", exam);
+    for (const [label, field] of [["ஆண்டு", "year"], ["வெளியிட்ட அமைப்பு", "publisher"], ["மொழிமூலம்", "medium"]]) {
+        add(label, details[field]);
+    }
+    for (const [label, field, suffix] of [["நேரம்", "durationMinutes", " நிமிடங்கள்"], ["பக்கங்கள்", "pages", ""]]) {
+        const value = details[field];
+        if (Number.isInteger(value) && value > 0) add(label, value + suffix);
+    }
+    const heading = document.createElement("h2");
+    heading.textContent = "வினாத்தாள் விவரங்கள்";
+    const table = document.createElement("table");
+    const caption = document.createElement("caption");
+    caption.className = "sr-only";
+    caption.textContent = "இந்தப் பதிவில் கிடைக்கும் வினாத்தாள் தகவல்கள்";
+    table.append(caption);
+    const body = document.createElement("tbody");
+    for (const [label, value] of rows) {
+        const row = document.createElement("tr");
+        const key = document.createElement("th");
+        key.scope = "row";
+        key.textContent = label;
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.append(key, cell);
+        body.append(row);
+    }
+    table.append(body);
+    host.append(heading, table);
+    host.hidden = false;
+}
+
 async function loadPaperPage() {
 
     const frame =
@@ -769,6 +819,8 @@ async function loadPaperPage() {
         selectedPaper.title;
     document.title = selectedPaper.title + " | SLExam Pro";
 
+
+    renderPaperDetails(selectedPaper);
 
     // PDF Viewer
     frame.src =

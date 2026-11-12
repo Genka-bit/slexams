@@ -121,6 +121,49 @@ class StaticPagesTest(unittest.TestCase):
             self.assertIn('og:image:type" content="image/jpeg"', page)
             self.assertIn('loading="lazy"', builder.render({**records[0], 'previews': ['https://example.com/preview.jpg']}, '', ''))
 
+    def test_paper_details_use_only_known_fields_and_escape_text(self):
+        record = next(r for r in builder.collect(ROOT) if r['kind'] == 'paper')
+        minimal = {**record, 'title': '2024 Paper', 'term': '2', 'paper_details': {}}
+        rows = dict(builder.paper_detail_rows(minimal))
+        self.assertEqual(rows['வகை / தவணை'], 'இரண்டாம் தவணை')
+        self.assertNotIn('ஆண்டு', rows)
+        self.assertNotIn('வெளியிட்ட அமைப்பு', rows)
+        self.assertNotIn('பக்கங்கள்', rows)
+        hostile = {**minimal, 'paper_details': {'publisher': '<script>alert(1)</script>', 'pages': -1, 'durationMinutes': True}}
+        markup = builder.render_paper_details(hostile)
+        self.assertNotIn('<script>', markup)
+        self.assertIn('&lt;script&gt;', markup)
+        self.assertNotIn('நேரம்', markup)
+        self.assertNotIn('பக்கங்கள்', markup)
+        self.assertEqual(builder.render_paper_details({**record, 'kind': 'news'}), '')
+        worksheet = {**minimal, 'kind': 'worksheet', 'term': 'worksheets'}
+        self.assertEqual(dict(builder.paper_detail_rows(worksheet))['வகை / தவணை'], 'செயலட்டை')
+
+    def test_verified_sample_metadata_preserves_resource_identity(self):
+        expected = 'paper:ac3f68111aff23e851ea32b9102370f787140127aac4961fff04a409b3bea1f4'
+        sample = next(r for r in builder.collect(ROOT) if r['id'] == expected)
+        rows = dict(builder.paper_detail_rows(sample))
+        self.assertEqual(rows['ஆண்டு'], '2021 (2022)')
+        self.assertEqual(rows['பக்கங்கள்'], '4')
+        self.assertEqual(rows['நேரம்'], '120 நிமிடங்கள்')
+        self.assertEqual(rows['வகை / தவணை'], 'இறுதிக் கணிப்பீடு')
+        self.assertEqual(sample['path'], '/content/' + expected.replace(':', '-') + '/')
+        markup = builder.render(sample, '', '')
+        self.assertIn('scope="row"', markup)
+        self.assertIn(sample['pdf'], markup)
+        self.assertIn('<iframe', markup)
+
+    def test_google_ad_serving_is_paused_but_verification_remains(self):
+        for page in ROOT.glob('*.html'):
+            document = page.read_text()
+            self.assertNotIn('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', document, page.name)
+            self.assertNotIn('class="adsbygoogle"', document, page.name)
+            self.assertNotRegex(document, r'adsbygoogle\s*=')
+        home = (ROOT / 'index.html').read_text()
+        self.assertIn('name="google-adsense-account"', home)
+        self.assertIn('ca-pub-6650578728997048', home)
+        self.assertIn('nap5k.com/tag.min.js', (ROOT / 'paper.html').read_text())
+
     def test_current_resource_id_collectors_match(self):
         ids = set()
         for path in (ROOT / 'assets/data').glob('*.json'):
