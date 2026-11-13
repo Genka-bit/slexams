@@ -276,6 +276,19 @@ def collect(root):
             previews=[safe_url(x) for x in item.get('previewImages', []) if safe_url(x)],
             links={label: safe_url(item.get(key)) for label, key in (
                 ('Google Play', 'playStore'), ('Download', 'download'), ('Website', 'website')) if safe_url(item.get(key))})
+    # Distinguish otherwise identical paper descriptions without inventing metadata.
+    # The stable reference is derived from the resource identity (PDF URL), so
+    # descriptions remain unchanged when list ordering changes.
+    groups = {}
+    for record in records.values():
+        if record['kind'] in ('paper', 'worksheet'):
+            groups.setdefault(record['description'], []).append(record)
+    for group in groups.values():
+        if len(group) < 2:
+            continue
+        for record in group:
+            reference = record['id'].split(':', 1)[1][:12]
+            record['description'] = record['description'].rstrip() + ' Resource reference: ' + reference + '.'
     return list(records.values())
 
 
