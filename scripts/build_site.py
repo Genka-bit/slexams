@@ -276,20 +276,40 @@ def collect(root):
             previews=[safe_url(x) for x in item.get('previewImages', []) if safe_url(x)],
             links={label: safe_url(item.get(key)) for label, key in (
                 ('Google Play', 'playStore'), ('Download', 'download'), ('Website', 'website')) if safe_url(item.get(key))})
-    # Distinguish otherwise identical paper descriptions without inventing metadata.
-    # The stable reference is derived from the resource identity (PDF URL), so
-    # descriptions remain unchanged when list ordering changes.
+    make_paper_descriptions_unique(records.values())
+    return list(records.values())
+
+
+def make_paper_descriptions_unique(records):
+    """Prefer actual paper titles; number indistinguishable PDF options last.
+
+    Option numbers are positions in a stable URL-sorted group, not invented
+    exam editions or years. Never display opaque resource hashes to students.
+    """
+    papers = [r for r in records if r['kind'] in ('paper', 'worksheet')]
     groups = {}
-    for record in records.values():
-        if record['kind'] in ('paper', 'worksheet'):
-            groups.setdefault(record['description'], []).append(record)
+    for record in papers:
+        groups.setdefault(record['description'], []).append(record)
     for group in groups.values():
         if len(group) < 2:
             continue
         for record in group:
-            reference = record['id'].split(':', 1)[1][:12]
-            record['description'] = record['description'].rstrip() + ' Resource reference: ' + reference + '.'
-    return list(records.values())
+            title = str(record.get('title') or '').strip()
+            if title and title.casefold() not in record['description'].casefold():
+                record['description'] = title + '. ' + record['description']
+    # A real title may still be shared by multiple PDFs. Give each PDF a
+    # truthful, stable option number rather than an opaque hash or fake date.
+    groups = {}
+    for record in papers:
+        groups.setdefault(record['description'], []).append(record)
+    for group in groups.values():
+        if len(group) < 2:
+            continue
+        for number, record in enumerate(sorted(group, key=lambda r: r['id']), 1):
+            record['description'] += f' PDF option {number} of {len(group)}.'
+    descriptions = [r['description'] for r in papers]
+    if len(descriptions) != len(set(descriptions)):
+        raise ValueError('Paper meta descriptions must be unique')
 
 
 def paragraphs(text):
