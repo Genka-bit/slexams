@@ -60,6 +60,20 @@ def resource_schema(record):
             for i, (name, target) in enumerate(breadcrumbs_for(record))
         ]}
     ]
+    if record['kind'] in ('paper', 'worksheet'):
+        details = record.get('paper_details')
+        details = details if isinstance(details, dict) else {}
+        learning = {'@type': 'LearningResource', '@id': canonical + '#resource',
+                    'name': record['title'], 'description': record['description'],
+                    'url': canonical, 'inLanguage': 'ta' if str(details.get('medium', '')).lower() in ('tamil', 'tamil medium', 'tm') else 'en' if str(details.get('medium', '')).lower() in ('english', 'english medium', 'em') else 'und',
+                    'educationalLevel': f"Grade {record['grade']}",
+                    'learningResourceType': 'Worksheet' if record['kind'] == 'worksheet' else 'Exam paper',
+                    'isPartOf': {'@id': ORIGIN + '/#website'}}
+        if record.get('subject'):
+            learning['about'] = {'@type': 'Thing', 'name': str(record['subject'])}
+        if record.get('pdf'):
+            learning['encoding'] = {'@type': 'MediaObject', 'contentUrl': record['pdf'], 'encodingFormat': 'application/pdf'}
+        graph.append(learning)
     if record['kind'] == 'news':
         article = {'@type': 'NewsArticle', '@id': canonical + '#article', 'headline': record['title'],
                    'description': record['description'], 'image': [record.get('share_image', record['image'])],
@@ -230,7 +244,16 @@ def collect(root):
                         query = dict(grade=str(grade), stream=stream, subject=subject, paper=str(index))
                         query.update(type='worksheet') if kind == 'worksheet' else query.update(term=term)
                         title = item.get('title') or f'Grade {grade} {subject}'
-                        description = f'Grade {grade} • {subject} • ' + ('Worksheet' if kind == 'worksheet' else f'Term {term} exam paper') + ' | SLExam Pro'
+                        details = item.get('paperDetails') if isinstance(item.get('paperDetails'), dict) else {}
+                        fields = [f'Grade {grade}', str(subject)]
+                        if stream:
+                            fields.append(str(stream))
+                        fields.append('Worksheet' if kind == 'worksheet' else f'Term {term} exam paper')
+                        for field in ('year', 'publisher', 'medium'):
+                            value = details.get(field)
+                            if isinstance(value, (str, int)) and not isinstance(value, bool) and str(value).strip():
+                                fields.append(str(value).strip())
+                        description = ' | '.join(fields) + '. View or download the PDF free on SLExam Pro.'
                         add(kind, pdf, title, description, 'paper.html?' + urlencode(query), pdf=pdf,
                             date=item.get('addedAt', ''), grade=grade, subject=subject,
                             term=term, stream=stream, paper_details=item.get('paperDetails', {}))
