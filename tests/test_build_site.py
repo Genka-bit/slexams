@@ -230,6 +230,38 @@ class StaticPagesTest(unittest.TestCase):
             self.assertIn('src="' + original_url + '"', page)
             self.assertIn('og:image" content="' + details['share_image'] + '"', page)
 
+    def test_paper_descriptions_prefer_real_titles(self):
+        records = [
+            dict(kind='paper', id='paper:a', title='Northern Province 2024 Maths',
+                 description='Grade 10 | Maths | Term 1. Free PDF.'),
+            dict(kind='paper', id='paper:b', title='Western Province 2023 Maths',
+                 description='Grade 10 | Maths | Term 1. Free PDF.'),
+        ]
+        builder.make_paper_descriptions_unique(records)
+        self.assertEqual(len({r['description'] for r in records}), 2)
+        self.assertIn('Northern Province 2024 Maths', records[0]['description'])
+        self.assertIn('Western Province 2023 Maths', records[1]['description'])
+        self.assertNotIn('Resource reference:', records[0]['description'])
+
+    def test_identical_titles_get_stable_pdf_option_labels(self):
+        records = [
+            dict(kind='paper', id='paper:b', title='Maths', description='Grade 10 | Maths.'),
+            dict(kind='paper', id='paper:a', title='Maths', description='Grade 10 | Maths.'),
+            dict(kind='paper', id='paper:c', title='Science', description='Grade 10 | Science.'),
+        ]
+        builder.make_paper_descriptions_unique(records)
+        self.assertEqual(len({r['description'] for r in records}), 3)
+        self.assertIn('PDF option 1 of 2', records[1]['description'])
+        self.assertIn('PDF option 2 of 2', records[0]['description'])
+        self.assertEqual(records[2]['description'], 'Grade 10 | Science.')
+
+    def test_all_source_paper_meta_descriptions_are_unique(self):
+        records = builder.collect(ROOT)
+        papers = [r for r in records if r['kind'] in ('paper', 'worksheet')]
+        descriptions = [r['description'] for r in papers]
+        self.assertEqual(len(descriptions), len(set(descriptions)))
+        self.assertTrue(all('Resource reference:' not in d for d in descriptions))
+
     def test_identity_does_not_depend_on_list_position(self):
         records = builder.collect(ROOT)
         self.assertEqual(len(records), len({r['id'] for r in records}))
