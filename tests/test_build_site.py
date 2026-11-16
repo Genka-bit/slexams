@@ -262,6 +262,38 @@ class StaticPagesTest(unittest.TestCase):
         self.assertEqual(len(descriptions), len(set(descriptions)))
         self.assertTrue(all('Resource reference:' not in d for d in descriptions))
 
+    def test_paper_guidance_uses_verified_details_and_escapes_markup(self):
+        record = dict(kind='paper', title='<Maths & Science>', grade=8,
+                      subject='Maths', term='1', stream='',
+                      paper_details={'year': 2023, 'publisher': '<School>',
+                                     'pages': 12})
+        html = builder.render_paper_guidance(record)
+        self.assertIn('2023', html)
+        self.assertIn('12', html)
+        self.assertIn('&lt;School&gt;', html)
+        self.assertNotIn('<School>', html)
+        self.assertIn('&lt;Maths &amp; Science&gt;', html)
+        self.assertIn('Open PDF / Download', html)
+        self.assertNotIn('2024', html)
+
+    def test_paper_guidance_does_not_invent_missing_metadata(self):
+        record = dict(kind='worksheet', title='Practice', grade=8,
+                      subject='Science', term='worksheets', stream='',
+                      paper_details={})
+        html = builder.render_paper_guidance(record)
+        self.assertIn('செயலட்டை', html)
+        self.assertNotIn('<h3>கிடைக்கும் கூடுதல் தகவல்கள்</h3>', html)
+        self.assertNotIn('<li>ஆண்டு:', html)
+        self.assertEqual(builder.render_paper_guidance(dict(kind='news')), '')
+
+    def test_paper_guidance_appears_in_rendered_pdf_page(self):
+        record = next(r for r in builder.collect(ROOT) if r['kind'] == 'paper')
+        html = builder.render(record, '', '')
+        self.assertIn('class="paper-guide"', html)
+        self.assertIn('class="paper-details"', html)
+        self.assertIn('class="resource-pdf"', html)
+        self.assertIn('rel="canonical"', html)
+
     def test_identity_does_not_depend_on_list_position(self):
         records = builder.collect(ROOT)
         self.assertEqual(len(records), len({r['id'] for r in records}))
