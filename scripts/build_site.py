@@ -513,12 +513,56 @@ def render_paper_details(record):
     return '<section class="paper-details" lang="ta"><h2>வினாத்தாள் விவரங்கள்</h2><table><caption class="sr-only">இந்தப் பதிவில் கிடைக்கும் வினாத்தாள் தகவல்கள்</caption><tbody>' + rows + '</tbody></table></section>'
 
 
+
+def render_paper_guidance(record):
+    """Helpful, visible PDF guidance without guessing about the PDF contents."""
+    if record['kind'] not in ('paper', 'worksheet'):
+        return ''
+    rows = dict(paper_detail_rows(record))
+    title = escape(str(record['title']))
+    grade = rows.get('வகுப்பு')
+    subject = rows.get('பாடம்')
+    term = rows.get('வகை / தவணை')
+    parts = []
+    if grade and subject:
+        parts.append(f'வகுப்பு {escape(grade)} – {escape(subject)}')
+    elif subject:
+        parts.append(escape(subject))
+    if term:
+        parts.append(escape(term))
+    context = ' | '.join(parts) if parts else title
+    summary = (
+        '<section class="paper-guide" lang="ta"><h2>இந்த PDF பற்றி</h2>'
+        f'<p>{context} தொடர்பான <strong>{title}</strong> என்ற கல்வி வளத்தை '
+        'இப்பக்கத்தில் திறந்து பார்க்கலாம். கீழே உள்ள PDF இணைப்பைப் பயன்படுத்தி '
+        'கோப்பை அணுகலாம்.</p>'
+    )
+    known = [(label, rows[label]) for label in
+             ('ஆண்டு', 'வெளியிட்ட அமைப்பு', 'மொழிமூலம்', 'நேரம்', 'பக்கங்கள்')
+             if label in rows]
+    if known:
+        summary += '<h3>கிடைக்கும் கூடுதல் தகவல்கள்</h3><ul>' + ''.join(
+            f'<li>{escape(label)}: {escape(value)}</li>' for label, value in known
+        ) + '</ul>'
+    summary += (
+        '<h2>பயன்படுத்துவது எப்படி?</h2><ol>'
+        '<li>Open PDF / Download இணைப்பைத் திறந்து வினாத்தாளைப் பார்க்கவும்.</li>'
+        '<li>பயிற்சிக்காக வினாக்களை முயற்சி செய்து, பின்னர் உங்கள் பாடநூல் அல்லது '
+        'ஆசிரியருடன் விடைகளைச் சரிபார்க்கவும்.</li>'
+        '<li>PDF திறக்கவில்லை என்றால் இணைப்பை புதிய தாவலில் திறந்து பார்க்கவும்.</li>'
+        '</ol><p>விடைகள், மதிப்பீட்டுத் திட்டம் அல்லது வெளியீட்டு விவரங்கள் '
+        'கோப்பில் உள்ளனவா என்பதை PDF-ஐத் திறந்து உறுதிப்படுத்தவும்; '
+        'இப்பக்கம் அவை இருப்பதாகக் கூறவில்லை.</p></section>'
+    )
+    return summary
+
+
 def render(record, header, footer):
     # Resource pages have an h1 but no enclosing h2 before the footer sections.
     footer = footer.replace('<h3>', '<h2>').replace('</h3>', '</h2>')
     title, description = escape(record['title']), escape(record['description'][:300])
     canonical = ORIGIN + record['path']
-    body = render_paper_details(record)
+    body = render_paper_details(record) + render_paper_guidance(record)
     if record['kind'] in ('paper', 'worksheet', 'scheme'):
         pdf = record['pdf']
         preview = pdf
