@@ -262,6 +262,54 @@ class StaticPagesTest(unittest.TestCase):
         self.assertEqual(len(descriptions), len(set(descriptions)))
         self.assertTrue(all('Resource reference:' not in d for d in descriptions))
 
+    def test_paper_summary_uses_verified_fields_and_escapes_markup(self):
+        record = dict(kind='paper', title='<Maths & Science>', grade=8,
+                      subject='Maths', term='1', stream='',
+                      paper_details={'year': '2021 (2022)', 'publisher': '<School>',
+                                     'pages': 4, 'durationMinutes': 120, 'medium': 'தமிழ்மூலம்'})
+        markup = builder.render_paper_summary(record)
+        self.assertIn('2021 (2022)', markup)
+        self.assertIn('பக்கங்கள்: 4', markup)
+        self.assertIn('நேரம்: 120 நிமிடங்கள்', markup)
+        self.assertIn('&lt;School&gt;', markup)
+        self.assertNotIn('<School>', markup)
+        self.assertIn('&lt;Maths &amp; Science&gt;', markup)
+        self.assertEqual(markup.count('<p '), 1)
+        self.assertNotRegex(markup, r'<(?:h[1-6]|ul|ol|li)\b')
+        self.assertLess(len(markup), 700)
+
+    def test_paper_summary_omits_unknowns_and_does_not_guess_from_title(self):
+        record = dict(kind='worksheet', title='School 2024 12 pages', grade=8,
+                      subject='Science', term='worksheets', stream='', paper_details={})
+        markup = builder.render_paper_summary(record)
+        for label in ('ஆண்டு:', 'வெளியிட்ட அமைப்பு:', 'மொழிமூலம்:', 'நேரம்:', 'பக்கங்கள்:'):
+            self.assertNotIn(label, markup)
+        self.assertIn('செயலட்டை', markup)
+        self.assertNotIn('மூன்றாம் தவணை', markup)
+        self.assertEqual(markup.count('.'), 2)
+        self.assertEqual(builder.render_paper_summary(dict(kind='news')), '')
+        self.assertEqual(builder.render_paper_summary(dict(kind='app')), '')
+        record['kind'] = 'paper'
+        record['term'] = '3'
+        record['paper_details'] = {'exam': 'இறுதிக் கணிப்பீடு', 'pages': -1, 'durationMinutes': True}
+        markup = builder.render_paper_summary(record)
+        self.assertIn('இறுதிக் கணிப்பீடு', markup)
+        self.assertNotIn('மூன்றாம் தவணை', markup)
+        self.assertNotIn('பக்கங்கள்:', markup)
+        self.assertNotIn('நேரம்:', markup)
+
+    def test_short_summary_is_visible_once_and_preserves_pdf_and_canonical(self):
+        record = next(r for r in builder.collect(ROOT) if r['kind'] == 'paper')
+        markup = builder.render(record, '', '')
+        self.assertEqual(markup.count('class="paper-summary"'), 1)
+        self.assertNotIn('class="paper-guide"', markup)
+        self.assertNotIn('பயன்படுத்துவது எப்படி?', markup)
+        self.assertLess(markup.index('class="paper-summary"'), markup.index('id="contentActions"'))
+        self.assertIn('class="paper-details"', markup)
+        self.assertIn('class="resource-pdf"', markup)
+        self.assertIn('href="' + builder.escape(record['pdf']) + '"', markup)
+        self.assertIn('href="' + builder.ORIGIN + record['path'] + '"', markup)
+
     def test_identity_does_not_depend_on_list_position(self):
         records = builder.collect(ROOT)
         self.assertEqual(len(records), len({r['id'] for r in records}))

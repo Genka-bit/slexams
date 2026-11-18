@@ -513,12 +513,43 @@ def render_paper_details(record):
     return '<section class="paper-details" lang="ta"><h2>வினாத்தாள் விவரங்கள்</h2><table><caption class="sr-only">இந்தப் பதிவில் கிடைக்கும் வினாத்தாள் தகவல்கள்</caption><tbody>' + rows + '</tbody></table></section>'
 
 
+
+def render_paper_summary(record):
+    """Two or three short factual sentences, using known fields only."""
+    if record['kind'] not in ('paper', 'worksheet'):
+        return ''
+    rows = dict(paper_detail_rows(record))
+    context = []
+    if rows.get('வகுப்பு'):
+        context.append('தரம் ' + rows['வகுப்பு'])
+    if rows.get('பாடம்'):
+        context.append(rows['பாடம்'] + ' பாடம்')
+    if rows.get('பிரிவு'):
+        context.append(rows['பிரிவு'] + ' பிரிவு')
+    exam = rows.get('வகை / தவணை')
+    if exam and exam != 'செயலட்டை':
+        context.append(exam)
+    kind = 'செயலட்டை' if record['kind'] == 'worksheet' else 'வினாத்தாள்'
+    title = str(record.get('title') or '').strip()
+    name = '“' + title + '”' if title else 'இது'
+    first = name + (' — ' + ', '.join(context) if context else '') + ' ' + kind + '.'
+    known = [label + ': ' + rows[label] for label in
+             ('வெளியிட்ட அமைப்பு', 'ஆண்டு', 'மொழிமூலம்', 'நேரம்', 'பக்கங்கள்')
+             if label in rows]
+    sentences = [first]
+    if known:
+        sentences.append('; '.join(known) + '.')
+    sentences.append('கீழுள்ள இணைப்பில் PDF-ஐப் பார்வையிடலாம் அல்லது பதிவிறக்கலாம்.')
+    return '<p class="paper-summary" lang="ta">' + escape(' '.join(sentences)) + '</p>'
+
+
 def render(record, header, footer):
     # Resource pages have an h1 but no enclosing h2 before the footer sections.
     footer = footer.replace('<h3>', '<h2>').replace('</h3>', '</h2>')
     title, description = escape(record['title']), escape(record['description'][:300])
     canonical = ORIGIN + record['path']
     body = render_paper_details(record)
+    introduction = render_paper_summary(record) if record['kind'] in ('paper', 'worksheet') else f'<p>{description}</p>'
     if record['kind'] in ('paper', 'worksheet', 'scheme'):
         pdf = record['pdf']
         preview = pdf
@@ -582,7 +613,7 @@ def render(record, header, footer):
 </head><body>{header}
 <main class="resource-page" data-content-id="{escape(record['id'])}">
 {breadcrumbs}
-<h1>{title}</h1>{publication}<p>{description}</p>
+<h1>{title}</h1>{publication}{introduction}
 <div id="contentActions"></div>
 {body}
 </main>{footer}
